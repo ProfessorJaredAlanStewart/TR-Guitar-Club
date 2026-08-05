@@ -980,3 +980,8 @@ body.no-scroll{ overflow:hidden; }
   .pcard{ border:none; box-shadow:none; padding:0; }
   .pad{ padding:0; }
 }
+
+/* "Start over" sits apart from the three actions that keep the current result */
+.pcard__reset{ margin-left:auto; }
+.pcard__acts--center{ justify-content:center; border-top:0; padding-top:.4rem; }
+@media (max-width:560px){ .pcard__reset{ margin-left:0; } }

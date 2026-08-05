@@ -469,8 +469,12 @@
     any:      { name:'All-purpose',   slots:['D','','D','U','','U','D','U'], bpm:[92,120] }
   };
 
-  /* ---- form state ---- */
-  var state = { n:'any', skill:'open', capo:'yes', mood:'any', genre:'any', key:'auto' };
+  /* ---- form state ----
+     DEFAULTS is the single source of truth: the markup's initial
+     aria-pressed values and reset() both have to agree with it. */
+  var DEFAULTS = { n:'any', skill:'open', capo:'yes', mood:'any', genre:'any', key:'auto' };
+  var state = {};
+  Object.keys(DEFAULTS).forEach(function (k) { state[k] = DEFAULTS[k]; });
   var current = null;
 
   /* ---- filtering ---- */
@@ -621,6 +625,7 @@
     html += '<button type="button" class="btn btn--sm btn--ghost" id="pagain">Another one</button>';
     html += '<button type="button" class="btn btn--sm btn--ghost" id="pcopy">Copy link</button>';
     html += '<button type="button" class="btn btn--sm btn--ghost" id="pprint">Print</button>';
+    html += '<button type="button" class="btn btn--sm btn--ghost pcard__reset" id="pstart">Start over</button>';
     html += '</div>';
 
     html += '</div>';
@@ -634,11 +639,17 @@
     out.innerHTML = html;
     out.hidden = false;
 
-    location.hash = 'p=' + p.id + '&k=' + r.tonic + '&g=' + state.genre;
+    // Keep the URL current so Copy link and reload both work, but REPLACE
+    // rather than push: assigning location.hash adds a history entry per draw,
+    // so a student who hit "Another one" ten times needed ten Backs to leave.
+    var link = '#p=' + p.id + '&k=' + r.tonic + '&g=' + state.genre;
+    if (history.replaceState) history.replaceState(null, '', link);
+    else location.hash = link;
 
     $('#pplay').addEventListener('click', function () { play(r, parseInt($('#pbpm').value, 10)); });
     $('#pbpm').addEventListener('input', function () { $('#pbpmv').value = this.value; });
     $('#pagain').addEventListener('click', function () { go(); });
+    $('#pstart').addEventListener('click', reset);
     $('#pprint').addEventListener('click', function () { window.print(); });
     $('#pcopy').addEventListener('click', function (e) {
       var url = location.href;
@@ -647,14 +658,48 @@
     });
   }
 
+  /* ---- start over ---- */
+  function reset() {
+    stopAll();                                   // nothing should still be ringing
+    Object.keys(DEFAULTS).forEach(function (k) { state[k] = DEFAULTS[k]; });
+
+    $$('[data-field]', root).forEach(function (group) {
+      var field = group.getAttribute('data-field');
+      $$('button[data-v]', group).forEach(function (btn) {
+        btn.setAttribute('aria-pressed',
+          btn.getAttribute('data-v') === DEFAULTS[field] ? 'true' : 'false');
+      });
+    });
+    if (keySel) keySel.value = DEFAULTS.key;
+
+    lastId = null;
+    current = null;
+    var out = $('#prep-out');
+    out.innerHTML = '';
+    out.hidden = true;
+
+    // drop the deep link without pushing a history entry, so Back still leaves
+    // the page instead of walking through every progression they drew
+    if (history.replaceState) {
+      history.replaceState(null, '', location.pathname + location.search);
+    }
+
+    root.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // focus was on a button that no longer exists; hand it somewhere sensible
+    var first = $('.opts button', root);
+    if (first) { try { first.focus({ preventScroll: true }); } catch (err) { first.focus(); } }
+  }
+
   /* ---- the draw ---- */
   var lastId = null;
   function go() {
     var res = pool();
     if (res.empty) {
       $('#prep-out').innerHTML = '<div class="pcard pcard--none"><h3 class="display d4">Nothing matches that combination.</h3>' +
-        '<p class="dim mb0">Try setting the genre back to <em>Leave it open</em>, or the mood to <em>Surprise me</em>.</p></div>';
+        '<p class="dim">Try setting the genre back to <em>Leave it open</em>, or the mood to <em>Surprise me</em>.</p>' +
+        '<div class="pcard__acts pcard__acts--center"><button type="button" class="btn btn--sm" id="pstart">Start over</button></div></div>';
       $('#prep-out').hidden = false;
+      $('#pstart').addEventListener('click', reset);
       return;
     }
     var list = res.list;

@@ -111,15 +111,15 @@ The palette is a swappable theme layer. Open any page and change one attribute o
 opening `<html>` tag:
 
 ```html
-<html lang="en" data-theme="split">
+<html lang="en" data-theme="daylight">
 ```
 
 Four options, all built in and all checked for text contrast:
 
 | Value | What it looks like |
 |---|---|
-| `split` | **Current.** Light pages, dark hero photo band and dark footer. |
-| `daylight` | Light all the way through, including the footer. Brightest. |
+| `daylight` | **Current.** Light all the way through, including the footer. |
+| `split` | Light pages, but a dark footer for a magazine-band effect. |
 | `charcoal` | Dark, but a warm charcoal rather than near-black. |
 | `midnight` | The original near-black. |
 
@@ -127,6 +127,11 @@ Change it on all four HTML files to keep the site consistent. Nothing else needs
 the chord diagrams and Circle of Fifths read their colours from the same tokens, so they
 re-skin automatically. Individual colours live in the THEME LAYER block at the top of
 `assets/css/site.css`.
+
+The hero scrim is deliberately *not* part of the theme. That text sits on a photograph, not
+on the page, so its contrast is pinned regardless of how light the rest of the site gets.
+Don't lighten `--scrim-1/2/3` or `--scrim-side` to "match" a light theme — the headline
+stops being readable.
 
 ## Two things worth knowing
 

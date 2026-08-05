@@ -30,7 +30,7 @@ DTEND;TZID=America/Chicago:20260825T123000
 RRULE:FREQ=WEEKLY;BYDAY=TU
 SUMMARY:Guitar Club — Tuesday meeting
 LOCATION:Trinity River Campus (room announced day of meeting)
-DESCRIPTION:Weekly Trinity River Guitar Club meeting. All skill levels welcome. Guitars provided if you need one. Location is announced the day of the meeting by a cabinet member or adviser.\n\ntrinityriverguitarclub.com
+DESCRIPTION:Weekly Trinity River Guitar Club meeting. All skill levels welcome. Bring your guitar if you have one; loaners are available if you do not. Location is announced the day of the meeting by a cabinet member or adviser.\n\ntrinityriverguitarclub.com
 END:VEVENT
 BEGIN:VEVENT
 UID:trgc-friday-meeting@trinityriverguitarclub.com
@@ -40,6 +40,6 @@ DTEND;TZID=America/Chicago:20260828T120000
 RRULE:FREQ=WEEKLY;BYDAY=FR
 SUMMARY:Guitar Club — Friday meeting
 LOCATION:Trinity River Campus (room announced day of meeting)
-DESCRIPTION:Weekly Trinity River Guitar Club meeting. All skill levels welcome. Guitars provided if you need one. Location is announced the day of the meeting by a cabinet member or adviser.\n\ntrinityriverguitarclub.com
+DESCRIPTION:Weekly Trinity River Guitar Club meeting. All skill levels welcome. Bring your guitar if you have one; loaners are available if you do not. Location is announced the day of the meeting by a cabinet member or adviser.\n\ntrinityriverguitarclub.com
 END:VEVENT
 END:VCALENDAR

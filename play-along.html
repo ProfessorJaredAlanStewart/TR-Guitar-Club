@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="split">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Play Along — Trinity River Guitar Club</title>
+<meta name="description" content="Chord diagrams, an interactive Circle of Fifths, how to read guitar TAB, and practice tips from the Trinity River Guitar Club.">
+<meta name="theme-color" content="#0a0a0c">
+<link rel="canonical" href="https://trinityriverguitarclub.com/play-along.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Play Along — Trinity River Guitar Club">
+<meta property="og:description" content="Chords, the Circle of Fifths, TAB, and tips. Everything you need between meetings.">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <div class="wrap nav">
+    <a class="brand" href="index.html" aria-label="Trinity River Guitar Club home">
+      <svg class="brand__mark" viewBox="0 0 40 40" aria-hidden="true">
+        <defs><linearGradient id="pk" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#c8103f"/><stop offset="55%" stop-color="#98002e"/><stop offset="100%" stop-color="#00788a"/>
+        </linearGradient></defs>
+        <path d="M20 2.5c9.2 0 16.2 6 16.2 13.3 0 9.2-10.3 21.7-16.2 21.7S3.8 25 3.8 15.8C3.8 8.5 10.8 2.5 20 2.5z" fill="url(#pk)"/>
+        <g stroke="#dac792" stroke-width="1.1" opacity=".85">
+          <line x1="13" y1="7" x2="13" y2="30"/><line x1="20" y1="5.5" x2="20" y2="33"/><line x1="27" y1="7" x2="27" y2="30"/>
+        </g>
+      </svg>
+      <span class="brand__txt"><span class="brand__name">Trinity River</span><span class="brand__sub">Guitar Club</span></span>
+    </a>
+    <button class="nav__toggle" aria-expanded="false" aria-controls="primary-nav" aria-label="Menu"><span></span><span></span><span></span></button>
+    <ul class="nav__links" id="primary-nav">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="media.html">Media</a></li>
+      <li><a href="play-along.html" aria-current="page">Play Along</a></li>
+      <li><a href="calendar.html">Calendar</a></li>
+      <li class="nav__cta"><a class="btn btn--sm" href="mailto:jared.stewart@tccd.edu?subject=Trinity%20River%20Guitar%20Club">Contact TRGC</a></li>
+    </ul>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ===================== HERO ===================== -->
+<section class="hero hero--page grain">
+  <div class="hero__media">
+    <img src="assets/img/story-teach.jpg" alt="Two students working out a chord shape together" fetchpriority="high" width="1050" height="1400">
+  </div>
+  <div class="hero__scrim"></div>
+  <div class="wrap hero__inner">
+    <p class="eyebrow">Play Along</p>
+    <h1 class="display d1" style="font-size:clamp(2.6rem,8vw,5.4rem)">Practice<br>between<br>meetings.</h1>
+    <p class="lede hero__sub">Chord shapes, the Circle of Fifths, how to read TAB, and the handful of things that actually make you better faster.</p>
+  </div>
+</section>
+
+<div class="ticker" aria-hidden="true">
+  <div class="ticker__track">
+    <span>40 chord shapes</span><span>Interactive circle of fifths</span><span>TAB reading guide</span><span>Practice tips</span><span>Song sheets</span>
+    <span>40 chord shapes</span><span>Interactive circle of fifths</span><span>TAB reading guide</span><span>Practice tips</span><span>Song sheets</span>
+  </div>
+</div>
+
+<!-- ===================== CHORDS ===================== -->
+<section class="pad glow-crimson" id="chords">
+  <div class="wrap wrap--wide">
+    <div class="reveal" style="max-width:62ch">
+      <p class="eyebrow">Chord library</p>
+      <h2 class="display d2">Forty shapes<br>worth knowing.</h2>
+      <p class="dim mt1">
+        Numbers inside the dots are which finger to use — <b class="sand">1</b> index, <b class="sand">2</b> middle,
+        <b class="sand">3</b> ring, <b class="sand">4</b> pinky. A hollow circle above the diagram means play that
+        string open. An <b class="sand">×</b> means don't play it. A thick bar means one finger flattens across
+        several strings. A number to the left of the grid tells you which fret the diagram starts on.
+      </p>
+    </div>
+
+    <div class="chord-controls mt2 reveal" role="group" aria-label="Filter chords">
+      <button class="filter" data-chordfilter="all" aria-pressed="true">All</button>
+      <button class="filter" data-chordfilter="major" aria-pressed="false">Open major</button>
+      <button class="filter" data-chordfilter="minor" aria-pressed="false">Open minor</button>
+      <button class="filter" data-chordfilter="seventh" aria-pressed="false">Dominant 7</button>
+      <button class="filter" data-chordfilter="seven" aria-pressed="false">Maj7 / min7</button>
+      <button class="filter" data-chordfilter="color" aria-pressed="false">Sus &amp; add</button>
+      <button class="filter" data-chordfilter="barre" aria-pressed="false">Barre</button>
+      <button class="filter" data-chordfilter="power" aria-pressed="false">Power</button>
+    </div>
+
+    <div class="chordgrid reveal" id="chordgrid">
+      <p class="dim">Chord diagrams load with JavaScript. If you're seeing this, enable JavaScript to view them.</p>
+    </div>
+
+    <div class="panel panel--outline mt3 reveal">
+      <h3 class="display d4" style="margin-bottom:.9rem">Start here if you're brand new</h3>
+      <p class="dim">
+        Learn <b class="sand">Em</b>, <b class="sand">Am</b>, <b class="sand">C</b>, <b class="sand">G</b>,
+        <b class="sand">D</b> in that order. Em is two fingers and sounds finished on its own. Am is the same
+        shape moved over one string. Those five chords will get you through an enormous number of songs, and
+        every one of them shows up in the Circle of Fifths section below. Do not start with F. F is a
+        rite of passage, not a beginning.
+      </p>
+      <p class="dim mb0">
+        Spend ten minutes a day, five days a week, and you will be further along in a month than someone
+        who does two hours once a week. Consistency beats intensity on this instrument.
+      </p>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- ===================== CIRCLE OF FIFTHS ===================== -->
+<section class="pad glow-teal" id="circle">
+  <div class="wrap">
+    <div class="reveal" style="max-width:66ch">
+      <p class="eyebrow">Music theory that pays rent</p>
+      <h2 class="display d2">The Circle<br>of Fifths.</h2>
+      <p class="lede mt2">
+        It looks like a clock face and it functions like a cheat sheet. If you learn one piece of theory this
+        year, learn this one — it tells you which chords belong together, which key a song is in, where to put
+        a capo, and what to play next when you are writing.
+      </p>
+    </div>
+
+    <div class="cof-layout mt3">
+      <div class="reveal">
+        <div class="cof-wrap">
+          <svg id="cof" viewBox="0 0 400 400" role="application" aria-label="Interactive circle of fifths — select a key"></svg>
+          <p class="dim center mt1 mb0" style="font-size:.88rem">Click any key on the wheel.</p>
+        </div>
+
+        <div class="cof-readout">
+          <div class="cof-readout__key" id="cof-key">C major / Am</div>
+          <div class="cof-readout__sig" id="cof-sig">no sharps, no flats</div>
+
+          <p class="dim" style="font-size:.86rem;font-family:var(--font-label);letter-spacing:.16em;text-transform:uppercase;margin-bottom:.5rem">
+            The seven chords in this key
+          </p>
+          <div class="degrees" id="cof-degrees"></div>
+
+          <p class="dim" style="font-size:.86rem;font-family:var(--font-label);letter-spacing:.16em;text-transform:uppercase;margin-bottom:.5rem">
+            Progressions in this key
+          </p>
+          <div class="progs" id="cof-progs"></div>
+
+          <p class="dim mt2 mb0" id="cof-capo" style="font-size:.94rem"></p>
+        </div>
+      </div>
+
+      <div class="reveal dly1 prose">
+        <h3 class="display d3" style="margin-bottom:.9rem">What you're looking at</h3>
+        <p>
+          Twelve keys arranged in a ring. Every step <strong>clockwise</strong> moves up a perfect fifth —
+          C to G, G to D, D to A. Every step <strong>counterclockwise</strong> moves up a perfect fourth.
+          The outer ring is the major key; the inner ring is its relative minor, which uses the exact same
+          seven notes but treats a different one as home.
+        </p>
+        <p>
+          The magic is in the spacing: <em>neighbors on the circle share six of their seven notes.</em>
+          That is why keys next to each other sound related and keys across from each other sound like a
+          car crash. Distance on the wheel is a literal measurement of harmonic distance.
+        </p>
+
+        <h3 class="display d3 mt3" style="margin-bottom:.9rem">1. It hands you the chords</h3>
+        <p>
+          Pick any key on the outer ring. The slice to its <strong>right is the V</strong>, the slice to its
+          <strong>left is the IV</strong>, and the slice <strong>directly beneath it on the inner ring is
+          the vi</strong>. That wedge — I, IV, V, vi — is the harmonic engine of most popular music written
+          in the last seventy years.
+        </p>
+        <p>
+          Sit in C: your wedge is C, F, G, Am. Sit in G: G, C, D, Em. Sit in D: D, G, A, Bm. Notice how the
+          same shapes keep reappearing — that clustering is exactly why guitarists live in these keys.
+        </p>
+
+        <h3 class="display d3 mt3" style="margin-bottom:.9rem">2. It reads key signatures</h3>
+        <p>
+          Going clockwise from C, each key adds one sharp. Going counterclockwise, each adds one flat. The
+          order of sharps is <span class="sand">F C G D A E B</span> and the order of flats is that list
+          backwards. So four sharps means you are four steps clockwise: the key of E.
+        </p>
+        <p>
+          Reverse it to identify a key from written music: the last sharp in the signature is one half step
+          below the key name. Last flat? The key is the second-to-last flat.
+        </p>
+
+        <h3 class="display d3 mt3" style="margin-bottom:.9rem">3. It is a capo calculator</h3>
+        <p>
+          Guitars are built for the keys clustered on the right side of the wheel — C, G, D, A, E. When a
+          singer needs E♭ or B♭, you do not need new chord shapes. Count how many half steps your easy key
+          is below the target key, put the capo there, and play the easy shapes.
+        </p>
+        <p>
+          E♭ is three half steps above C: capo 3, play C shapes. B♭ is three above G: capo 3, play G shapes.
+          The readout under the wheel does this math for you on every key.
+        </p>
+
+        <h3 class="display d3 mt3" style="margin-bottom:.9rem">4. It writes songs with you</h3>
+        <ul class="dim">
+          <li><strong class="sand">Move counterclockwise to create pull.</strong> Chords moving counterclockwise (E7 → Am, or D → G → C) feel like they are falling toward home. That motion is the single strongest gravity in Western music.</li>
+          <li><strong class="sand">Steal from your neighbor.</strong> Borrow one chord from the key one step counterclockwise and the song gets a rock edge — that is where the ♭VII in G–F–C comes from. Borrow from the parallel minor and it gets moody.</li>
+          <li><strong class="sand">Modulate by one slice.</strong> Need a lift in the final chorus? Move one step clockwise. It sounds like the song stood up. Whole-step jumps sound triumphant; anything further sounds like a mistake unless you set it up.</li>
+          <li><strong class="sand">Use the relative minor for the sad verse.</strong> Same chords, different center of gravity. Start the verse on vi and the chorus on I and you get contrast for free.</li>
+          <li><strong class="sand">Chain fifths for a jazz turnaround.</strong> Three consecutive slices, counterclockwise, is ii–V–I. Four is vi–ii–V–I. Extend the chain as far back as you want; it will still resolve.</li>
+        </ul>
+
+        <h3 class="display d3 mt3" style="margin-bottom:.9rem">5. It transposes on the fly</h3>
+        <p>
+          Someone calls a song in a key your voice hates. Find the original key, count the slices to the new
+          one, and move every chord the same number of slices in the same direction. The song's shape stays
+          identical because the relationships did.
+        </p>
+
+        <div class="panel panel--outline mt3">
+          <h4 class="display d4" style="margin-bottom:.7rem">Two drills that make this stick</h4>
+          <p class="dim">
+            <strong class="sand">Drill one:</strong> play around the circle. Start on C, strum four beats,
+            move counterclockwise — C, F, B♭, E♭ — all the way back to C. Twelve chords, one loop. It is
+            the fastest way to internalize both the wheel and your barre shapes.
+          </p>
+          <p class="dim mb0">
+            <strong class="sand">Drill two:</strong> pick a song you know. Figure out its key, then name the
+            Roman numeral of every chord in it. Once you can hear "that's a IV" instead of "that's an F,"
+            you can play the song in any key, and you can learn new songs roughly three times faster.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- ===================== TAB ===================== -->
+<section class="pad" id="tab">
+  <div class="wrap">
+    <div class="grid grid-3-2" style="align-items:start">
+      <div class="reveal prose">
+        <p class="eyebrow">Reading music for guitarists</p>
+        <h2 class="display d2">How to read TAB.</h2>
+        <p class="lede mt2">
+          TAB is a map of the fretboard, not a map of pitch. Six lines, six strings. The
+          <strong>top line is your thinnest string</strong> — the high E — and the bottom line is the fat
+          low E. Numbers are frets. A <b class="sand">0</b> means play that string open.
+        </p>
+
+        <div class="tabdemo mt2" aria-label="Example guitar tablature">e|<b>--0--</b>-----------------0-----|
+B|-----<b>--1--</b>--------------1-----|
+G|-----------<b>--0--</b>--------0-----|
+D|----------------<b>--2--</b>---2-----|
+A|---------------------<b>-3-</b>-3-----|
+E|-------------------------------|
+       one note at a time      all
+                            together</div>
+
+        <p class="dim mt2">
+          Notes stacked in a vertical line are played at the same time — that is a chord. Notes spread left
+          to right are played in sequence. The example above is a C major chord picked one note at a time,
+          then strummed.
+        </p>
+
+        <h3 class="display d3 mt3" style="margin-bottom:.8rem">The symbols you'll actually see</h3>
+        <div class="grid" style="gap:.5rem">
+          <div class="prog"><span class="prog__name">h — hammer-on</span><span class="prog__chords">5h7 · pick the 5th, slam the 7th without picking again</span></div>
+          <div class="prog"><span class="prog__name">p — pull-off</span><span class="prog__chords">7p5 · the reverse; flick the finger off</span></div>
+          <div class="prog"><span class="prog__name">/ or \ — slide</span><span class="prog__chords">5/7 · keep pressure, glide up</span></div>
+          <div class="prog"><span class="prog__name">b — bend</span><span class="prog__chords">7b9 · push the string until it sounds like fret 9</span></div>
+          <div class="prog"><span class="prog__name">r — release</span><span class="prog__chords">9r7 · let the bend back down</span></div>
+          <div class="prog"><span class="prog__name">~ or v — vibrato</span><span class="prog__chords">wiggle the note. This is most of "tone"</span></div>
+          <div class="prog"><span class="prog__name">x — muted</span><span class="prog__chords">deaden the string, hit it for rhythm</span></div>
+          <div class="prog"><span class="prog__name">PM — palm mute</span><span class="prog__chords">picking hand edge rests on the strings</span></div>
+        </div>
+
+        <p class="dim mt2">
+          What TAB does <em>not</em> tell you is rhythm. It shows you where to put your fingers, not how long
+          to hold them. Always have the recording playing while you learn from TAB — your ears fill in what
+          the page leaves out.
+        </p>
+
+        <div class="btn-row mt2">
+          <a class="btn btn--sand" href="assets/docs/how-to-read-guitar-tab.pdf" target="_blank" rel="noopener">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+            Full TAB guide (PDF)
+          </a>
+        </div>
+      </div>
+
+      <div class="reveal dly1">
+        <div class="panel">
+          <h3 class="display d3" style="margin-bottom:1rem">Standard tuning, low to high</h3>
+          <div class="grid" style="gap:.5rem">
+            <div class="prog"><span class="prog__name">6th — thickest</span><span class="prog__chords">E</span></div>
+            <div class="prog"><span class="prog__name">5th</span><span class="prog__chords">A</span></div>
+            <div class="prog"><span class="prog__name">4th</span><span class="prog__chords">D</span></div>
+            <div class="prog"><span class="prog__name">3rd</span><span class="prog__chords">G</span></div>
+            <div class="prog"><span class="prog__name">2nd</span><span class="prog__chords">B</span></div>
+            <div class="prog"><span class="prog__name">1st — thinnest</span><span class="prog__chords">e</span></div>
+          </div>
+          <p class="dim mt2 mb0" style="font-size:.94rem">
+            Mnemonic that works: <span class="sand">Eddie Ate Dynamite, Good Bye Eddie</span>. Read it bottom
+            string to top. In TAB the picture is flipped — high e sits on the top line, because you are
+            looking down at the neck the way you hold it.
+          </p>
+        </div>
+
+        <div class="panel panel--outline mt2">
+          <h3 class="display d4" style="margin-bottom:.7rem">Fret numbers, fast</h3>
+          <p class="dim mb0" style="font-size:.95rem">
+            Every fret is one half step. Twelve frets is an octave — fret 12 is the same note as the open
+            string. The dots on the neck mark frets 3, 5, 7, 9 and the double dot marks 12. Those are your
+            landmarks; learn to find fret 5 and fret 7 without counting and sight-reading TAB gets
+            dramatically faster.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- ===================== TIPS ===================== -->
+<section class="pad glow-crimson" id="tips">
+  <div class="wrap">
+    <div class="reveal" style="max-width:62ch">
+      <p class="eyebrow">Tips &amp; tricks</p>
+      <h2 class="display d2">Fixes for the<br>things stopping you.</h2>
+      <p class="dim mt1">Every one of these came from an actual question asked at an actual meeting.</p>
+    </div>
+
+    <div class="mt3 reveal">
+      <details class="acc" open>
+        <summary>My barre chord buzzes</summary>
+        <div class="acc__body">
+          <p>
+            Almost never a strength problem. Four things to check, in order:
+          </p>
+          <ul>
+            <li><strong class="sand">Roll your index finger.</strong> Use the bony side of the finger, not the soft pad. Rotate it slightly toward the nut.</li>
+            <li><strong class="sand">Move closer to the fret wire.</strong> Pressing in the middle of the fret takes twice the force. Get right behind the wire.</li>
+            <li><strong class="sand">Drop your thumb.</strong> It belongs behind the neck, roughly opposite your middle finger — not hooked over the top.</li>
+            <li><strong class="sand">Pull, don't squeeze.</strong> The leverage comes from your elbow pulling back, not your hand crushing forward. If your forearm is burning, you are doing it with the wrong muscles.</li>
+          </ul>
+          <p class="mb0">Then check the guitar. High action or old strings can make a clean barre nearly impossible. Ask an adviser to look at it.</p>
+        </div>
+      </details>
+
+      <details class="acc">
+        <summary>My chord changes are too slow</summary>
+        <div class="acc__body">
+          <p>
+            <strong class="sand">One-minute changes.</strong> Pick two chords. Set a timer for sixty seconds
+            and switch back and forth as many times as you can, counting each clean change. Write the number
+            down. Do it again tomorrow. You will watch the number climb, and watching it climb is what keeps
+            you practicing.
+          </p>
+          <p>
+            <strong class="sand">Find the anchor finger.</strong> Between C and Am, your index finger never
+            moves. Between G and Em, two fingers stay put. Look for the finger that can stay planted and
+            pivot around it instead of rebuilding the chord from scratch.
+          </p>
+          <p class="mb0">
+            <strong class="sand">Keep strumming through the change.</strong> Do not stop your right hand while
+            your left hand catches up. A missed beat is worse than a fuzzy chord. Play through it.
+          </p>
+        </div>
+      </details>
+
+      <details class="acc">
+        <summary>My strumming sounds stiff</summary>
+        <div class="acc__body">
+          <p>
+            Your strumming hand should never stop moving. Keep it swinging in steady eighth notes —
+            down-up-down-up — and simply <em>miss the strings</em> on the beats you do not want to hit. That
+            is the entire secret. Rhythm is what your hand is doing continuously; the pattern is just which
+            swings connect.
+          </p>
+          <p>
+            Start with all downstrokes on the beat. Then add an up between beats 2 and 3. Then between every
+            beat. Do it to a metronome or a song, never in silence.
+          </p>
+          <p class="mb0">
+            Loosen your grip on the pick. If the pick never flexes, you are holding it too tight and every
+            strum will sound like a rake.
+          </p>
+        </div>
+      </details>
+
+      <details class="acc">
+        <summary>How do I figure out a song by ear?</summary>
+        <div class="acc__body">
+          <p>
+            <strong class="sand">Step one: find the key.</strong> The last chord of a chorus is usually home.
+            Hum the note the song feels like it wants to land on and find it on the guitar.
+          </p>
+          <p>
+            <strong class="sand">Step two: try the wedge.</strong> Nine times out of ten the other chords are
+            the I, IV, V and vi of that key. Use the Circle of Fifths above to get all four instantly, then
+            play them against the recording and listen for which one fits.
+          </p>
+          <p class="mb0">
+            <strong class="sand">Step three: name what you find in numbers.</strong> "I, V, vi, IV" travels
+            with you to every key. "G, D, Em, C" only works once.
+          </p>
+        </div>
+      </details>
+
+      <details class="acc">
+        <summary>My fingers hurt</summary>
+        <div class="acc__body">
+          <p>
+            Fingertip soreness in the first few weeks is normal and it does resolve — calluses build in about
+            two to three weeks of regular playing. Short daily sessions build them faster and hurt less than
+            occasional long ones.
+          </p>
+          <p class="mb0">
+            Pain in your wrist, forearm or thumb joint is a different thing entirely. That usually means the
+            guitar is sitting too low, your wrist is bent too sharply, or you are gripping far harder than the
+            note requires. Stop, adjust, and ask someone at a meeting to look at your hand position. Playing
+            through joint pain is how people end up not playing at all.
+          </p>
+        </div>
+      </details>
+
+      <details class="acc">
+        <summary>What should I practice in ten minutes?</summary>
+        <div class="acc__body">
+          <p>Split it three ways and use a timer so you actually stop:</p>
+          <ul>
+            <li><strong class="sand">3 minutes — hands.</strong> Chromatic runs, spider crawls, or one-minute changes. Boring on purpose.</li>
+            <li><strong class="sand">4 minutes — the hard part.</strong> The four bars you keep flubbing. Not the whole song. Slow enough to play it right, then nudge the tempo.</li>
+            <li><strong class="sand">3 minutes — play something you love.</strong> Badly is fine. This is the part that makes you pick the guitar up tomorrow.</li>
+          </ul>
+          <p class="mb0">Ten focused minutes a day beats a heroic weekend session every single time.</p>
+        </div>
+      </details>
+
+      <details class="acc">
+        <summary>How do I play well with other people?</summary>
+        <div class="acc__body">
+          <p>
+            <strong class="sand">Count everyone in.</strong> Out loud. Four clicks before the first chord, at
+            the actual tempo you intend to play. Most train wrecks start in bar one.
+          </p>
+          <p>
+            <strong class="sand">Play less than you can.</strong> When six guitars all strum full chords, it
+            turns to mud. Somebody plays the bass note, somebody plays a simplified rhythm, somebody plays
+            the melody up the neck. Leaving space is a skill.
+          </p>
+          <p>
+            <strong class="sand">If you get lost, stop and listen.</strong> Find beat one, come back in on the
+            next chord change. Do not hunt for your place while playing — the audience hears the hunting.
+          </p>
+          <p class="mb0">
+            <strong class="sand">Watch each other.</strong> Endings, dynamics and tempo changes are all
+            decided with eye contact, not telepathy.
+          </p>
+        </div>
+      </details>
+
+      <details class="acc">
+        <summary>Tuning, capos and gear basics</summary>
+        <div class="acc__body">
+          <p>
+            <strong class="sand">Tune every single time you pick it up.</strong> Free apps are fine. Tune up
+            to the note, not down to it — approaching from below takes the slack out of the tuner gear and
+            the note holds.
+          </p>
+          <p>
+            <strong class="sand">Capo placement matters.</strong> Just behind the fret wire, not on top of it,
+            and only as tight as it needs to be. Over-clamping pulls the strings sharp.
+          </p>
+          <p class="mb0">
+            <strong class="sand">Change your strings.</strong> Dead strings are the single most common reason
+            a guitar sounds bad and refuses to stay in tune. If they look gray and feel gritty, they are done.
+            The club can help you restring at a meeting.
+          </p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- ===================== SONG SHEETS / DOWNLOADS ===================== -->
+<section class="pad" id="sheets">
+  <div class="wrap">
+    <div class="reveal" style="max-width:62ch">
+      <p class="eyebrow">Song sheets &amp; downloads</p>
+      <h2 class="display d2">Grab the charts.</h2>
+      <p class="dim mt1">Everything the club is currently working on, plus reference material. New files land here as they're written.</p>
+    </div>
+
+    <ul class="linklist mt3 reveal">
+      <li>
+        <a class="linkrow" href="assets/docs/how-to-read-guitar-tab.pdf" target="_blank" rel="noopener">
+          <span class="linkrow__tag">Reference</span>
+          <span class="linkrow__body">
+            <span class="linkrow__title">How to Read Guitar TAB</span>
+            <span class="linkrow__meta">PDF — the full guide, worth keeping on your phone</span>
+          </span>
+          <span class="linkrow__arrow" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></span>
+        </a>
+      </li>
+      <li>
+        <a class="linkrow" href="#circle">
+          <span class="linkrow__tag linkrow__tag--teal">Tool</span>
+          <span class="linkrow__body">
+            <span class="linkrow__title">Interactive Circle of Fifths</span>
+            <span class="linkrow__meta">Click a key, get its chords, progressions and capo positions</span>
+          </span>
+          <span class="linkrow__arrow" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg></span>
+        </a>
+      </li>
+      <li>
+        <a class="linkrow" href="assets/docs/trgc-constitution.pdf" target="_blank" rel="noopener">
+          <span class="linkrow__tag linkrow__tag--crimson">Club</span>
+          <span class="linkrow__body">
+            <span class="linkrow__title">Guitar Club Constitution</span>
+            <span class="linkrow__meta">PDF — purpose, officers, elections and meeting times</span>
+          </span>
+          <span class="linkrow__arrow" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="slot mt3 reveal">
+      <div class="slot__ico">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M12 18v-6M9 15h6"/></svg>
+      </div>
+      <h3>Add a chart or a tab</h3>
+      <p>
+        Drop a PDF into <code>assets/docs/</code>, then copy one of the rows above in
+        <code>play-along.html</code> and point it at the new file. Two minutes, no build step, no
+        dependencies. Members: send new charts to the sponsor and they'll go up.
+      </p>
+      <div class="btn-row mt2" style="justify-content:center">
+        <a class="btn btn--teal" href="mailto:jared.stewart@tccd.edu?subject=Song%20sheet%20for%20the%20TRGC%20site">Submit a chart</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CTA ===================== -->
+<section class="pad-sm">
+  <div class="wrap">
+    <div class="panel panel--sand grain center reveal">
+      <h2 class="display d2">Reading about it<br>is not playing it.</h2>
+      <p class="lede mt2" style="max-width:52ch;margin-inline:auto">
+        Tuesdays 11:30&nbsp;AM. Fridays 11:00&nbsp;AM. Bring the questions you could not answer here.
+      </p>
+      <div class="btn-row mt2" style="justify-content:center">
+        <a class="btn" href="calendar.html">See the calendar</a>
+        <a class="btn btn--ghost" href="mailto:jared.stewart@tccd.edu?subject=Guitar%20Club%20question">Ask a question</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot__grid foot">
+      <div>
+        <a class="brand" href="index.html" style="margin-bottom:1rem">
+          <svg class="brand__mark" viewBox="0 0 40 40" aria-hidden="true">
+            <defs><linearGradient id="pk2" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#c8103f"/><stop offset="55%" stop-color="#98002e"/><stop offset="100%" stop-color="#00788a"/>
+            </linearGradient></defs>
+            <path d="M20 2.5c9.2 0 16.2 6 16.2 13.3 0 9.2-10.3 21.7-16.2 21.7S3.8 25 3.8 15.8C3.8 8.5 10.8 2.5 20 2.5z" fill="url(#pk2)"/>
+            <g stroke="#dac792" stroke-width="1.1" opacity=".85">
+              <line x1="13" y1="7" x2="13" y2="30"/><line x1="20" y1="5.5" x2="20" y2="33"/><line x1="27" y1="7" x2="27" y2="30"/>
+            </g>
+          </svg>
+          <span class="brand__txt"><span class="brand__name">Trinity River</span><span class="brand__sub">Guitar Club</span></span>
+        </a>
+        <p class="dim" style="max-width:38ch;font-size:.94rem">A student and faculty guitar club in Fort Worth, Texas. All skill levels. All genres. Guitars provided.</p>
+      </div>
+      <div>
+        <h4>Site</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="media.html">Media</a></li>
+          <li><a href="play-along.html">Play Along</a></li>
+          <li><a href="calendar.html">Club Calendar</a></li>
+          <li><a href="assets/docs/trgc-constitution.pdf">Constitution</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="mailto:jared.stewart@tccd.edu">jared.stewart@tccd.edu</a></li>
+          <li><span class="dim">Tuesdays 11:30 AM – 12:30 PM</span></li>
+          <li><span class="dim">Fridays 11:00 AM – 12:00 PM</span></li>
+          <li><span class="dim">Trinity River Campus · Fort Worth</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot__bottom">
+      <span>© <span data-year>2026</span> Trinity River Guitar Club</span>
+      <span>Built by students, for students. <span class="sand">Thank you, Dr. Sean Madison.</span></span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/site.js" defer></script>
+</body>
+</html>

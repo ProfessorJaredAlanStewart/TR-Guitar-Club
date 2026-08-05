@@ -523,6 +523,32 @@
     }).join('');
   })();
 
+  /* ---- Find a song: three tab-site searches from one box ----
+     Plain links whose hrefs track the input, so everything still works
+     without JS (the links land on each site's homepage). */
+  (function findSong() {
+    var q = $('#findq');
+    if (!q) return;
+    var sites = [
+      [$('#find-ug'), 'https://www.ultimate-guitar.com/',
+        function (s) { return 'https://www.ultimate-guitar.com/search.php?search_type=title&value=' + s; }],
+      [$('#find-ss'), 'https://www.songsterr.com/',
+        function (s) { return 'https://www.songsterr.com/?pattern=' + s; }],
+      [$('#find-cf'), 'https://chordify.net/',
+        function (s) { return 'https://chordify.net/search/' + s; }]
+    ];
+    var sync = function () {
+      var v = q.value.trim();
+      sites.forEach(function (site) {
+        site[0].href = v ? site[2](encodeURIComponent(v)) : site[1];
+      });
+    };
+    q.addEventListener('input', sync);
+    q.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && q.value.trim()) { sync(); window.open(sites[0][0].href, '_blank', 'noopener'); }
+    });
+  })();
+
   /* Expose the diagram renderer + chord library so the Song Starter
      can draw the same shapes students already see on Play Along. */
   window.TRGC = window.TRGC || {};

@@ -691,7 +691,13 @@ section{ position:relative; }
   font-family:var(--font-mono); font-size:.92rem; line-height:1.75; white-space:pre;
   overflow-x:auto; background:var(--code-bg); border:1px solid var(--line); border-radius:var(--radius);
   padding:1.2rem 1.3rem; color:var(--accent-code);
+  /* white-space:pre makes this block's min-content the full line width, and a
+     block child propagates that up to its grid-column parent — on a 390px
+     phone the whole section grew 8px past the viewport. max-width caps the
+     propagation; overflow-x:auto (above) supplies the scrolling instead. */
+  max-width:100%;
 }
+.grid > .prose{ min-width:0; }
 .tabdemo b{ color:var(--crimson-lt); }
 
 /* ---------- 20. Accordion ---------- */
@@ -999,3 +1005,13 @@ body.no-scroll{ overflow:hidden; }
 .pcard__reset{ margin-left:auto; }
 .pcard__acts--center{ justify-content:center; border-top:0; padding-top:.4rem; }
 @media (max-width:560px){ .pcard__reset{ margin-left:0; } }
+
+/* ---- find a song ---- */
+.findbar{ display:flex; flex-wrap:wrap; gap:.8rem; align-items:center;
+          border:1px solid var(--line); border-radius:16px; background:var(--surface);
+          padding:1rem 1.1rem; }
+.findbar input[type=search]{ flex:1 1 260px; min-width:0; font:inherit; font-size:1.05rem;
+          color:var(--text-strong); background:var(--page); border:1.5px solid var(--line);
+          border-radius:12px; padding:.75rem 1rem; }
+.findbar input[type=search]:focus{ outline:3px solid var(--teal-lt); outline-offset:2px; }
+.findbar__sites{ display:flex; flex-wrap:wrap; gap:.5rem; }

@@ -523,7 +523,7 @@
     }).join('');
   })();
 
-  /* Expose the diagram renderer + chord library so the Progression Prepper
+  /* Expose the diagram renderer + chord library so the Song Starter
      can draw the same shapes students already see on Play Along. */
   window.TRGC = window.TRGC || {};
   window.TRGC.chordSVG = chordSVG;

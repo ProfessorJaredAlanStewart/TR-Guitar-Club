@@ -1,5 +1,5 @@
 /* =========================================================
-   Trinity River Guitar Club — Progression Prepper
+   Trinity River Guitar Club — Song Starter
    No dependencies. Runs entirely in the browser: no server,
    no API, no audio files. Bails out quietly if its markup
    isn't on the page.

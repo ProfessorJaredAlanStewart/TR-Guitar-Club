@@ -771,7 +771,7 @@ section{ position:relative; }
 /* ---------- 23. People ---------- */
 .people{ display:grid; gap:1rem; }
 @media(min-width:680px){ .people{ grid-template-columns:repeat(2,1fr); } }
-@media(min-width:1000px){ .people{ grid-template-columns:repeat(4,1fr); } }
+@media(min-width:1000px){ .people--3{ grid-template-columns:repeat(3,1fr); } }
 .person{
   background:var(--ink-2); border:1px solid var(--line); border-radius:var(--radius);
   padding:1.3rem; transition:border-color .22s, transform .22s var(--ease);
@@ -785,6 +785,9 @@ section{ position:relative; }
 .person:nth-child(2) .person__initials{ background:linear-gradient(140deg,var(--teal),var(--navy)); }
 .person:nth-child(3) .person__initials{ background:linear-gradient(140deg,var(--sand),var(--crimson)); color:#1a1206; }
 .person:nth-child(4) .person__initials{ background:linear-gradient(140deg,var(--navy-lt),var(--teal)); }
+.people--3 .person:nth-child(1) .person__initials{ background:linear-gradient(140deg,var(--crimson),var(--navy)); }
+.people--3 .person:nth-child(2) .person__initials{ background:linear-gradient(140deg,var(--navy-lt),var(--teal)); }
+.people--3 .person:nth-child(3) .person__initials{ background:linear-gradient(140deg,var(--teal),var(--crimson)); color:#fff; }
 .person__name{ font-family:var(--font-display); text-transform:uppercase; font-size:1.12rem; margin-bottom:.2rem; }
 .person__role{ font-family:var(--font-label); letter-spacing:.14em; text-transform:uppercase; font-size:.82rem; color:var(--accent-label); margin-bottom:.6rem; }
 .person p{ font-size:.93rem; color:var(--text-dim); margin:0; }

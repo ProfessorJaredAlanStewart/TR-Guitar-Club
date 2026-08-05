@@ -35,8 +35,8 @@ END:VEVENT
 BEGIN:VEVENT
 UID:trgc-friday-meeting@trinityriverguitarclub.com
 DTSTAMP:20260805T120000Z
-DTSTART;TZID=America/Chicago:20260828T110000
-DTEND;TZID=America/Chicago:20260828T120000
+DTSTART;TZID=America/Chicago:20260828T120000
+DTEND;TZID=America/Chicago:20260828T130000
 RRULE:FREQ=WEEKLY;BYDAY=FR
 SUMMARY:Guitar Club — Friday meeting
 LOCATION:Trinity River Campus (room announced day of meeting)

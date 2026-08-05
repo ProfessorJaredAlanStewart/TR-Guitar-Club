@@ -616,8 +616,18 @@
 
     // songs + tip
     if (p.songs.length) {
-      html += '<div class="psongs"><h4>Hear it in</h4><ul>' +
-        p.songs.map(function (s) { return '<li>' + s + '</li>'; }).join('') + '</ul></div>';
+      // Each song links straight to an Ultimate Guitar search for it, so
+      // "hear it in" is also "go play it". Attribution suffixes and
+      // parentheticals only pollute the search query, so they're stripped.
+      html += '<div class="psongs"><h4>Hear it in &mdash; tap a song for its chords</h4><ul>' +
+        p.songs.map(function (s) {
+          var q = s.replace(/\s*\([^)]*\)/g, '')
+                   .replace(/\s+\u2014\s+(traditional|jazz standard).*$/i, '')
+                   .replace(/\s+\u2014\s+/g, ' ')
+                   .replace(/,\s*popularised by.*$/i, '').trim();
+          return '<li><a href="https://www.ultimate-guitar.com/search.php?search_type=title&value=' +
+                 encodeURIComponent(q) + '" target="_blank" rel="noopener">' + s + '</a></li>';
+        }).join('') + '</ul></div>';
     }
     if (p.tip) html += '<p class="ptip"><strong>Try this:</strong> ' + p.tip + '</p>';
 

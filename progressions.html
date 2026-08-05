@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="daylight">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Progression Prepper — Trinity River Guitar Club</title>
+<meta name="description" content="Answer six questions and get a chord progression you can actually play: real fingerings, a strum pattern, songs that use it, and a play button. Built for the Trinity River Guitar Club.">
+<meta name="theme-color" content="#0a0a0c">
+<link rel="canonical" href="https://trinityriverguitarclub.com/progressions.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Progression Prepper — Trinity River Guitar Club">
+<meta property="og:description" content="Tell it what you can play and what you want it to sound like. It hands back a progression, the fingerings, a strum, and songs that use it.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preload" href="anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <div class="wrap nav">
+    <a class="brand" href="index.html" aria-label="Trinity River Guitar Club home">
+      <svg class="brand__mark" viewBox="0 0 40 40" aria-hidden="true">
+        <defs><linearGradient id="pk" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#c8103f"/><stop offset="55%" stop-color="#98002e"/><stop offset="100%" stop-color="#00788a"/>
+        </linearGradient></defs>
+        <path d="M20 2.5c9.2 0 16.2 6 16.2 13.3 0 9.2-10.3 21.7-16.2 21.7S3.8 25 3.8 15.8C3.8 8.5 10.8 2.5 20 2.5z" fill="url(#pk)"/>
+        <g stroke="#dac792" stroke-width="1.1" opacity=".85">
+          <line x1="13" y1="7" x2="13" y2="30"/><line x1="20" y1="5.5" x2="20" y2="33"/><line x1="27" y1="7" x2="27" y2="30"/>
+        </g>
+      </svg>
+      <span class="brand__txt"><span class="brand__name">Trinity River</span><span class="brand__sub">Guitar Club</span></span>
+    </a>
+    <button class="nav__toggle" aria-expanded="false" aria-controls="primary-nav" aria-label="Menu"><span></span><span></span><span></span></button>
+    <ul class="nav__links" id="primary-nav">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="media.html">Media</a></li>
+      <li><a href="play-along.html">Play Along</a></li>
+      <li><a href="progressions.html" aria-current="page">Prepper</a></li>
+      <li><a href="calendar.html">Calendar</a></li>
+      <li class="nav__cta"><a class="btn btn--sm" href="mailto:jared.stewart@tccd.edu?subject=Trinity%20River%20Guitar%20Club">Contact TRGC</a></li>
+    </ul>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ===================== HERO ===================== -->
+<section class="hero hero--page grain">
+  <div class="hero__media">
+    <img src="hero.jpg" alt="Students in a circle of chairs with guitars around a lit fire pit" fetchpriority="high" width="2200" height="1650">
+  </div>
+  <div class="hero__scrim"></div>
+  <div class="wrap hero__inner">
+    <p class="eyebrow">Progression Prepper</p>
+    <h1 class="display d1" style="font-size:clamp(2.6rem,8vw,5.4rem)">Six questions.<br>One song idea.</h1>
+    <p class="lede hero__sub">
+      Tell it what you can play and what you want it to sound like. It hands back a progression that
+      real songs are built on, the fingerings for your hands, a strum, and a button that plays it.
+    </p>
+  </div>
+</section>
+
+<!-- ===================== THE FORM ===================== -->
+<section class="pad" id="prep">
+  <div class="wrap wrap--narrow">
+
+    <p class="eyebrow">Start here</p>
+    <h2 class="display d2">What are you<br>working with?</h2>
+    <p class="lede mt2" style="max-width:62ch">
+      Nothing here is graded and nothing is saved. Answer honestly about what your hands can do today —
+      the tool works around it. <span class="sand">Every progression below is one that real songs use.</span>
+      None of it is made up on the spot.
+    </p>
+
+    <div class="qgrid mt3">
+
+      <fieldset class="q">
+        <legend><span class="q__n">1</span> How many chords do you want?</legend>
+        <div class="opts" data-field="n">
+          <button type="button" data-v="any" aria-pressed="true">Doesn’t matter</button>
+          <button type="button" data-v="2" aria-pressed="false">2</button>
+          <button type="button" data-v="3" aria-pressed="false">3</button>
+          <button type="button" data-v="4" aria-pressed="false">4</button>
+          <button type="button" data-v="5" aria-pressed="false">5 or more</button>
+        </div>
+        <p class="q__hint">Two is a real answer. Plenty of great songs never use a third.</p>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend><span class="q__n">2</span> What can your hands do?</legend>
+        <div class="opts" data-field="skill">
+          <button type="button" data-v="open" aria-pressed="true">Open chords only</button>
+          <button type="button" data-v="some" aria-pressed="false">A barre or two is fine</button>
+          <button type="button" data-v="any" aria-pressed="false">Anything</button>
+        </div>
+        <p class="q__hint">Open chords are the ones with open strings ringing — G, C, D, Em, Am. If barre chords still buzz, say so.</p>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend><span class="q__n">3</span> Do you have a capo?</legend>
+        <div class="opts" data-field="capo">
+          <button type="button" data-v="yes" aria-pressed="true">Yes</button>
+          <button type="button" data-v="no" aria-pressed="false">No</button>
+        </div>
+        <p class="q__hint">This is the big one. A capo lets you play open shapes in keys that would otherwise need barre chords. The club has spares.</p>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend><span class="q__n">4</span> What should it feel like?</legend>
+        <div class="opts" data-field="mood">
+          <button type="button" data-v="any" aria-pressed="true">Surprise me</button>
+          <button type="button" data-v="bright">Bright</button>
+          <button type="button" data-v="sad">Sad</button>
+          <button type="button" data-v="bittersweet">Bittersweet</button>
+          <button type="button" data-v="dreamy">Dreamy</button>
+          <button type="button" data-v="driving">Driving</button>
+          <button type="button" data-v="dark">Dark</button>
+          <button type="button" data-v="tense">Tense</button>
+        </div>
+        <p class="q__hint">Each of these points at a different harmonic trick, not just major versus minor.</p>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend><span class="q__n">5</span> Any particular style?</legend>
+        <div class="opts opts--wrap" data-field="genre">
+          <button type="button" data-v="any" aria-pressed="true">Leave it open</button>
+          <button type="button" data-v="pop">Pop</button>
+          <button type="button" data-v="rock">Rock</button>
+          <button type="button" data-v="blues">Blues</button>
+          <button type="button" data-v="country">Country</button>
+          <button type="button" data-v="bluegrass">Bluegrass</button>
+          <button type="button" data-v="folk">Folk</button>
+          <button type="button" data-v="indie">Indie</button>
+          <button type="button" data-v="punk">Punk</button>
+          <button type="button" data-v="metal">Metal</button>
+          <button type="button" data-v="jazz">Jazz</button>
+          <button type="button" data-v="bossa">Bossa nova</button>
+          <button type="button" data-v="latin">Latin</button>
+          <button type="button" data-v="worship">Worship</button>
+          <button type="button" data-v="flamenco">Flamenco</button>
+          <button type="button" data-v="classical">Classical</button>
+        </div>
+        <p class="q__hint">Genre mostly lives in the strum, not the chords. This sets your rhythm and tempo too.</p>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend><span class="q__n">6</span> What key?</legend>
+        <div class="q__sel">
+          <label class="vh" for="pkey">Key</label>
+          <select id="pkey">
+            <option value="auto" selected>Pick the easiest one for me</option>
+            <option value="7">G</option>
+            <option value="0">C</option>
+            <option value="2">D</option>
+            <option value="9">A</option>
+            <option value="4">E</option>
+            <option value="5">F</option>
+            <option value="10">B♭</option>
+            <option value="3">E♭</option>
+            <option value="11">B</option>
+            <option value="8">A♭</option>
+            <option value="1">D♭</option>
+            <option value="6">F♯</option>
+          </select>
+        </div>
+        <p class="q__hint">If you are singing it, the key that suits your voice beats the key that suits your hands. That is what the capo is for.</p>
+      </fieldset>
+
+    </div>
+
+    <div class="btn-row mt3">
+      <button type="button" class="btn" id="prep-go">Give me a progression</button>
+    </div>
+
+    <div id="prep-out" class="mt3" hidden aria-live="polite"></div>
+
+  </div>
+</section>
+
+<!-- ===================== HOW TO USE IT ===================== -->
+<section class="pad-sm alt">
+  <div class="wrap wrap--narrow">
+    <p class="eyebrow">What to do with it</p>
+    <h2 class="display d3">A progression is not a song yet.</h2>
+    <div class="prose mt2">
+      <p>
+        Four chords in a loop is a foundation, not a finished thing. What turns it into music is
+        everything the generator can’t decide for you: where you put the emphasis, which chord you
+        hang on an extra bar, what you sing over it, where you stop playing entirely.
+      </p>
+      <p>
+        The fastest way to use this: draw a progression, play the loop until your hands stop thinking
+        about it, then start changing one thing at a time. Hold the first chord twice as long. Cut the
+        last chord early. Hum something over the top and follow wherever it goes. Nothing here is
+        precious — hit <em>Another one</em> as often as you want.
+      </p>
+      <p class="mb0">
+        Bring whatever you end up with to a Tuesday or Friday meeting. Somebody will know what to do
+        with it, and <strong>Dr. Héctor A. Torres González</strong> can tell you what you accidentally
+        invented and what it is called.
+      </p>
+    </div>
+    <div class="btn-row mt3">
+      <a class="btn btn--ghost" href="play-along.html">Learn the shapes first</a>
+      <a class="btn btn--ghost" href="calendar.html">Come to a meeting</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot__grid foot">
+      <div>
+        <a class="brand" href="index.html" style="margin-bottom:1rem">
+          <svg class="brand__mark" viewBox="0 0 40 40" aria-hidden="true">
+            <defs><linearGradient id="pk2" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#c8103f"/><stop offset="55%" stop-color="#98002e"/><stop offset="100%" stop-color="#00788a"/>
+            </linearGradient></defs>
+            <path d="M20 2.5c9.2 0 16.2 6 16.2 13.3 0 9.2-10.3 21.7-16.2 21.7S3.8 25 3.8 15.8C3.8 8.5 10.8 2.5 20 2.5z" fill="url(#pk2)"/>
+            <g stroke="#dac792" stroke-width="1.1" opacity=".85">
+              <line x1="13" y1="7" x2="13" y2="30"/><line x1="20" y1="5.5" x2="20" y2="33"/><line x1="27" y1="7" x2="27" y2="30"/>
+            </g>
+          </svg>
+          <span class="brand__txt"><span class="brand__name">Trinity River</span><span class="brand__sub">Guitar Club</span></span>
+        </a>
+        <p class="dim" style="max-width:38ch;font-size:.94rem">A student and faculty guitar club in Fort Worth, Texas. All skill levels. All genres. Bring your guitar, or borrow one of ours.</p>
+      </div>
+      <div>
+        <h4>Site</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="media.html">Media</a></li>
+          <li><a href="play-along.html">Play Along</a></li>
+          <li><a href="progressions.html">Progression Prepper</a></li>
+          <li><a href="calendar.html">Club Calendar</a></li>
+          <li><a href="trgc-constitution.pdf">Constitution</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="mailto:jared.stewart@tccd.edu">jared.stewart@tccd.edu</a></li>
+          <li><span class="dim">Tuesdays 11:30 AM – 12:30 PM</span></li>
+          <li><span class="dim">Fridays 12:00 – 1:00 PM</span></li>
+          <li><span class="dim">Trinity River Campus · Fort Worth</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot__bottom">
+      <span>© <span data-year>2026</span> Trinity River Guitar Club</span>
+      <span>Built by students, for students. <span class="sand">Thank you, Dr. Sean Madison.</span></span>
+    </div>
+  </div>
+</footer>
+
+<script src="site.js" defer></script>
+<script src="progressions.js" defer></script>
+</body>
+</html>

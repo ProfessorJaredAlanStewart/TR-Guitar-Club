@@ -851,3 +851,132 @@ body.no-scroll{ overflow:hidden; }
   .site-head,.site-foot,.lb,.hero__media,.hero__scrim{ display:none !important; }
   body{ background:#fff; color:#000; }
 }
+
+/* =========================================================
+   PROGRESSION PREPPER
+   Everything below reads theme tokens, so all four themes
+   work without a second set of rules.
+   ========================================================= */
+.vh{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden;
+     clip:rect(0 0 0 0); white-space:nowrap; border:0; }
+.alt{ background:var(--surface-2); }
+
+/* ---- the questions ---- */
+.qgrid{ display:grid; gap:1.1rem; }
+.q{ border:1px solid var(--line); border-radius:14px; background:var(--surface);
+    padding:1.15rem 1.25rem 1rem; margin:0; }
+.q legend{ display:flex; align-items:center; gap:.6rem; float:none; padding:0 0 .75rem;
+           font-weight:600; font-size:1.02rem; color:var(--text-strong); }
+.q__n{ display:grid; place-items:center; width:1.65rem; height:1.65rem; flex:none;
+       border-radius:50%; background:var(--crimson); color:#fff;
+       font-size:.82rem; font-weight:700; }
+.opts{ display:flex; flex-wrap:wrap; gap:.5rem; }
+.opts--wrap{ gap:.42rem; }
+.opts button{ font:inherit; font-size:.93rem; font-weight:500; cursor:pointer;
+              padding:.5rem .95rem; border-radius:999px; color:var(--text-soft);
+              background:var(--page); border:1.5px solid var(--line);
+              transition:border-color .16s ease, color .16s ease, background .16s ease; }
+.opts button:hover{ border-color:var(--line-hover); color:var(--text-strong); }
+.opts button[aria-pressed="true"]{ background:var(--crimson); border-color:var(--crimson);
+                                   color:#fff; font-weight:600; }
+.q__hint{ margin:.8rem 0 0; font-size:.88rem; line-height:1.5; color:var(--text-dim); }
+.q__sel select{ font:inherit; font-size:.98rem; color:var(--text-strong); background:var(--page);
+                border:1.5px solid var(--line); border-radius:10px; padding:.55rem .85rem;
+                min-width:min(100%,300px); cursor:pointer; }
+
+/* ---- the result card ---- */
+.pcard{ border:1px solid var(--line); border-radius:18px; background:var(--surface);
+        padding:clamp(1.2rem,3.5vw,2rem); box-shadow:0 24px 50px -34px rgba(0,0,0,.35); }
+.pcard--none{ text-align:center; }
+.pcard__top{ display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-start;
+             justify-content:space-between; }
+.pcard__key{ text-align:right; }
+.pcard__key span{ display:block; font-size:.76rem; letter-spacing:.16em; text-transform:uppercase;
+                  color:var(--text-dim); }
+.pcard__key strong{ font-size:1.28rem; color:var(--accent-label); }
+.pcard__rn{ margin:.9rem 0 0; font-size:1.02rem; font-weight:600; color:var(--text-soft);
+            letter-spacing:.02em; }
+
+.prelax{ margin:0 0 1rem; padding:.7rem .9rem; border-radius:10px; font-size:.9rem;
+         line-height:1.5; color:var(--text-soft);
+         background:var(--highlight-tint); border:1px solid var(--line); }
+.capo{ margin:1rem 0 0; padding:.8rem 1rem; border-radius:12px; font-size:.94rem; line-height:1.55;
+       color:var(--text-soft); background:var(--highlight-tint);
+       border-left:4px solid var(--accent-label); }
+.capo strong{ color:var(--text-strong); }
+
+/* ---- the loop ---- */
+/* four bars to a row: a 12-bar blues then reads as three lines of four,
+   which is how it is counted. flex-grow made the last row stretch. */
+.ploop{ display:grid; grid-template-columns:repeat(2,1fr); gap:.5rem; margin-top:1.25rem; }
+@media (min-width:560px){ .ploop{ grid-template-columns:repeat(4,1fr); } }
+.ploop__bar{ position:relative; padding:.75rem .5rem .95rem;
+             text-align:center; border:1px solid var(--line); border-radius:12px;
+             background:var(--page); }
+.ploop__rn{ display:block; font-size:.76rem; letter-spacing:.1em; color:var(--text-dim); }
+.ploop__ch{ display:block; margin-top:.2rem; font-family:var(--f-display,inherit);
+            font-size:1.42rem; font-weight:700; color:var(--text-strong); line-height:1.1; }
+.ploop__n{ position:absolute; right:.45rem; bottom:.3rem; font-size:.68rem; color:var(--text-dim); }
+
+/* ---- player ---- */
+.player{ display:flex; flex-wrap:wrap; align-items:center; gap:1rem; margin-top:1.4rem;
+         padding-top:1.2rem; border-top:1px solid var(--line); }
+.player__tempo{ display:flex; align-items:center; gap:.6rem; font-size:.9rem; color:var(--text-dim); }
+.player__tempo input[type=range]{ width:clamp(120px,26vw,200px); accent-color:var(--crimson); }
+.player__tempo output{ font-weight:700; color:var(--text-strong); min-width:2.4em; text-align:right; }
+
+/* ---- strum ---- */
+.strum{ margin-top:1.3rem; }
+.strum h4{ margin:0 0 .55rem; font-size:.78rem; letter-spacing:.16em; text-transform:uppercase;
+           color:var(--text-dim); }
+.strum__row{ display:flex; gap:.35rem; }
+.strum__hit{ flex:1 1 0; min-width:0; text-align:center; padding:.5rem .1rem .35rem;
+             border-radius:9px; background:var(--page); border:1px solid var(--line); }
+.strum__hit span{ display:block; font-size:1.15rem; line-height:1; color:var(--text-dim); }
+.strum__hit em{ display:block; margin-top:.3rem; font-style:normal; font-size:.7rem;
+                color:var(--text-dim); }
+.strum__hit.is-on span{ color:var(--accent-label); font-weight:700; }
+.strum__hit.is-on{ border-color:var(--line-hover); }
+.strum__hit.is-bass span{ color:var(--accent-teal); }
+.strum__hit.is-beat em{ color:var(--text-dim); font-weight:600; }
+.strum__arp{ font-size:.95rem; color:var(--text-soft); padding:.7rem .9rem; border-radius:10px;
+             background:var(--page); border:1px solid var(--line); }
+
+/* ---- chord diagrams ---- */
+.pchords{ display:grid; grid-template-columns:repeat(auto-fill,minmax(112px,1fr));
+          gap:.8rem; margin-top:1.4rem; }
+.pchord{ margin:0; padding:.7rem .4rem .5rem; text-align:center; border-radius:12px;
+         background:var(--page); border:1px solid var(--line); }
+.pchord.is-barre{ border-color:var(--crimson); }
+.pchord figcaption{ font-size:1.05rem; font-weight:700; color:var(--text-strong); }
+.pchord figcaption em{ display:block; font-style:normal; font-size:.72rem; font-weight:500;
+                       letter-spacing:.08em; color:var(--text-dim); margin-top:.1rem; }
+.pchord svg{ width:100%; max-width:104px; height:auto; display:block; margin:.2rem auto 0; }
+.pchord__lvl{ display:block; font-size:.68rem; letter-spacing:.1em; text-transform:uppercase;
+              color:var(--text-dim); }
+.pchord.is-barre .pchord__lvl{ color:var(--text-strong); font-weight:700; }
+
+/* ---- songs, tip, actions ---- */
+.psongs{ margin-top:1.4rem; }
+.psongs h4{ margin:0 0 .45rem; font-size:.78rem; letter-spacing:.16em; text-transform:uppercase;
+            color:var(--text-dim); }
+.psongs ul{ margin:0; padding:0; list-style:none; display:grid; gap:.3rem; }
+.psongs li{ font-size:.95rem; color:var(--text-soft); }
+.psongs li::before{ content:"♪"; color:var(--teal); margin-right:.5rem; }
+.ptip{ margin:1.2rem 0 0; padding:.85rem 1rem; border-radius:12px; font-size:.95rem; line-height:1.6;
+       color:var(--text-soft); background:var(--highlight-tint); }
+.ptip strong{ color:var(--text-strong); }
+.pcard__acts{ display:flex; flex-wrap:wrap; gap:.6rem; margin-top:1.4rem;
+              padding-top:1.2rem; border-top:1px solid var(--line); }
+
+@media (min-width:720px){
+  .qgrid{ grid-template-columns:1fr 1fr; }
+  .q:nth-child(4), .q:nth-child(5){ grid-column:1 / -1; }
+}
+
+@media print{
+  .site-head, .site-foot, .hero, .qgrid, #prep .eyebrow, #prep .display, #prep .lede,
+  #prep .btn-row, .alt, .player, .pcard__acts, .skip{ display:none !important; }
+  .pcard{ border:none; box-shadow:none; padding:0; }
+  .pad{ padding:0; }
+}

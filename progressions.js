@@ -625,6 +625,11 @@
 
     html += '</div>';
 
+    // A redraw throws away the old Play button, so the transport has to be
+    // reset too — otherwise the new button inherits playing===true and the
+    // first click on it is swallowed as a stop.
+    stopAll();
+
     var out = $('#prep-out');
     out.innerHTML = html;
     out.hidden = false;
@@ -668,7 +673,13 @@
         'so this one may ask for a barre. Turn the capo answer on, or pick <em>Leave it open</em>.';
       $('#prep-out').firstChild.insertBefore(note, $('#prep-out').firstChild.firstChild);
     }
-    $('#prep-out').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Only scroll if the new card is not already where the reader is looking.
+    // "Another one" lives at the bottom of the card, so scrolling every time
+    // made a redraw feel like the page had reloaded.
+    var box = $('#prep-out').getBoundingClientRect();
+    if (box.top < 0 || box.top > window.innerHeight * 0.6) {
+      $('#prep-out').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 
   /* ---- audio: Karplus-Strong plucked string, built on the fly ---- */
@@ -695,7 +706,30 @@
     return cache[midi];
   }
 
-  var playing = false, stopAt = 0;
+  var playing = false, bus = null, sources = [], playTimer = null, gen = 0;
+
+  /* Actually stop. Ramp the bus down over 60 ms so it does not click, then
+     stop every source we scheduled. Bumping `gen` invalidates any pending
+     end-of-playback timer so it cannot reset a newer playback's button. */
+  function stopAll() {
+    gen++;
+    if (playTimer) { clearTimeout(playTimer); playTimer = null; }
+    if (bus && actx) {
+      var now = actx.currentTime, dyingBus = bus, dyingSources = sources;
+      try {
+        dyingBus.gain.cancelScheduledValues(now);
+        dyingBus.gain.setValueAtTime(dyingBus.gain.value, now);
+        dyingBus.gain.linearRampToValueAtTime(0.0001, now + 0.06);
+      } catch (err) { /* node already gone */ }
+      setTimeout(function () {
+        dyingSources.forEach(function (s) { try { s.stop(); } catch (err) {} });
+        try { dyingBus.disconnect(); } catch (err) {}
+      }, 90);
+    }
+    bus = null; sources = []; playing = false;
+    var btn = document.getElementById('pplay');
+    if (btn) btn.textContent = 'Play it';
+  }
 
   function play(r, bpm) {
     if (!actx) {
@@ -704,7 +738,9 @@
       actx = new AC();
     }
     if (actx.state === 'suspended') actx.resume();
-    if (playing) { stopAt = 0; playing = false; $('#pplay').textContent = 'Play it'; return; }
+    if (playing) { stopAll(); return; }
+    stopAll();                          // kill any tail still ringing from the last card
+    var myGen = gen;
 
     var feel = r.feel;
     var beat = 60 / bpm;                 // quarter note
@@ -716,6 +752,7 @@
     var lp = actx.createBiquadFilter();
     lp.type = 'lowpass'; lp.frequency.value = 4200;
     master.connect(lp); lp.connect(actx.destination);
+    bus = master; sources = [];
 
     var t = t0;
     r.p.bars.forEach(function (ci) {
@@ -737,11 +774,13 @@
       t += beat * 4;
     });
 
-    stopAt = t;
     playing = true;
     $('#pplay').textContent = 'Stop';
-    setTimeout(function () {
-      if (playing) { playing = false; var b = $('#pplay'); if (b) b.textContent = 'Play it'; }
+    playTimer = setTimeout(function () {
+      if (myGen !== gen) return;        // a newer playback owns the button now
+      playing = false;
+      var b = document.getElementById('pplay');
+      if (b) b.textContent = 'Play it';
     }, (t - actx.currentTime) * 1000 + 200);
   }
 
@@ -772,6 +811,7 @@
     var g = actx.createGain();
     g.gain.value = gain * (0.85 + Math.random() * 0.3);
     src.connect(g); g.connect(dest);
+    sources.push(src);
     try { src.start(at); } catch (err) { /* scheduled in the past; skip */ }
   }
 

@@ -869,18 +869,15 @@ body.no-scroll{ overflow:hidden; }
 /* ---- the questions ---- */
 .qgrid{ display:grid; gap:1.1rem; }
 .q{ border:1px solid var(--line); border-radius:14px; background:var(--surface);
-    padding:1.15rem 1.25rem 1rem; margin:0; }
-/* display:flex on a <legend> stops Chromium cutting the notch in the
-   fieldset border, so the border drew straight through the question text.
-   display:table keeps the notch; the horizontal padding widens it so the
-   border ends clear of the words, and the negative margin pulls the text
-   back into line with the card's padding. */
-.q > legend{ display:table; padding:0 .5rem; margin-left:-.5rem;
-             font-weight:600; font-size:1.02rem; color:var(--text-strong); }
-.q__n{ display:inline-grid; place-items:center; width:1.65rem; height:1.65rem;
+    padding:1.2rem 1.25rem 1.05rem; margin:0; }
+/* The question heading sits inside the card, not straddling its border.
+   (It used to be a <legend>, which browsers render in a notch cut through
+   the top border — the number badge ended up half in and half out.) */
+.q__lg{ display:flex; align-items:center; gap:.6rem; margin:0 0 .95rem;
+        font-weight:600; font-size:1.02rem; color:var(--text-strong); }
+.q__n{ display:grid; place-items:center; width:1.65rem; height:1.65rem; flex:none;
        border-radius:50%; background:var(--crimson); color:#fff;
-       font-size:.82rem; font-weight:700;
-       vertical-align:middle; margin-right:.45rem; position:relative; top:-1px; }
+       font-size:.82rem; font-weight:700; }
 .opts{ display:flex; flex-wrap:wrap; gap:.5rem; }
 .opts--wrap{ gap:.42rem; }
 .opts button{ font:inherit; font-size:.93rem; font-weight:500; cursor:pointer;

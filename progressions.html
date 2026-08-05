@@ -76,8 +76,8 @@
 
     <div class="qgrid mt3">
 
-      <fieldset class="q">
-        <legend><span class="q__n">1</span> How many chords?</legend>
+      <div class="q" role="group" aria-labelledby="q1-lg">
+        <p class="q__lg" id="q1-lg"><span class="q__n">1</span> How many chords?</p>
         <div class="opts" data-field="n">
           <button type="button" data-v="any" aria-pressed="true">Doesn’t matter</button>
           <button type="button" data-v="2" aria-pressed="false">2</button>
@@ -86,20 +86,20 @@
           <button type="button" data-v="5" aria-pressed="false">5 or more</button>
         </div>
         <p class="q__hint">Two is a real answer. Plenty of great songs never use a third.</p>
-      </fieldset>
+      </div>
 
-      <fieldset class="q">
-        <legend><span class="q__n">2</span> What can your hands do?</legend>
+      <div class="q" role="group" aria-labelledby="q2-lg">
+        <p class="q__lg" id="q2-lg"><span class="q__n">2</span> What can your hands do?</p>
         <div class="opts" data-field="skill">
           <button type="button" data-v="open" aria-pressed="true">Open chords only</button>
           <button type="button" data-v="some" aria-pressed="false">A barre or two is fine</button>
           <button type="button" data-v="any" aria-pressed="false">Anything</button>
         </div>
         <p class="q__hint">Open chords are the ones with open strings ringing — G, C, D, Em, Am. If barre chords still buzz, say so.</p>
-      </fieldset>
+      </div>
 
-      <fieldset class="q q--wide q--split">
-        <legend><span class="q__n">3</span> Do you have a capo?</legend>
+      <div class="q q--wide q--split" role="group" aria-labelledby="q3-lg">
+        <p class="q__lg" id="q3-lg"><span class="q__n">3</span> Do you have a capo?</p>
         <div class="q__body">
           <div class="opts" data-field="capo">
             <button type="button" data-v="yes" aria-pressed="true">Yes</button>
@@ -107,10 +107,10 @@
           </div>
           <p class="q__hint">This is the big one. A capo lets you play open shapes in keys that would otherwise need barre chords. The club has spares.</p>
         </div>
-      </fieldset>
+      </div>
 
-      <fieldset class="q q--wide">
-        <legend><span class="q__n">4</span> What should it feel like?</legend>
+      <div class="q q--wide" role="group" aria-labelledby="q4-lg">
+        <p class="q__lg" id="q4-lg"><span class="q__n">4</span> What should it feel like?</p>
         <div class="opts" data-field="mood">
           <button type="button" data-v="any" aria-pressed="true">Surprise me</button>
           <button type="button" data-v="bright">Bright</button>
@@ -122,10 +122,10 @@
           <button type="button" data-v="tense">Tense</button>
         </div>
         <p class="q__hint">Each of these points at a different harmonic trick, not just major versus minor.</p>
-      </fieldset>
+      </div>
 
-      <fieldset class="q q--wide">
-        <legend><span class="q__n">5</span> Any particular style?</legend>
+      <div class="q q--wide" role="group" aria-labelledby="q5-lg">
+        <p class="q__lg" id="q5-lg"><span class="q__n">5</span> Any particular style?</p>
         <div class="opts opts--wrap" data-field="genre">
           <button type="button" data-v="any" aria-pressed="true">Leave it open</button>
           <button type="button" data-v="pop">Pop</button>
@@ -145,10 +145,10 @@
           <button type="button" data-v="classical">Classical</button>
         </div>
         <p class="q__hint">Genre mostly lives in the strum, not the chords. This sets your rhythm and tempo too.</p>
-      </fieldset>
+      </div>
 
-      <fieldset class="q q--wide q--split">
-        <legend><span class="q__n">6</span> What key?</legend>
+      <div class="q q--wide q--split" role="group" aria-labelledby="q6-lg">
+        <p class="q__lg" id="q6-lg"><span class="q__n">6</span> What key?</p>
         <div class="q__body">
         <div class="q__sel">
           <label class="vh" for="pkey">Key</label>
@@ -170,7 +170,7 @@
         </div>
         <p class="q__hint">If you are singing it, the key that suits your voice beats the key that suits your hands. That is what the capo is for.</p>
         </div>
-      </fieldset>
+      </div>
 
     </div>
 

@@ -1015,3 +1015,9 @@ body.no-scroll{ overflow:hidden; }
           border-radius:12px; padding:.75rem 1rem; }
 .findbar input[type=search]:focus{ outline:3px solid var(--teal-lt); outline-offset:2px; }
 .findbar__sites{ display:flex; flex-wrap:wrap; gap:.5rem; }
+
+/* ---- the official mission statement, set apart and quotable ---- */
+.mission{ border:1px solid var(--line); border-left:4px solid var(--teal);
+          border-radius:12px; background:var(--surface);
+          padding:1.2rem 1.4rem; }
+.mission p{ font-size:1.02rem; line-height:1.7; color:var(--text-soft); }

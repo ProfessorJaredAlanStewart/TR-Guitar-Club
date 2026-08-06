@@ -214,8 +214,8 @@
     /* ---------- major, bright ---------- */
     { id:'axis', name:'The Four Chords', mode:'major', n:4,
       chords:[D(0,'maj','I'), D(7,'maj','V'), D(9,'min','vi'), D(5,'maj','IV')],
-      bars:[0,1,2,3], moods:['bright','bittersweet'], genres:['pop','rock','worship','indie'],
-      songs:['Let It Be — The Beatles','With or Without You — U2','Don’t Stop Believin’ — Journey'],
+      bars:[0,1,2,3], moods:['bright','bittersweet'], genres:['pop','rock','worship','indie','punk','country','bluegrass'],
+      songs:['Wagon Wheel — Old Crow Medicine Show','Let It Be — The Beatles','With or Without You — U2','Don’t Stop Believin’ — Journey'],
       tip:'Swap the last chord for a IV–V push in the final bar and it lifts straight back to the top.' },
 
     { id:'sensitive', name:'The Sad One', mode:'major', n:4,
@@ -232,8 +232,8 @@
 
     { id:'onefourfive', name:'Three Chords and the Truth', mode:'major', n:3,
       chords:[D(0,'maj','I'), D(5,'maj','IV'), D(7,'maj','V')],
-      bars:[0,0,1,2], moods:['bright'], genres:['folk','country','rock','blues'],
-      songs:['Twist and Shout — The Beatles','La Bamba — Ritchie Valens','Wild Thing — The Troggs'],
+      bars:[0,0,1,2], moods:['bright'], genres:['folk','country','rock','blues','pop','latin'],
+      songs:['Guantanamera — Joseíto Fernández','Twist and Shout — The Beatles','La Bamba — Ritchie Valens','Wild Thing — The Troggs'],
       tip:'The oldest trick there is. Learn it in G, C and D and you can sit in with almost anybody.' },
 
     { id:'fifties-lift', name:'The Lift', mode:'major', n:4,
@@ -244,19 +244,19 @@
 
     { id:'g-run', name:'Bluegrass Backbone', mode:'major', n:3,
       chords:[D(0,'maj','I'), D(5,'maj','IV'), D(7,'dom7','V7')],
-      bars:[0,0,1,0,0,2,0,0], moods:['bright'], genres:['bluegrass','country','folk'],
+      bars:[0,0,1,0,0,2,0,0], moods:['bright','driving'], genres:['bluegrass','country','folk'],
       songs:['Man of Constant Sorrow — traditional'],
       tip:'Eight bars, not four. Hit the V7 hard and let the run walk you back down to the I.' },
 
     { id:'i-iv', name:'Two Chords, One Groove', mode:'major', n:2,
       chords:[D(0,'maj','I'), D(5,'maj','IV')],
-      bars:[0,0,1,1], moods:['bright'], genres:['rock','folk','worship','country'],
+      bars:[0,0,1,1], moods:['bright'], genres:['rock','folk','worship','country','pop'],
       songs:['Born in the U.S.A. — Bruce Springsteen'],
       tip:'Two chords is a real answer. Spend the effort you saved on the strum instead.' },
 
     { id:'i-v', name:'Two Chords, Country', mode:'major', n:2,
       chords:[D(0,'maj','I'), D(7,'maj','V')],
-      bars:[0,0,1,1], moods:['bright'], genres:['country','folk','bluegrass'],
+      bars:[0,0,1,1], moods:['bright'], genres:['country','folk','bluegrass','classical'],
       songs:['Achy Breaky Heart — Billy Ray Cyrus','Jambalaya — Hank Williams'],
       tip:'Add the boom-chick bass and this carries a whole song by itself.' },
 
@@ -281,7 +281,7 @@
     { id:'canon', name:'The Canon', mode:'major', n:5,
       chords:[D(0,'maj','I'), D(7,'maj','V'), D(9,'min','vi'), D(4,'min','iii'),
               D(5,'maj','IV'), D(0,'maj','I')],
-      bars:[0,1,2,3,4,5,4,1], moods:['bright','bittersweet'], genres:['pop','classical','indie'],
+      bars:[0,1,2,3,4,5,4,1], moods:['bright','bittersweet','dreamy'], genres:['pop','classical','indie'],
       songs:['Canon in D — Pachelbel'],
       tip:'Eight bars. The famous descending line everybody hums is the TOP voice, not the bass — the bass leaps around underneath it. Play it slowly and listen high.' },
 
@@ -314,13 +314,13 @@
     /* ---------- minor ---------- */
     { id:'andalusian', name:'Andalusian Cadence', mode:'minor', n:4,
       chords:[D(0,'min','i'), D(10,'maj','♭VII'), D(8,'maj','♭VI'), D(7,'maj','V')],
-      bars:[0,1,2,3], moods:['tense','sad'], genres:['flamenco','rock','blues'],
+      bars:[0,1,2,3], moods:['tense','sad'], genres:['flamenco','rock','blues','latin'],
       songs:['Hit the Road Jack — Ray Charles','Sultans of Swing — Dire Straits','Stray Cat Strut — Stray Cats'],
       tip:'That last chord is a MAJOR V in a minor key. Borrowed from harmonic minor, and it is what makes this sound Spanish.' },
 
     { id:'minor-axis', name:'Minor Four Chords', mode:'minor', n:4,
       chords:[D(0,'min','i'), D(8,'maj','♭VI'), D(3,'maj','♭III'), D(10,'maj','♭VII')],
-      bars:[0,1,2,3], moods:['sad','driving'], genres:['rock','pop','indie'],
+      bars:[0,1,2,3], moods:['sad','driving','dark'], genres:['rock','pop','indie','punk'],
       songs:['Numb — Linkin Park','Californication — Red Hot Chili Peppers'],
       tip:'Exactly the same four chords as The Four Chords in the relative major. Start somewhere else, get a different song.' },
 
@@ -344,19 +344,19 @@
 
     { id:'minor-iv-v', name:'Minor Ache', mode:'minor', n:3,
       chords:[D(0,'min','i'), D(5,'min','iv'), D(7,'maj','V')],
-      bars:[0,0,1,2], moods:['sad','tense'], genres:['folk','blues','rock'],
+      bars:[0,0,1,2], moods:['sad','tense'], genres:['folk','blues','rock','latin'],
       songs:[],
       tip:'Try the V as a dominant 7. In a minor key it is the sharpest tool you have.' },
 
     { id:'rising-sun', name:'The Rising Sun', mode:'minor', n:5,
       chords:[D(0,'min','i'), D(3,'maj','♭III'), D(5,'maj','IV'), D(8,'maj','♭VI'), D(7,'dom7','V7')],
-      bars:[0,1,2,3,0,1,4,0], moods:['sad','dark'], genres:['folk','blues','rock'],
+      bars:[0,1,2,3,0,1,4,0], moods:['sad','dark','tense'], genres:['folk','blues','rock'],
       songs:['House of the Rising Sun — traditional'],
       tip:'Eight bars, and the surprise is bar three: a MAJOR IV in a minor key. Everybody plays this one wrong the first time by making it minor.' },
 
     { id:'minor-descent', name:'The Descent', mode:'minor', n:4,
       chords:[D(0,'min','i'), D(10,'maj','♭VII'), D(8,'maj','♭VI'), D(7,'dom7','V7')],
-      bars:[0,1,2,3], moods:['dark','tense'], genres:['rock','classical','metal'],
+      bars:[0,1,2,3], moods:['dark','tense','sad'], genres:['rock','classical','metal'],
       songs:[],
       tip:'The roots walk straight down — whole step, whole step, half step — and that last half step into the V7 is what makes it feel inevitable. Play the low roots alone first and you will hear the line.' },
 
@@ -381,7 +381,7 @@
 
     { id:'blues8', name:'8-Bar Blues', mode:'major', n:3,
       chords:[D(0,'dom7','I7'), D(5,'dom7','IV7'), D(7,'dom7','V7')],
-      bars:[0,2,1,1,0,2,0,2], moods:['bright','driving'], genres:['blues','folk','country'],
+      bars:[0,2,1,1,0,2,0,2], moods:['bright','driving','bittersweet'], genres:['blues','folk','country'],
       songs:['Key to the Highway — Big Bill Broonzy'],
       tip:'Shorter form, same feel. Good for when a twelve-bar is more room than the song needs.' },
 
@@ -401,7 +401,7 @@
     /* ---------- punk / driving ---------- */
     { id:'punk-axis', name:'Three Chords, Loud', mode:'major', n:3,
       chords:[D(0,'pow','I5'), D(5,'pow','IV5'), D(7,'pow','V5')],
-      bars:[0,0,1,1,2,2,0,0], moods:['driving'], genres:['punk','rock','metal'],
+      bars:[0,0,1,1,2,2,0,0], moods:['driving','bright'], genres:['punk','rock','metal'],
       songs:['Blitzkrieg Bop — Ramones'],
       tip:'All down-strokes, no exceptions. Your forearm will complain. That is the sound.' },
 
@@ -422,7 +422,98 @@
       chords:[D(0,'add9','Iadd9'), D(7,'maj','V'), D(9,'min7','vi7'), D(5,'maj7','IVmaj7')],
       bars:[0,1,2,3], moods:['dreamy','bittersweet'], genres:['indie','worship','pop'],
       songs:[],
-      tip:'Change as little as possible between shapes. In C and G you can leave your ring finger parked on the B string through most of the loop, and that held note is what makes it shimmer.' }
+      tip:'Change as little as possible between shapes. In C and G you can leave your ring finger parked on the B string through most of the loop, and that held note is what makes it shimmer.' },
+
+    /* ---------- expansion: vamps, cycles and the missing corners ---------- */
+    { id:'phrygian', name:'The Half-Step', mode:'minor', n:2,
+      chords:[D(0,'min','i'), D(1,'maj','♭II')],
+      bars:[0,0,1,1], moods:['dark','tense','driving'], genres:['flamenco','metal','punk','latin'],
+      songs:[],
+      tip:'One chord, then the chord a half step up. Palm-muted on the low strings it is metal; on nylon it is flamenco — though a flamenco player would usually make the home chord MAJOR (E to F, not Em to F).' },
+
+    { id:'power-climb', name:'The Climb', mode:'minor', n:5,
+      chords:[D(0,'pow','i5'), D(3,'pow','♭III5'), D(5,'pow','iv5'), D(8,'pow','♭VI5'), D(10,'pow','♭VII5')],
+      bars:[0,0,1,2,3,4,0,0], moods:['driving','dark'], genres:['punk','metal','rock'],
+      songs:[],
+      tip:'Five power chords, one shape. Slide it around the low strings and let the amp do the rest. No barres, no stretches, all momentum.' },
+
+    { id:'rhythm-changes', name:'The Turnaround', mode:'major', n:4,
+      chords:[D(0,'maj','I'), D(9,'min7','vi7'), D(2,'min7','ii7'), D(7,'dom7','V7')],
+      bars:[0,1,2,3], moods:['bright','bittersweet'], genres:['jazz','bossa','pop'],
+      songs:['Heart and Soul — Hoagy Carmichael','Blue Moon — Rodgers & Hart'],
+      tip:'The endless loop of the swing era — it lands back on the I just in time to leave again. Half of early rock and roll borrowed it whole.' },
+
+    { id:'full-circle', name:'Full Circle', mode:'major', n:5,
+      chords:[D(4,'min7','iii7'), D(9,'min7','vi7'), D(2,'min7','ii7'), D(7,'dom7','V7'), D(0,'maj7','Imaj7')],
+      bars:[0,1,2,3,4,4,2,3], moods:['bittersweet','dreamy'], genres:['jazz','bossa'],
+      songs:[],
+      tip:'Each root falls a fifth to the next — the strongest pull in harmony, four times in a row. Learn it in C, where every chord is an open shape.' },
+
+    { id:'minor-two', name:'The Slow Ache', mode:'minor', n:2,
+      chords:[D(0,'min','i'), D(8,'maj','♭VI')],
+      bars:[0,0,1,1], moods:['sad','dreamy'], genres:['indie','pop','rock'],
+      songs:[],
+      tip:'Two chords under half of modern sad-pop. Try it in E minor — Em to C — and let the open strings ring across both.' },
+
+    { id:'fifties-two', name:'Slow Dance', mode:'major', n:2,
+      chords:[D(0,'maj','I'), D(9,'min','vi')],
+      bars:[0,0,1,1], moods:['bittersweet','sad'], genres:['pop','folk'],
+      songs:[],
+      tip:'Major to its relative minor and back — the slow-dance sway. The two chords share two notes, so the change is a lean, not a jump.' },
+
+    { id:'country-turn', name:'The Nashville Turn', mode:'major', n:5,
+      chords:[D(0,'maj','I'), D(0,'dom7','I7'), D(5,'maj','IV'), D(5,'min','iv'), D(7,'maj','V')],
+      bars:[0,1,2,3,0,4,0,0], moods:['bittersweet','bright'], genres:['country','folk','bluegrass'],
+      songs:[],
+      tip:'The I7 leans you toward the IV, then the iv aches you back home. Play it in A and every chord is an open shape.' },
+
+    { id:'lonesome', name:'The Lonesome Vamp', mode:'major', n:2,
+      chords:[D(0,'maj','I'), D(7,'dom7','V7')],
+      bars:[0,0,1,1], moods:['sad','bittersweet'], genres:['country','folk','bluegrass'],
+      songs:[],
+      tip:'The same two chords as a hoedown — the only difference is tempo. Drop it under 80 BPM and it turns into every front-porch lament ever written.' },
+
+    { id:'spy-vamp', name:'The Spy Vamp', mode:'minor', n:2,
+      chords:[D(0,'min','i'), D(7,'dom7','V7')],
+      bars:[0,0,1,0], moods:['tense','dark'], genres:['pop','rock','jazz','indie'],
+      songs:[],
+      tip:'Minor home chord, major V7 that never quite resolves. Three bars of i to one of V7 keeps the ground unstable — the soundtrack-of-suspicion sound.' },
+
+    { id:'gospel-lift', name:'The Gospel Lift', mode:'major', n:4,
+      chords:[D(0,'maj','I'), D(4,'min','iii'), D(5,'maj','IV'), D(7,'maj','V')],
+      bars:[0,1,2,3], moods:['bright'], genres:['worship','pop','classical'],
+      songs:[],
+      tip:'The iii is the quiet hero: it walks the top of the chord up a step before the IV arrives, so the whole loop feels like it is climbing.' },
+
+    { id:'passamezzo', name:'The Old Frame', mode:'minor', n:4,
+      chords:[D(0,'min','i'), D(10,'maj','♭VII'), D(3,'maj','♭III'), D(7,'maj','V')],
+      bars:[0,1,0,3,2,1,0,3], moods:['dark','bittersweet'], genres:['classical','folk','flamenco'],
+      songs:[],
+      tip:'A Renaissance dance frame — five hundred years old and it still works. In A minor every chord is open: Am, G, C, E.' },
+
+    { id:'cadencia', name:'The Cadence', mode:'minor', n:3,
+      chords:[D(8,'maj','♭VI'), D(7,'maj','V'), D(0,'min','i')],
+      bars:[0,1,2,2], moods:['tense','dark'], genres:['flamenco','classical','metal'],
+      songs:[],
+      tip:'The tail of the Andalusian cadence, pulled home to the i instead of hanging on the V. That ♭VI-to-V half-step fall is the most dramatic two-chord move in the book.' },
+
+    { id:'axis-plus', name:'The Long Way Home', mode:'major', n:5,
+      chords:[D(0,'maj','I'), D(7,'maj','V'), D(9,'min','vi'), D(4,'min','iii'), D(5,'maj','IV')],
+      bars:[0,1,2,3,4,0,4,1], moods:['dreamy','bittersweet','bright'], genres:['pop','indie','worship'],
+      songs:[],
+      tip:'The Canon\u2019s opening in pop clothing. The iii is the one chord beginners skip — it is what makes bar four feel like dusk.' },
+
+    { id:'minor-jazz', name:'The Blue Room', mode:'minor', n:2,
+      chords:[D(0,'min7','i7'), D(5,'min7','iv7')],
+      bars:[0,0,1,1], moods:['sad','dark'], genres:['jazz','blues','latin','bossa'],
+      songs:[],
+      tip:'Two minor sevenths a fourth apart. Am7 to Dm7 is the easiest version on the instrument — Am7 is two fingers, Dm7 a small first-finger barre — and the whole thing smoulders.' },
+
+    { id:'mixo-two', name:'The Backdoor', mode:'major', n:2,
+      chords:[D(0,'maj','I'), D(10,'maj','♭VII')],
+      bars:[0,0,1,1], moods:['bright','driving'], genres:['rock','blues','country'],
+      songs:[],
+      tip:'Major chord, then the major chord a whole step down. It is the sound of classic rock idling at a green light. Try D to C, or A to G.' }
   ];
 
   /* ======================================================

@@ -75,6 +75,32 @@
 .ss-toggles label{display:flex;gap:6px;align-items:center;cursor:pointer}
 .ss-toggles input[type=checkbox]{accent-color:var(--ss-accent);width:16px;height:16px}
 
+/* ---------- readout + ruler ---------- */
+.ss-readout{margin:14px 0 6px;padding:14px 16px;border:1px solid var(--ss-line);border-radius:12px;background:var(--ss-soft)}
+.ss-eq{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.ss-eq__part{display:flex;flex-direction:column;line-height:1.05}
+.ss-eq__part small{font-family:var(--font-label,inherit);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;opacity:.6;margin-bottom:4px}
+.ss-eq__part b{font-family:var(--font-display,'Anton',sans-serif);font-size:1.55rem;font-weight:400;letter-spacing:.02em}
+.ss-eq__part--out b{color:var(--ss-teal);font-size:1.85rem}
+.ss-eq__op{font-family:var(--font-display,'Anton',sans-serif);font-size:1.5rem;opacity:.35;padding-bottom:2px}
+.ss-readout__sentence{margin:.6rem 0 0;font-size:.92rem;opacity:.8}
+.ss-rulerwrap{margin:12px 0 4px}
+.ss-rulerlab{font-size:.84rem;opacity:.7;margin-bottom:6px}
+.ss-ruler{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;border-bottom:3px solid var(--ss-line-2);padding-bottom:6px}
+.ss-fret{
+  font:inherit;color:inherit;cursor:pointer;background:transparent;border:1px solid var(--ss-line);border-radius:8px;
+  padding:7px 2px 6px;display:flex;flex-direction:column;align-items:center;gap:3px;line-height:1;min-width:0;
+}
+.ss-fret:hover{border-color:var(--ss-accent)}
+.ss-fret[aria-pressed="true"]{background:var(--ss-accent);border-color:var(--ss-accent);color:#fff}
+.ss-fret[aria-pressed="true"]::before{content:'';width:70%;height:4px;border-radius:2px;background:var(--ss-sand);margin-bottom:2px}
+.ss-fret:disabled{opacity:.3;cursor:not-allowed}
+.ss-fret__n{font-family:var(--font-label,inherit);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;opacity:.8}
+.ss-fret__k{font-family:var(--font-display,'Anton',sans-serif);font-size:1.15rem}
+.ss-caption{caption-side:top;text-align:left;padding:8px 12px 10px;font-size:.92rem;opacity:.85}
+.ss-caption b{font-family:var(--font-display,'Anton',sans-serif);font-weight:400;font-size:1.1rem;letter-spacing:.02em}
+@media (max-width:520px){ .ss-ruler{grid-template-columns:repeat(4,1fr)} }
+
 /* ---------- controls ---------- */
 .ss-ctrl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(212px,1fr));gap:18px 24px}
 .ss-ctrl h3{font-family:var(--font-label,inherit);font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;margin:0 0 .55rem;opacity:.75}
@@ -274,6 +300,7 @@
 <p><strong class="sand">Play along.</strong> The diagrams further down show where your fingers go. Do not worry about the strum yet. Hit each chord once when it changes and you are already playing the song.</p>
 <p><strong class="sand">Like a chord? Lock it.</strong> The padlock on each card keeps that chord. <em>Spin the unlocked</em> swaps the others for something else real songs use.</p>
 <p><strong class="sand">Too hard? Say so.</strong> Set <em>What your hands can do</em> to open chords only and the tool will never hand you a barre chord. If a change still feels impossible, press <em>Same sound, easier hands</em>.</p>
+<p><strong class="sand">The capo.</strong> The cards show the shapes your fingers make. The capo changes what those shapes sound like, not what they look like. G shapes, capo on 2, and the room hears A. The ruler under the cards shows every fret and what you would sound like there. Tap one.</p>
 <p class="mb0"><strong class="sand">The small numerals</strong> above each chord (I, IV, V, vi) are its job in the key: I is home, V pulls you back home, lowercase means minor. You do not need them yet. They are there so that one day you notice every song uses the same handful of moves.</p>
 </div>
 </details>
@@ -281,6 +308,22 @@
 <div class="panel ss-machine mt3">
 <div class="ss-slots" id="slots" role="list" aria-label="Chord progression"></div>
 <div class="ss-between" id="between" aria-hidden="true"></div>
+
+<div class="ss-readout" aria-live="polite">
+<div class="ss-eq">
+<span class="ss-eq__part"><small>you play</small><b id="readShapes"></b></span>
+<span class="ss-eq__op">+</span>
+<span class="ss-eq__part"><small>capo</small><b id="readCapo"></b></span>
+<span class="ss-eq__op">=</span>
+<span class="ss-eq__part ss-eq__part--out"><small>the room hears</small><b id="readSound"></b></span>
+</div>
+<p class="ss-readout__sentence" id="readSentence"></p>
+</div>
+
+<div class="ss-rulerwrap">
+<div class="ss-rulerlab">Move the capo. The key under each fret is what your shapes will sound like there.</div>
+<div class="ss-ruler" id="capoRuler" role="group" aria-label="Capo position"></div>
+</div>
 <div class="ss-transport">
 <button class="btn" id="playBtn" aria-label="Play the progression">Play</button>
 <button class="btn btn--ghost" id="spinBtn">Spin the unlocked</button>
@@ -301,14 +344,16 @@
 <p class="ss-hint">Two is a real answer. Plenty of great songs never use a third.</p></div>
 <div class="ss-ctrl"><h3>What your hands can do</h3><div class="ss-chips" id="cHands" role="group" aria-label="Hand ability"></div>
 <p class="ss-hint">A barre chord is one where your index finger lies flat across all six strings, like F. If yours still buzz, pick <em>open chords only</em>. This rates the <em>moves between</em> chords, not just the shapes, because that is where beginners get stuck.</p></div>
+<div class="ss-ctrl"><h3>Shapes you play</h3><div class="ss-chips" id="cShape" role="group" aria-label="Open shapes"></div>
+<p class="ss-hint">The five keys a guitar is easy in. Pick the one whose chords you know. Every card above is drawn in these shapes; the capo decides what they sound like.</p></div>
 <div class="ss-ctrl"><h3>Capo</h3><div class="ss-chips" id="cCapo" role="group" aria-label="Capo available"></div>
-<p class="ss-hint">A capo is a clamp that pins all six strings at one fret. It moves the "open" position up the neck, so the easy shapes you already know sound higher without any new fingerings. Say yes if you own one. The club has spares.</p></div>
+<p class="ss-hint">A capo is a clamp that pins all six strings at one fret. Each fret it moves up raises everything a half step. G shapes with the capo on 2 sound like A; on 4 they sound like B. Use the ruler above to move it. Say no here and the ruler locks to none.</p></div>
 <div class="ss-ctrl"><h3>Feel</h3><div class="ss-chips" id="cMood" role="group" aria-label="Mood"></div>
 <p class="ss-hint">Each of these points at a different harmonic trick, not just major versus minor. Try two and hear the difference.</p></div>
 <div class="ss-ctrl"><h3>Style</h3><select id="cGenre" aria-label="Style"></select>
 <p class="ss-hint">Style mostly lives in the strum. This sets your rhythm and tempo too.</p></div>
-<div class="ss-ctrl"><h3>Key it sounds in</h3><select id="cKey" aria-label="Key"></select>
-<p class="ss-hint" id="keyHint">Not sure? Leave it on G. A key is just which note feels like home. If you are singing and it sits too high or too low for your voice, change this and let the capo sort out your hands.</p></div>
+<div class="ss-ctrl"><h3>Make it sound in&hellip;</h3><select id="cKey" aria-label="Key you want it to sound in"></select>
+<p class="ss-hint" id="keyHint"></p></div>
 </div>
 </div>
 </div>
@@ -351,17 +396,20 @@
 <div class="reveal" style="max-width:62ch">
 <p class="eyebrow">Capo calculator</p>
 <h2 class="display d2">Same key,<br>easier shapes.</h2>
-<p class="dim mt1">Every way to play this progression in the same sounding key. The marked row is what is on screen above.</p>
+<p class="dim mt1">First the rule in the direction you use it: shapes plus capo equals key. Then the rule backwards: you want a key, here is where to put the capo.</p>
 </div>
 
 <div class="prose mt3 reveal" style="max-width:66ch">
-<p><strong class="sand">What a capo does.</strong> Clamp it on fret 3 and the guitar behaves as if fret 3 is the nut. Every shape you already know now sounds three frets (three half steps) higher. Your fingers make a G, the room hears a B♭. Nothing about the shape changed; the whole instrument moved.</p>
-<p><strong class="sand">Why that matters.</strong> Guitars are easy in C, G, D, A and E because those keys use open strings. Singers do not care about that, and a lot of songs live in E♭, F, A♭ or B♭. Without a capo those keys mean barre chords all the way through. With one, they mean the same five shapes you learned first.</p>
-<p class="mb0"><strong class="sand">Reading this table.</strong> The <em>Capo</em> column is where to clamp. <em>Shapes you play</em> is what your hands do. Every row sounds identical to a listener; they differ only in how hard the changes are. Put the capo just behind the fret wire, not on top of it, and only as tight as it needs to be. Over-clamping pulls everything sharp.</p>
+<p><strong class="sand">What a capo does.</strong> It is a clamp that presses all six strings down at one fret, so the guitar behaves as if that fret were the nut. Every shape you already know now starts from there. Your fingers make the same G, but the whole instrument has moved up.</p>
+<p><strong class="sand">The rule.</strong> One fret is one half step. Count the frets, count the half steps. G shapes with the capo on fret 2 are two half steps up from G, which is A. On fret 4, four half steps, which is B. On fret 3 it is B♭, on fret 5 it is C. The ruler in the machine above does the counting for you; this is all it is doing.</p>
+<p><strong class="sand">Why bother.</strong> Guitars are easy in C, G, D, A and E because those keys use open strings. Singers do not care about that, and plenty of songs live in B♭, E♭, F or A♭. Without a capo those keys mean barre chords the whole way through. With one, they mean the five shapes you learned first, moved up.</p>
+<p class="mb0"><strong class="sand">The table below runs the rule backwards.</strong> You want the room to hear one particular key. There are several places to put the capo that all get there, each with a different set of shapes. Every row sounds identical to a listener; they differ only in how hard the changes are for your hands. Clamp just behind the fret wire, not on top of it, and only as tight as it needs to be. Over-clamping pulls everything sharp.</p>
 </div>
+
 <div class="panel mt3 ss-tablewrap">
 <table class="ss-table" id="capoTable">
-<thead><tr><th>Capo on fret</th><th>Shapes you play</th><th>Hardest change</th><th><span class="vh">Action</span></th></tr></thead>
+<caption class="ss-caption">Ways to sound in <b id="capoTableKey"></b></caption>
+<thead><tr><th>Play these shapes</th><th>Capo</th><th>Chords you make</th><th>Hardest change</th><th><span class="vh">Action</span></th></tr></thead>
 <tbody></tbody>
 </table>
 </div>
@@ -732,7 +780,7 @@ const BANK = [
   {d:['I','vi','IV','V'],  m:['bright','bittersweet'], g:['pop','rock','country'],
    why:'The doo-wop turnaround. The vi in slot two makes the whole thing sound like 1958 on purpose.',
    s:['Stand By Me','Every Breath You Take','Perfect']},
-  {d:['ii','V','I'],       m:['bittersweet','dreamy'], g:['jazz','bossa nova','pop'],
+  {d:['ii','V','I'],       m:['bittersweet','dreamy'], g:['jazz','bossa','pop'],
    why:'The engine of jazz. Two-five-one is tension, more tension, home, and you can chain it forever.',
    s:['Autumn Leaves','Fly Me to the Moon']},
   {d:['I','V','vi','iii','IV','I','IV','V'], m:['bright','bittersweet'], g:['classical','pop','worship'],
@@ -780,13 +828,13 @@ const BANK = [
   {d:['i','bVII','bVI','V'], m:['dark','tense'],    g:['flamenco','metal','classical','rock'],
    why:'The Andalusian cadence. Walks down four steps to a major V that never quite gets you home.',
    s:['Hit the Road Jack','Sultans of Swing (feel)']},
-  {d:['I','vi','ii','V'],  m:['bittersweet','dreamy'], g:['jazz','bossa nova','pop','worship'],
+  {d:['I','vi','ii','V'],  m:['bittersweet','dreamy'], g:['jazz','bossa','pop','worship'],
    why:'The rhythm changes turnaround. Circle of fifths in miniature, which is why it never sounds stuck.',
    s:['Blue Moon','Heart and Soul']},
-  {d:['Imaj7','IVmaj7'],   m:['dreamy','bittersweet'], g:['bossa nova','jazz','indie','latin'],
+  {d:['Imaj7','IVmaj7'],   m:['dreamy','bittersweet'], g:['bossa','jazz','indie','latin'],
    why:'Two major sevenths and nothing else. Nowhere to resolve, so it just hangs in the air.',
    s:['Girl from Ipanema (feel)','Wave']},
-  {d:['ii7','V7','Imaj7','vi7'], m:['dreamy','bittersweet'], g:['jazz','bossa nova','latin'],
+  {d:['ii7','V7','Imaj7','vi7'], m:['dreamy','bittersweet'], g:['jazz','bossa','latin'],
    why:'Two-five-one with the vi tacked on so it loops back to the top without stopping.',
    s:['Autumn Leaves','Take the A Train']},
   {d:['I','I7','IV','iv'], m:['bittersweet','bright'], g:['blues','jazz','folk','country'],
@@ -822,7 +870,7 @@ const BANK = [
   {d:['I','vi','iii','IV'], m:['bittersweet','dreamy'], g:['jazz','indie','pop'],
    why:'Falls a third at a time. Every chord shares two notes with the last, so it barely moves and still travels.',
    s:['Fly Me to the Moon']},
-  {d:['I','IV','ii','V'],  m:['bright','bittersweet'], g:['jazz','bossa nova','country','worship'],
+  {d:['I','IV','ii','V'],  m:['bright','bittersweet'], g:['jazz','bossa','country','worship'],
    why:'A gentler two-five. The IV first softens the landing before the ii pulls you into the turn.',
    s:['Blue Bayou']}
 ];
@@ -969,29 +1017,52 @@ function bandParts(prog, voicing, soundingKeyPc){
     }
   };
 }
+
+/* which open-shape keys make sense for this progression */
+function allowedShapes(minor){ return minor ? GUITAR_KEYS_MIN : GUITAR_KEYS; }
 /* ============================================================
    STATE
+   The model a beginner actually holds: you pick the SHAPES you
+   know, you put the capo somewhere, and that decides what key
+   the room hears.   sounding = shapes + capo
    ============================================================ */
 const state = {
   progIdx: 5,
-  keyPc: 7,             // G
+  shapePc: 7,           // the open shapes you play (G)
+  capo: 0,              // fret the capo is on, 0 = none
   hands: 'open',
   capoOk: true,
   mood: 'any',
   genre: 'any',
   len: 'any',
-  locks: {},            // slot index -> sounding chord name
-  shapeOverride: null,  // pc, set from the capo table
+  locks: {},            // slot index -> played chord name (the shape on the card)
   bpm: 96
 };
 let voicing = null, band = null, prog = null;
+
+const soundingPc = () => (state.shapePc + state.capo) % 12;
 
 const $  = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
 
 function toast(msg){
   const t = $('#ss-toast'); t.textContent = msg; t.classList.add('show');
-  clearTimeout(t._x); t._x = setTimeout(() => t.classList.remove('show'), 2000);
+  clearTimeout(t._x); t._x = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+/* if the progression flips major/minor, snap to a legal shape key and
+   keep the room hearing the same key if a capo position allows it */
+function normalizeShape(p){
+  const pool = allowedShapes(isMinorProg(p)).map(pcOf);
+  if(pool.includes(state.shapePc)) return;
+  const target = soundingPc();
+  let best = null;
+  for(const sp of pool){
+    const capo = ((target - sp) % 12 + 12) % 12;
+    if(capo <= 7 && (state.capoOk || capo === 0) && (best === null || capo < best.capo)) best = {sp, capo};
+  }
+  if(best){ state.shapePc = best.sp; state.capo = best.capo; }
+  else { state.shapePc = pool[0]; state.capo = 0; }
 }
 
 /* ---------- candidate filtering ---------- */
@@ -1005,8 +1076,20 @@ function matchesFilters(p){
   return true;
 }
 
+function voicingFor(p){
+  // same shapes and capo the player has now; the tool never moves the capo behind their back
+  const pool = allowedShapes(isMinorProg(p)).map(pcOf);
+  let sp = state.shapePc, capo = state.capo;
+  if(!pool.includes(sp)){
+    const target = soundingPc();
+    sp = pool.map(x => ({x, c: ((target - x) % 12 + 12) % 12})).filter(o => o.c <= 7).sort((a, b) => a.c - b.c)[0]?.x ?? pool[0];
+    capo = ((target - sp) % 12 + 12) % 12;
+  }
+  return resolve(p, (sp + capo) % 12, sp);
+}
+
 function playableUnder(p){
-  const v = pickVoicing(p, state.keyPc, state.capoOk, state.hands);
+  const v = voicingFor(p);
   if(state.hands === 'open' && v.barres > 0) return false;
   return v.worst <= HAND_CAP[state.hands] + 0.9;
 }
@@ -1014,11 +1097,11 @@ function playableUnder(p){
 function lockScore(p){
   const keys = Object.keys(state.locks);
   if(!keys.length) return 0;
-  const v = pickVoicing(p, state.keyPc, state.capoOk, state.hands);
+  const v = voicingFor(p);
   let hits = 0;
   for(const k of keys){
     const i = +k;
-    if(v.chords[i] && v.chords[i].sounding === state.locks[k]) hits++;
+    if(v.chords[i] && v.chords[i].played === state.locks[k]) hits++;
   }
   return hits;
 }
@@ -1028,6 +1111,7 @@ function spin(){
   if(!pool.length) pool = BANK.slice();
   const fit = pool.filter(playableUnder);
   if(fit.length) pool = fit;
+  else toast('Nothing in the bank fits ' + pretty(PC[state.shapePc]) + ' shapes with those hand settings. Showing the closest.');
 
   const lockKeys = Object.keys(state.locks);
   if(lockKeys.length){
@@ -1038,17 +1122,9 @@ function spin(){
   }
   const current = BANK[state.progIdx];
   const others  = pool.filter(p => p !== current);
-  const pick    = (others.length ? others : pool)[Math.floor(Math.random() * (others.length ? others.length : pool.length))];
+  const from    = others.length ? others : pool;
+  const pick    = from[Math.floor(Math.random() * from.length)];
   state.progIdx = BANK.indexOf(pick);
-  // with locks on, keep the capo where it is so the locked card still reads the same;
-  // only move it if the new progression can't be played that way under the hand setting
-  if(lockKeys.length && voicing){
-    const test = resolve(pick, state.keyPc, voicing.shapeKeyPc);
-    const ok = test.worst <= HAND_CAP[state.hands] + 0.9 && (state.hands !== 'open' || test.barres === 0);
-    state.shapeOverride = ok ? voicing.shapeKeyPc : null;
-  } else {
-    state.shapeOverride = null;
-  }
   render();
 }
 
@@ -1121,44 +1197,87 @@ function fingerText(sh){
 function render(){
   prog = BANK[state.progIdx];
   const minor = isMinorProg(prog);
-  voicing = state.shapeOverride !== null
-    ? resolve(prog, state.keyPc, state.shapeOverride)
-    : pickVoicing(prog, state.keyPc, state.capoOk, state.hands);
-  band = bandParts(prog, voicing, state.keyPc);
+  normalizeShape(prog);
+  voicing = resolve(prog, soundingPc(), state.shapePc);
+  band = bandParts(prog, voicing, soundingPc());
+
+  let dropped = 0;
   for(const k of Object.keys(state.locks)){
     const c = voicing.chords[+k];
-    if(!c || c.sounding !== state.locks[k]) delete state.locks[k];
+    if(!c || c.played !== state.locks[k]){ delete state.locks[k]; dropped++; }
   }
+  if(dropped) toast('Locks cleared: the shapes on screen changed.');
 
+  renderReadout();
   renderSlots();
   renderDetail();
   renderCapoTable();
   renderForm();
   renderBand();
   renderSongs();
-  const kn = pretty(PC[state.keyPc]) + (minor ? ' minor' : ' major');
-  $('#keyHint').textContent = minor
-    ? 'This progression starts on a minor chord, so ' + pretty(PC[state.keyPc]) + ' here means ' + kn + '. If you are singing and it sits too high or too low, change this and let the capo sort out your hands.'
-    : 'Not sure? Leave it on G. A key is just which note feels like home. If you are singing and it sits too high or too low for your voice, change this and let the capo sort out your hands.';
-  $('#stateLine').textContent = kn + ' \u00b7 ' + (voicing.capo ? 'capo ' + voicing.capo : 'no capo')
-    + ' \u00b7 ' + voicing.chords.map(c => pretty(c.sounding)).join(' ');
+  syncShapeChips();
+  const sk = pretty(PC[soundingPc()]) + (minor ? ' minor' : ' major');
+  $('#stateLine').textContent = pretty(PC[state.shapePc]) + (minor ? 'm' : '') + ' shapes'
+    + ' \u00b7 ' + (state.capo ? 'capo ' + state.capo : 'no capo') + ' \u00b7 sounds in ' + sk;
+  $('#keyHint').textContent = 'Pick a key and the tool finds the shapes and capo that get you there with the least trouble. '
+    + (minor ? 'This progression starts on a minor chord, so the keys here are minor keys.' : 'If you are singing and it sits too high or too low, this is the control to change.');
   writeHash();
+}
+
+function renderReadout(){
+  const minor = isMinorProg(prog);
+  const sh = pretty(PC[state.shapePc]) + (minor ? 'm' : '');
+  const so = pretty(PC[soundingPc()]) + (minor ? ' minor' : ' major');
+  $('#readShapes').textContent = sh + ' shapes';
+  $('#readCapo').textContent = state.capo ? 'capo on fret ' + state.capo : 'no capo';
+  $('#readSound').textContent = so;
+  $('#readSentence').textContent = state.capo
+    ? 'Your fingers make ' + sh + ' chords. The capo on fret ' + state.capo + ' raises everything ' + state.capo + ' half step' + (state.capo > 1 ? 's' : '') + ', so the room hears ' + so + '.'
+    : 'No capo, so what your fingers make is exactly what the room hears: ' + so + '.';
+
+  // the ruler: one button per fret, labelled with the key it would sound in
+  const r = $('#capoRuler'); r.innerHTML = '';
+  for(let f = 0; f <= 7; f++){
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'ss-fret';
+    b.dataset.f = f;
+    b.setAttribute('aria-pressed', String(f === state.capo));
+    b.disabled = (!state.capoOk && f !== 0);
+    const key = pretty(PC[(state.shapePc + f) % 12]) + (minor ? 'm' : '');
+    b.innerHTML = `<span class="ss-fret__n">${f === 0 ? 'none' : f}</span><span class="ss-fret__k">${key}</span>`;
+    b.setAttribute('aria-label', (f === 0 ? 'No capo' : 'Capo on fret ' + f) + ', sounds in ' + key);
+    b.addEventListener('click', () => { state.capo = f; render(); });
+    r.appendChild(b);
+  }
+}
+
+function syncShapeChips(){
+  const minor = isMinorProg(prog);
+  const box = $('#cShape'); box.innerHTML = '';
+  allowedShapes(minor).forEach(k => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'ss-chip';
+    b.textContent = pretty(k) + (minor ? 'm' : '');
+    b.setAttribute('aria-pressed', String(pcOf(k) === state.shapePc));
+    b.addEventListener('click', () => { state.shapePc = pcOf(k); render(); });
+    box.appendChild(b);
+  });
 }
 
 function renderSlots(){
   const box = $('#slots'); box.innerHTML = '';
   voicing.chords.forEach((c, i) => {
-    const locked = !!state.locks[i];
+    const locked = state.locks[i] === c.played;
     const el = document.createElement('div');
     el.className = 'ss-slot'; el.setAttribute('role', 'listitem');
     el.dataset.locked = locked; el.dataset.i = i;
     el.innerHTML =
       `<div class="ss-deg">${c.deg}</div>
        <div class="ss-name">${pretty(c.played)}</div>
-       <div class="ss-bars">${c.played === c.sounding ? 'no capo, sounds as written' : 'with the capo it sounds like ' + pretty(c.sounding)}</div>
-       <button class="ss-lock" aria-pressed="${locked}" aria-label="${locked ? 'Unlock' : 'Lock'} ${pretty(c.sounding)}" title="${locked ? 'Locked. Spin will keep this chord.' : 'Lock this chord so Spin keeps it.'}">${locked ? LOCK_ON : LOCK_OFF}</button>`;
+       <div class="ss-bars">${state.capo ? 'sounds like ' + pretty(c.sounding) : 'sounds as written'}</div>
+       <button class="ss-lock" aria-pressed="${locked}" aria-label="${locked ? 'Unlock' : 'Lock'} ${pretty(c.played)}" title="${locked ? 'Locked. Spin will keep this chord.' : 'Lock this chord so Spin keeps it.'}">${locked ? LOCK_ON : LOCK_OFF}</button>`;
     el.querySelector('.ss-lock').addEventListener('click', () => {
-      if(state.locks[i]) delete state.locks[i]; else state.locks[i] = c.sounding;
+      if(state.locks[i]) delete state.locks[i]; else state.locks[i] = c.played;
       renderSlots(); writeHash();
     });
     box.appendChild(el);
@@ -1231,18 +1350,23 @@ function guessGenre(){
 }
 
 function renderCapoTable(){
+  const minor = isMinorProg(prog);
   const tb = $('#capoTable tbody'); tb.innerHTML = '';
-  const opts = capoOptions(prog, state.keyPc, true, isMinorProg(prog));
+  $('#capoTableKey').textContent = pretty(PC[soundingPc()]) + (minor ? ' minor' : ' major');
+  const opts = capoOptions(prog, soundingPc(), true, minor);
   opts.sort((a, b) => a.capo - b.capo).forEach(o => {
     const L = costLabel(o.worst);
+    const here = o.shapeKeyPc === state.shapePc && o.capo === state.capo;
     const tr = document.createElement('tr');
-    if(o.capo === voicing.capo) tr.className = 'reco';
-    tr.innerHTML = `<td>${o.capo === 0 ? 'No capo' : o.capo}</td>
+    if(here) tr.className = 'reco';
+    tr.innerHTML = `<td>${pretty(PC[o.shapeKeyPc])}${minor ? 'm' : ''} shapes</td>
+      <td>${o.capo === 0 ? 'No capo' : 'Fret ' + o.capo}</td>
       <td>${o.chords.map(c => pretty(c.played)).join('  ')}</td>
       <td>${L.t}${o.barres ? ' \u00b7 ' + o.barres + ' barre' : ''}</td>
-      <td><button class="btn btn--sm btn--ghost" data-pc="${o.shapeKeyPc}">Use this</button></td>`;
-    tr.querySelector('button').addEventListener('click', () => {
-      state.shapeOverride = o.shapeKeyPc; render();
+      <td>${here ? '<span class="dim">on screen</span>' : '<button class="btn btn--sm btn--ghost">Use this</button>'}</td>`;
+    const btn = tr.querySelector('button');
+    if(btn) btn.addEventListener('click', () => {
+      state.shapePc = o.shapeKeyPc; state.capo = o.capo; render();
       if($('#starter').scrollIntoView) $('#starter').scrollIntoView({behavior:'smooth', block:'start'});
     });
     tb.appendChild(tr);
@@ -1254,7 +1378,7 @@ function renderForm(){
   deriveForm(prog).forEach(sec => {
     const chords = sec.d.map(deg => {
       const info = degreeInfo(prog, deg);
-      return pretty(PC[(state.keyPc + info.s) % 12] + (SUFFIX[info.q] ?? ''));
+      return pretty(PC[(soundingPc() + info.s) % 12] + (SUFFIX[info.q] ?? ''));
     });
     const r = document.createElement('div');
     r.className = 'ss-formrow';
@@ -1336,7 +1460,7 @@ function renderSongs(){
 /* ============================================================
    SHELF + SHARING
    ============================================================ */
-const SHELF_KEY = 'trgc.songstarter.v2';
+const SHELF_KEY = 'trgc.songstarter.v3';
 
 function readShelf(){
   try { return JSON.parse(localStorage.getItem(SHELF_KEY) || '[]'); }
@@ -1368,8 +1492,8 @@ function keepCurrent(){
   const list = readShelf();
   const rec = {
     n: voicing.chords.map(c => pretty(c.sounding)).join(' '),
-    k: pretty(PC[state.keyPc]) + (isMinorProg(prog) ? 'm' : ''),
-    c: voicing.capo,
+    k: pretty(PC[soundingPc()]) + (isMinorProg(prog) ? 'm' : ''),
+    c: state.capo,
     s: snapshot()
   };
   if(list.some(x => x.n === rec.n && x.k === rec.k)){ toast('Already on the shelf.'); return; }
@@ -1377,20 +1501,19 @@ function keepCurrent(){
 }
 
 function snapshot(){
-  return {p:state.progIdx, k:state.keyPc, h:state.hands, c:state.capoOk ? 1 : 0,
-          m:state.mood, g:state.genre, l:state.len, o:state.shapeOverride, b:state.bpm,
-          x:state.locks};
+  return {p:state.progIdx, s:state.shapePc, f:state.capo, h:state.hands, c:state.capoOk ? 1 : 0,
+          m:state.mood, g:state.genre, l:state.len, b:state.bpm, x:state.locks};
 }
 function applyState(s){
   if(!s) return;
   state.progIdx = s.p ?? state.progIdx;
-  state.keyPc   = s.k ?? state.keyPc;
+  state.shapePc = s.s ?? state.shapePc;
+  state.capo    = s.f ?? state.capo;
   state.hands   = s.h || state.hands;
   state.capoOk  = s.c !== 0;
   state.mood    = s.m || 'any';
   state.genre   = s.g || 'any';
   state.len     = s.l || 'any';
-  state.shapeOverride = (s.o === undefined ? null : s.o);
   state.bpm     = s.b || 96;
   state.locks   = s.x || {};
   syncControls();
@@ -1693,7 +1816,6 @@ function chipGroup(sel, items, get, set){
     b.addEventListener('click', () => {
       set(it.v);
       Array.from(box.children).forEach(c => c.setAttribute('aria-pressed', String(c.dataset.v === String(it.v))));
-      state.shapeOverride = null;
       render();
     });
     box.appendChild(b);
@@ -1706,7 +1828,7 @@ function syncControls(){
   $$('#cCapo .ss-chip').forEach(c => c.setAttribute('aria-pressed', String(c.dataset.v === String(state.capoOk))));
   $$('#cMood .ss-chip').forEach(c => c.setAttribute('aria-pressed', String(c.dataset.v === state.mood)));
   $('#cGenre').value = state.genre;
-  $('#cKey').value = String(state.keyPc);
+  $('#cKey').value = String(soundingPc());
   $('#bpm').value = state.bpm; $('#bpmOut').textContent = state.bpm;
 }
 
@@ -1720,8 +1842,8 @@ function buildControls(){
   ], () => state.hands, v => state.hands = v);
 
   chipGroup('#cCapo', [
-    {label:'I have a capo', v:'true'}, {label:'No capo', v:'false'}
-  ], () => String(state.capoOk), v => state.capoOk = (v === 'true'));
+    {label:'I have a capo', v:'true'}, {label:'I do not', v:'false'}
+  ], () => String(state.capoOk), v => { state.capoOk = (v === 'true'); if(!state.capoOk) state.capo = 0; });
 
   chipGroup('#cMood', [{label:'Surprise me', v:'any'}].concat(
     MOODS.map(m => ({label: m[0].toUpperCase() + m.slice(1), v:m}))
@@ -1733,13 +1855,22 @@ function buildControls(){
   g.addEventListener('change', () => {
     state.genre = g.value;
     if(state.genre !== 'any'){ state.bpm = STRUMS[state.genre].bpm; $('#bpm').value = state.bpm; $('#bpmOut').textContent = state.bpm; }
-    state.shapeOverride = null; render();
+    render();
   });
 
   const k = $('#cKey');
   k.innerHTML = [7,0,2,9,4,5,10,3,11,8,1,6]
     .map(pc => `<option value="${pc}">${pretty(PC[pc])}</option>`).join('');
-  k.addEventListener('change', () => { state.keyPc = +k.value; state.shapeOverride = null; state.locks = {}; render(); });
+  k.addEventListener('change', () => {
+    // the helper direction: "make it sound in X" -> pick shapes + capo that get there easiest
+    const target = +k.value;
+    const v = pickVoicing(prog, target, state.capoOk, state.hands);
+    state.shapePc = v.shapeKeyPc; state.capo = v.capo;
+    render();
+    const minor = isMinorProg(prog);
+    toast('To sound in ' + pretty(PC[target]) + (minor ? ' minor' : '') + ': play ' + pretty(PC[v.shapeKeyPc]) + (minor ? 'm' : '') + ' shapes'
+      + (v.capo ? ' with the capo on fret ' + v.capo + '.' : ', no capo.'));
+  });
 
   $('#bpm').addEventListener('input', e => {
     state.bpm = +e.target.value; $('#bpmOut').textContent = state.bpm;
@@ -1751,13 +1882,14 @@ function buildControls(){
   $('#unlockBtn').addEventListener('click', () => { state.locks = {}; renderSlots(); writeHash(); });
 
   $('#easierBtn').addEventListener('click', () => {
-    const opts = capoOptions(prog, state.keyPc, true, isMinorProg(prog));
+    const minor = isMinorProg(prog);
+    const opts = capoOptions(prog, soundingPc(), state.capoOk, minor);
     const better = opts.find(o => o.worst < voicing.worst - 0.2);
     if(better){
-      state.shapeOverride = better.shapeKeyPc; render();
-      toast(better.capo ? 'Capo ' + better.capo + '. Same sounding chords, easier changes.' : 'Open shapes, no capo needed.');
+      state.shapePc = better.shapeKeyPc; state.capo = better.capo; render();
+      toast('Same key the room hears. Now ' + pretty(PC[better.shapeKeyPc]) + (minor ? 'm' : '') + ' shapes' + (better.capo ? ' with the capo on fret ' + better.capo + '.' : ' with no capo.'));
     } else {
-      toast('This is already the easiest way to play it in ' + pretty(PC[state.keyPc]) + '.');
+      toast('This is already the easiest way to sound in ' + pretty(PC[soundingPc()]) + (minor ? ' minor' : '') + (state.capoOk ? '.' : ' without a capo.'));
     }
   });
 
@@ -1773,9 +1905,11 @@ function buildControls(){
   $('#ss-tunerBtn').addEventListener('click', toggleTuner);
 
   document.addEventListener('keydown', e => {
-    if(e.target.matches('input,select,textarea')) return;
+    if(e.target && e.target.matches && e.target.matches('input,select,textarea')) return;
     if(e.code === 'Space'){ e.preventDefault(); playing ? stopAll() : play(); }
     if(e.key === 'r' || e.key === 'R'){ spin(); }
+    if(e.key === 'ArrowUp'   && state.capoOk && state.capo < 7){ state.capo++; render(); }
+    if(e.key === 'ArrowDown' && state.capo > 0){ state.capo--; render(); }
   });
 }
 

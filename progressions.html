@@ -1040,7 +1040,15 @@ function spin(){
   const others  = pool.filter(p => p !== current);
   const pick    = (others.length ? others : pool)[Math.floor(Math.random() * (others.length ? others.length : pool.length))];
   state.progIdx = BANK.indexOf(pick);
-  state.shapeOverride = null;
+  // with locks on, keep the capo where it is so the locked card still reads the same;
+  // only move it if the new progression can't be played that way under the hand setting
+  if(lockKeys.length && voicing){
+    const test = resolve(pick, state.keyPc, voicing.shapeKeyPc);
+    const ok = test.worst <= HAND_CAP[state.hands] + 0.9 && (state.hands !== 'open' || test.barres === 0);
+    state.shapeOverride = ok ? voicing.shapeKeyPc : null;
+  } else {
+    state.shapeOverride = null;
+  }
   render();
 }
 
@@ -1172,7 +1180,7 @@ function renderSlots(){
 function renderDetail(){
   const L = costLabel(voicing.worst);
   const m = $('#ss-meter'); m.className = 'ss-meter ' + (L.k === 'easy' ? '' : L.k);
-  m.querySelector('.bar i').style.width = Math.min(100, 18 + voicing.worst * 20) + '%';
+  m.querySelector('.ss-bar i').style.width = Math.min(100, 18 + voicing.worst * 20) + '%';
   $('#meterLab').textContent = (voicing.barres
     ? `Hardest move between chords: ${L.t}. ${voicing.barres} barre chord${voicing.barres > 1 ? 's' : ''}.`
     : `Hardest move between chords: ${L.t}. No barres.`);
@@ -1235,7 +1243,7 @@ function renderCapoTable(){
       <td><button class="btn btn--sm btn--ghost" data-pc="${o.shapeKeyPc}">Use this</button></td>`;
     tr.querySelector('button').addEventListener('click', () => {
       state.shapeOverride = o.shapeKeyPc; render();
-      $('#starter').scrollIntoView({behavior:'smooth', block:'start'});
+      if($('#starter').scrollIntoView) $('#starter').scrollIntoView({behavior:'smooth', block:'start'});
     });
     tb.appendChild(tr);
   });

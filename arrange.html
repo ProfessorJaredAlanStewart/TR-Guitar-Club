@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Song Starter — Trinity River Guitar Club</title>
-<meta name="description" content="A progression is already playing. Lock the chords you like, spin the rest, move the capo, and send it as a link.">
+<title>Make It a Song — Trinity River Guitar Club</title>
+<meta name="description" content="Turn a chord progression into a verse, chorus and bridge, with parts for a whole room of players.">
 <meta name="theme-color" content="#0a0a0c">
-<link rel="canonical" href="https://trinityriverguitarclub.com/progressions.html">
+<link rel="canonical" href="https://trinityriverguitarclub.com/arrange.html">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Song Starter — Trinity River Guitar Club">
-<meta property="og:description" content="Lock the chords you like, spin the rest. Real fingerings, capo math, a link you can text.">
+<meta property="og:title" content="Make It a Song — Trinity River Guitar Club">
+<meta property="og:description" content="Verse, chorus, bridge, and a part for everyone in the room.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preload" href="anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
@@ -282,202 +282,94 @@
 
 <main id="main">
 
-<!-- ===================== HERO ===================== -->
 <section class="hero hero--page grain">
 <div class="hero__media">
 <img src="hero.jpg" alt="Students in a circle of chairs with guitars around a lit fire pit" fetchpriority="high" width="1050" height="1400">
 </div>
 <div class="hero__scrim"></div>
 <div class="wrap hero__inner">
-<p class="eyebrow">Song Starter</p>
-<h1 class="display d1" style="font-size:clamp(2.6rem,8vw,5.4rem)">Something<br>is already<br>playing.</h1>
-<p class="lede hero__sub">Lock the chords you want to keep and spin the rest. Real fingerings, the capo math done for you, and a link you can text to whoever is playing with you.</p>
-<div class="ss-hero-btns">
-<a class="btn" href="tuner.html">Tune first</a>
-<a class="btn btn--ghost" href="#starter">Skip to the chords</a>
-</div>
+<p class="eyebrow">Song Starter · part two</p>
+<h1 class="display d1" style="font-size:clamp(2.6rem,8vw,5.4rem)">Now make<br>it a song.</h1>
+<p class="lede hero__sub">Your progression came with you in the link. Here it becomes a verse, a chorus and a bridge, and a part for everyone in the room.</p>
 </div>
 </section>
 
-<div class="ticker" aria-hidden="true">
-<div class="ticker__track">
-<span>40 progressions</span><span>Lock a chord, spin the rest</span><span>Capo math done for you</span><span>Send it as a link</span><span>Then make it a song</span>
-<span>40 progressions</span><span>Lock a chord, spin the rest</span><span>Capo math done for you</span><span>Send it as a link</span><span>Then make it a song</span>
-</div>
-</div>
-
-<!-- ===================== THE MACHINE ===================== -->
-<section class="pad glow-crimson" id="starter">
-<div class="wrap wrap--wide">
-<div class="reveal" style="max-width:62ch">
-<p class="eyebrow">The machine</p>
-<h2 class="display d2">Press play,<br>then start meddling.</h2>
-<p class="dim mt1">Every progression here is one real songs are built on. Nothing is invented on the spot, and nothing is graded. Out of tune? <a href="tuner.html">Fix that first.</a></p>
-</div>
-
-<details class="acc mt3 reveal">
-<summary>Never used this before? Thirty seconds, start here</summary>
-<div class="acc__body">
-<p><strong class="sand">Press Play.</strong> You will hear four clicks, then the chords. The one playing lifts and turns teal. Each chord gets one bar (four beats) before the next.</p>
-<p><strong class="sand">Play along.</strong> The diagrams further down show where your fingers go. Do not worry about the strum yet. Hit each chord once when it changes and you are already playing the song.</p>
-<p><strong class="sand">Like a chord? Lock it.</strong> The padlock on each card keeps that chord. <em>Spin the unlocked</em> swaps the others for something else real songs use.</p>
-<p><strong class="sand">The capo.</strong> The cards show the chords your fingers make. The capo changes what those chords sound like, not what they look like. G-family chords with the capo on fret 2, and the room hears A. The ruler under the cards shows every fret and what you would sound like there. Tap one.</p>
-<p><strong class="sand">Too hard? Say so.</strong> Set <em>What your hands can do</em> to open chords only and the tool will never hand you a barre chord. If a change still feels impossible, press <em>Same sound, easier hands</em>.</p>
-<p class="mb0"><strong class="sand">The small numerals</strong> above each chord (I, IV, V, vi) are its job in the key: I is home, V pulls you back home, lowercase means minor. You do not need them yet. They are there so that one day you notice every song uses the same handful of moves.</p>
-</div>
-</details>
-
-<div class="panel ss-machine mt3">
-<div class="ss-slots" id="slots" role="list" aria-label="Chord progression"></div>
-<div class="ss-between" id="between" aria-hidden="true"></div>
-
-<div class="ss-readout" aria-live="polite">
-<div class="ss-eq">
-<span class="ss-eq__part"><small>chords you make</small><b id="readShapes"></b></span>
-<span class="ss-eq__op">+</span>
-<span class="ss-eq__part"><small>capo</small><b id="readCapo"></b></span>
-<span class="ss-eq__op">=</span>
-<span class="ss-eq__part ss-eq__part--out"><small>the room hears</small><b id="readSound"></b></span>
-</div>
-<p class="ss-readout__sentence" id="readSentence"></p>
-</div>
-
-<div class="ss-rulerwrap">
-<div class="ss-capotoggle">
-<div class="ss-rulerlab">Move the capo. The key under each fret is what your chords will sound like from there.</div>
-<div class="ss-chips" id="cCapo" role="group" aria-label="Do you have a capo"></div>
-</div>
-<div class="ss-ruler" id="capoRuler" role="group" aria-label="Capo position"></div>
-</div>
-
-<div class="ss-transport">
-<button class="btn" id="playBtn" aria-label="Play the progression">Play</button>
-<button class="btn btn--ghost" id="spinBtn">Spin the unlocked</button>
-<button class="btn btn--ghost btn--sm" id="unlockBtn">Clear locks</button>
-<div class="ss-tempo"><label for="bpm">Tempo</label><input type="range" id="bpm" min="50" max="180" value="96" step="2"><output id="bpmOut">96</output></div>
-<div class="ss-toggles">
-<label title="A metronome tick on every beat"><input type="checkbox" id="metro"> Click</label>
-<label title="Four clicks before the music starts so you come in on time"><input type="checkbox" id="countin" checked> Count-in</label>
-<label title="Otherwise it plays the loop four times and stops"><input type="checkbox" id="loopchk"> Loop</label>
-</div>
-</div>
-<p class="dim mb0 mt2" style="font-size:.82rem">Plays four times through, then stops, unless you tick Loop. Space plays and stops, R spins, arrow keys move the capo.</p>
-</div>
-
-<div class="panel panel--outline mt2 ss-controls">
-<div class="ss-ctrl"><h3>Chords you know</h3><div class="ss-chips" id="cShape" role="group" aria-label="Chord family"></div>
-<p class="ss-hint">Each button is a family of chords that belong together, with its four main chords. Pick the one you can already make. G and D need no barre chords.</p></div>
-
-<div class="ss-row">
-<div class="ss-ctrl"><h3>How many chords</h3><div class="ss-chips" id="cLen" role="group" aria-label="Number of chords"></div>
-<p class="ss-hint">Two is a real answer.</p></div>
-<div class="ss-ctrl"><h3>Your hands</h3><div class="ss-chips" id="cHands" role="group" aria-label="Hand ability"></div>
-<p class="ss-hint">Barre chords still buzz? Pick open only.</p></div>
-<div class="ss-ctrl"><h3>Feel</h3><div class="ss-chips" id="cMood" role="group" aria-label="Mood"></div>
-<p class="ss-hint">Try two and hear the difference.</p></div>
-<div class="ss-ctrl"><h3>Style</h3><select id="cGenre" aria-label="Style"></select>
-<p class="ss-hint">Leave the standard strum on until it is automatic.</p></div>
-<div class="ss-ctrl"><h3>Make it sound in&hellip;</h3><select id="cKey" aria-label="Key you want it to sound in"></select>
-<p class="ss-hint" id="keyHint"></p></div>
-</div>
-
-<details class="acc mt3">
-<summary>What these controls mean</summary>
-<div class="acc__body">
-<p><strong class="sand">Chords you know.</strong> Songs are built from a small family of chords that belong together, named after the one that feels like home. Most people start with G or D because neither needs a barre chord. The C family has F in it, and F is a rite of passage, not a beginning.</p>
-<p><strong class="sand">Your hands.</strong> A barre chord is one where your index finger lies flat across all six strings, like F. This setting rates the <em>moves between</em> chords, not just the shapes, because the move is where beginners get stuck. A barre you never have to jump to is easier than a C to F.</p>
-<p><strong class="sand">Capo.</strong> A clamp that pins all six strings at one fret. Each fret it moves up raises everything a half step, so the G family with the capo on fret 2 sounds like A and on fret 4 like B. Say you do not have one and the ruler locks to none.</p>
-<p><strong class="sand">Feel.</strong> Each of these points at a different harmonic trick, not just major versus minor.</p>
-<p><strong class="sand">Style.</strong> Style mostly lives in the strum. The standard pattern has downstrokes and upstrokes in it and fits nearly everything; every other style changes the pattern and the tempo.</p>
-<p class="mb0"><strong class="sand">Make it sound in.</strong> The rule backwards. You name the key you want the room to hear, the tool picks the chord family and capo fret that get there with the easiest changes, and tells you what it chose.</p>
-</div>
-</details>
-</div>
-</div>
-</section>
-
-<hr class="rule">
-
-<!-- ===================== HANDS ===================== -->
-<section class="pad" id="hands">
-<div class="wrap wrap--wide">
-<div class="reveal" style="max-width:62ch">
-<p class="eyebrow">Under your fingers</p>
-<h2 class="display d2">The change is<br>the hard part.</h2>
-<p class="dim mt1" id="whyLine"></p>
-</div>
-<div class="ss-meter mt2" id="ss-meter">
-<span class="ss-bar"><i></i></span>
-<span class="ss-lab" id="meterLab"></span>
-<button class="btn btn--sm btn--ghost" id="easierBtn">Same sound, easier hands</button>
-</div>
-<div class="ss-chordrow" id="chords"></div>
-<p class="dim mt2" style="font-size:.88rem;max-width:66ch">Diagrams are the neck held upright in front of you: thickest string on the left, nut at the top. Numbers in the dots are fingers (<b class="sand">1</b> index, <b class="sand">2</b> middle, <b class="sand">3</b> ring, <b class="sand">4</b> pinky). A hollow circle above a string means play it open, an <b class="sand">×</b> means leave it out, a thick bar is your index finger flattened across several strings. Numbers under each card are frets, thick string to thin. <a href="play-along.html#chords">Forty more shapes on Play Along.</a></p>
-
-<div class="panel panel--outline mt3">
-<h3 class="display d4" style="margin-bottom:.6rem">Strum <span class="dim" id="strumName"></span></h3>
-<p class="dim" style="font-size:.9rem">One box per half-beat, counted <em>1 &amp; 2 &amp; 3 &amp; 4 &amp;</em>. Your strumming hand swings down on the numbers and up on the "ands" the whole time. The pattern only decides which swings touch the strings.</p>
-<div class="ss-count" aria-hidden="true"><b>1</b><b>&amp;</b><b>2</b><b>&amp;</b><b>3</b><b>&amp;</b><b>4</b><b>&amp;</b></div>
-<div class="ss-strum" id="strum"></div>
-<p class="dim" style="font-size:.9rem" id="strumNote"></p>
-<div class="ss-legend" id="strumLegend"></div>
-</div>
-</div>
-</section>
-
-<hr class="rule">
-
-<!-- ===================== CAPO ===================== -->
-<section class="pad glow-teal" id="capo">
+<section class="pad glow-crimson">
 <div class="wrap">
 <div class="reveal" style="max-width:62ch">
-<p class="eyebrow">Capo calculator</p>
-<h2 class="display d2">Same key,<br>easier shapes.</h2>
-<p class="dim mt1">First the rule in the direction you use it: chords plus capo equals key. Then the rule backwards: you want a key, here is where to put the capo.</p>
-</div>
-
-<div class="prose mt3 reveal" style="max-width:66ch">
-<p><strong class="sand">What a capo does.</strong> It is a clamp that presses all six strings down at one fret, so the guitar behaves as if that fret were the nut. Every chord you already know now starts from there. Your fingers make the same G, but the whole instrument has moved up.</p>
-<p><strong class="sand">The rule.</strong> One fret is one half step. Count the frets, count the half steps. G-family chords with the capo on fret 2 are two half steps up from G, which is A. On fret 4, four half steps, which is B. On fret 3 it is B♭, on fret 5 it is C. The ruler in the machine above does the counting for you; this is all it is doing.</p>
-<p><strong class="sand">Why bother.</strong> Guitars are easy in C, G, D, A and E because those keys use open strings. Singers do not care about that, and plenty of songs live in B♭, E♭, F or A♭. Without a capo those keys mean barre chords the whole way through. With one, they mean the chords you learned first, moved up.</p>
-<p class="mb0"><strong class="sand">The table runs the rule backwards.</strong> You want the room to hear one particular key. There are several places to put the capo that all get there, each with a different chord family. Every row sounds identical to a listener; they differ only in how hard the changes are for your hands. Clamp just behind the fret wire, not on top of it, and only as tight as it needs to be. Over-clamping pulls everything sharp.</p>
-</div>
-
-<div class="panel mt3 ss-tablewrap">
-<table class="ss-table" id="capoTable">
-<caption class="ss-caption">Ways to sound in <b id="capoTableKey"></b></caption>
-<thead><tr><th>Chord family</th><th>Capo</th><th>Chords you make</th><th>Hardest change</th><th><span class="vh">Action</span></th></tr></thead>
-<tbody></tbody>
-</table>
+<p class="eyebrow">Working with</p>
+<div class="ss-state ss-state--big mt1"></div>
+<p class="dim mt2" style="font-size:.9rem">Want a different one? <a href="progressions.html" data-carry="progressions.html">Go back to the starter</a>; the link keeps your place.</p>
 </div>
 </div>
 </section>
 
 <hr class="rule">
 
-<!-- ===================== SHELF ===================== -->
-<section class="pad" id="ss-shelfSec">
+<section class="pad">
 <div class="wrap">
 <div class="reveal" style="max-width:62ch">
-<p class="eyebrow">Kept</p>
-<h2 class="display d2">Take it with you.</h2>
-<p class="dim mt1">Saved progressions stay in this browser only. Nothing is uploaded, and the copied link carries the whole thing to anybody you send it to.</p>
+<p class="eyebrow">Structure</p>
+<h2 class="display d2">A shape to<br>hang it on.</h2>
+<p class="dim mt1">Four chords in a loop is a foundation. The chorus below is built out of your verse, not pulled out of a hat.</p>
+<p class="dim mt1" style="font-size:.92rem">A <b class="sand">verse</b> is where the story goes and it repeats with different words. The <b class="sand">chorus</b> is the part everyone sings, same words every time, usually higher. A <b class="sand">pre-chorus</b> is the short ramp between them. A <b class="sand">bridge</b> shows up once, late, to break the pattern before the last chorus. Verse, verse, chorus, verse, chorus, bridge, chorus is a whole song.</p>
 </div>
-<div class="ss-shelf mt3" id="shelf"></div>
+<div class="panel mt3" style="padding-top:.4rem;padding-bottom:.4rem" id="form"></div>
 </div>
 </section>
 
-<!-- ===================== CTA ===================== -->
+<hr class="rule">
+
+<section class="pad glow-teal">
+<div class="wrap">
+<div class="reveal" style="max-width:62ch">
+<p class="eyebrow">Parts for the room</p>
+<h2 class="display d2">Four people,<br>four things to play.</h2>
+<p class="dim mt1">When six guitars all strum full chords it turns to mud. Hand these out and the same progression starts sounding arranged.</p>
+<p class="dim mt1" style="font-size:.92rem">Two words that come up below. The <b class="sand">root</b> is the note a chord is named after: the G in a G chord. It is the lowest note in every open shape on this site. <b class="sand">Pentatonic</b> means five notes, chosen so that none of them clash with any chord in the key. That is why a beginner can wander around the box below and nothing sounds wrong.</p>
+</div>
+<div class="ss-stack mt3" id="band"></div>
+</div>
+</section>
+
+<hr class="rule">
+
+<section class="pad" id="find">
+<div class="wrap">
+<div class="reveal" style="max-width:62ch">
+<p class="eyebrow">Chase down the real thing</p>
+<h2 class="display d2">Songs built<br>on this.</h2>
+<p class="dim mt1">Tabs live on their own sites, where they are licensed. Each one opens a search.</p>
+</div>
+<div class="ss-songs mt3" id="songs"></div>
+
+<div class="findbar reveal mt3">
+<label class="vh" for="findq">Song or artist</label>
+<input type="search" id="findq" placeholder="Try &ldquo;Stand By Me&rdquo; or &ldquo;CCR&rdquo;&hellip;" autocomplete="off" spellcheck="false">
+<div class="findbar__sites">
+<a class="btn btn--sm" id="find-ug" href="https://www.ultimate-guitar.com/" target="_blank" rel="noopener">Ultimate Guitar</a>
+<a class="btn btn--sm btn--ghost" id="find-ss" href="https://www.songsterr.com/" target="_blank" rel="noopener">Songsterr</a>
+<a class="btn btn--sm btn--ghost" id="find-cf" href="https://chordify.net/" target="_blank" rel="noopener">Chordify</a>
+</div>
+</div>
+<p class="dim reveal mt2" style="font-size:.92rem;max-width:60ch">
+Enter searches Ultimate Guitar. Charts the club writes for itself live on our
+<a href="https://canvas.tccd.edu/courses/104217" target="_blank" rel="noopener">Canvas page</a>
+&mdash; sign in with your TCC account.
+</p>
+</div>
+</section>
+
 <section class="pad-sm">
 <div class="wrap">
 <div class="panel panel--sand grain center reveal">
-<h2 class="display d2">A progression<br>is not a song yet.</h2>
+<h2 class="display d2">Bring it Tuesday.</h2>
 <p class="lede mt2" style="max-width:52ch;margin-inline:auto">
-Take this one to the next page and get a verse, a chorus, a bridge, and a part for everyone in the room.
+Play the loop until your hands stop thinking about it, then change one thing. Somebody at the meeting will tell you what you accidentally invented and what it is called.
 </p>
 <div class="btn-row mt2" style="justify-content:center">
-<a class="btn" href="arrange.html" data-carry="arrange.html">Make it a song</a>
-<a class="btn btn--ghost" href="calendar.html">See the calendar</a>
+<a class="btn" href="calendar.html">See the calendar</a>
+<a class="btn btn--ghost" href="progressions.html" data-carry="progressions.html">Back to the starter</a>
 </div>
 </div>
 </div>
@@ -485,10 +377,9 @@ Take this one to the next page and get a verse, a chorus, a bridge, and a part f
 
 <div class="ss-actionbar">
 <div class="wrap">
-<button class="btn btn--sm" id="keepBtn">Keep this one</button>
+<a class="btn btn--sm btn--ghost" href="progressions.html" data-carry="progressions.html">Back to the starter</a>
 <button class="btn btn--sm btn--ghost ss-share">Copy link</button>
-<button class="btn btn--sm btn--ghost ss-print">Print chart</button>
-<a class="btn btn--sm btn--ghost" href="arrange.html" data-carry="arrange.html">Make it a song</a>
+<button class="btn btn--sm btn--ghost ss-print">Print parts</button>
 <span class="ss-grow"></span>
 <span class="ss-state"></span>
 </div>

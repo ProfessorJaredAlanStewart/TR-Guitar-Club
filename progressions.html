@@ -4,294 +4,1791 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Song Starter — Trinity River Guitar Club</title>
-<meta name="description" content="Answer six questions and get a chord progression you can actually play: real fingerings, a strum pattern, songs that use it, and a play button. Built for the Trinity River Guitar Club.">
+<meta name="description" content="A progression is already playing. Lock the chords you like, spin the rest, move the capo, and walk into the next meeting with a song skeleton.">
 <meta name="theme-color" content="#0a0a0c">
 <link rel="canonical" href="https://trinityriverguitarclub.com/progressions.html">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Song Starter — Trinity River Guitar Club">
-<meta property="og:description" content="Tell it what you can play and what you want it to sound like. It hands back a progression, the fingerings, a strum, and songs that use it.">
+<meta property="og:description" content="Lock the chords you like, spin the rest. Real fingerings, capo math, parts for the whole room.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preload" href="anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="site.css">
+<style>
+/* ============================================================
+   SONG STARTER — page-only styles.
+   Everything is prefixed ss- so nothing collides with site.css.
+   Colours come from the site palette; lines and diagrams use
+   currentColor so all four themes work without edits.
+   ============================================================ */
+:root{
+  --ss-crimson:#98002e;
+  --ss-crimson-lift:#c8103f;
+  --ss-teal:#00788a;
+  --ss-sand:#dac792;
+  --ss-accent:var(--ss-crimson);
+  --ss-line:color-mix(in srgb, currentColor 16%, transparent);
+  --ss-line-2:color-mix(in srgb, currentColor 30%, transparent);
+  --ss-soft:color-mix(in srgb, currentColor 5%, transparent);
+  --ss-dot-text:#fff;
+}
+[data-theme="charcoal"], [data-theme="midnight"]{
+  --ss-accent:var(--ss-crimson-lift);
+  --ss-dot-text:#14141a;
+}
+@supports not (color: color-mix(in srgb, red 50%, transparent)){
+  :root{--ss-line:rgba(128,128,128,.32);--ss-line-2:rgba(128,128,128,.5);--ss-soft:rgba(128,128,128,.08)}
+}
+
+/* ---------- the machine ---------- */
+.ss-machine{border-radius:14px;padding:20px}
+.ss-slots{display:flex;flex-wrap:wrap;gap:10px;margin:4px 0 6px}
+.ss-slot{
+  flex:1 1 132px;min-width:120px;position:relative;text-align:center;
+  border:1px solid var(--ss-line);border-radius:12px;padding:12px 12px 10px;
+  background:var(--ss-soft);transition:border-color .18s ease,transform .18s ease;
+}
+.ss-slot[data-locked="true"]{border-color:var(--ss-accent);box-shadow:inset 0 0 0 1px var(--ss-accent)}
+.ss-slot .ss-deg{font-family:var(--font-label,inherit);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ss-accent);height:1.2em}
+.ss-slot .ss-name{font-family:var(--font-display,'Anton',sans-serif);font-size:clamp(1.7rem,5vw,2.4rem);line-height:1.08;margin:2px 0 4px}
+.ss-slot .ss-bars{font-size:.74rem;opacity:.6}
+.ss-slot.playing{transform:translateY(-3px)}
+.ss-slot.playing .ss-name{color:var(--ss-teal)}
+.ss-lock{
+  position:absolute;top:5px;right:5px;width:30px;height:30px;border:0;border-radius:8px;
+  background:none;color:inherit;opacity:.4;font-size:1rem;line-height:1;cursor:pointer;
+}
+.ss-lock svg{width:15px;height:15px;display:block;margin:auto}
+.ss-lock:hover{opacity:1;background:var(--ss-soft)}
+.ss-slot[data-locked="true"] .ss-lock{opacity:1;color:var(--ss-accent)}
+
+.ss-between{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 14px;font-size:.74rem;opacity:.85}
+.ss-between span{flex:1 1 132px;min-width:120px;text-align:center}
+.ss-chg-easy{color:var(--ss-teal)}
+.ss-chg-mod{color:#a97a12}
+.ss-chg-hard{color:var(--ss-crimson-lift)}
+
+.ss-transport{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:6px}
+.ss-tempo{display:flex;align-items:center;gap:9px;font-size:.86rem}
+.ss-tempo input[type=range]{width:118px;accent-color:var(--ss-accent)}
+.ss-toggles{display:flex;gap:14px;font-size:.85rem;align-items:center;flex-wrap:wrap}
+.ss-toggles label{display:flex;gap:6px;align-items:center;cursor:pointer}
+.ss-toggles input[type=checkbox]{accent-color:var(--ss-accent);width:16px;height:16px}
+
+/* ---------- controls ---------- */
+.ss-ctrl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(212px,1fr));gap:18px 24px}
+.ss-ctrl h3{font-family:var(--font-label,inherit);font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;margin:0 0 .55rem;opacity:.75}
+.ss-chips{display:flex;flex-wrap:wrap;gap:6px}
+.ss-chip{
+  font:inherit;font-size:.84rem;color:inherit;cursor:pointer;
+  border:1px solid var(--ss-line-2);background:transparent;border-radius:999px;padding:5px 12px;
+  transition:background .15s ease,border-color .15s ease;
+}
+.ss-chip:hover{border-color:var(--ss-accent)}
+.ss-chip[aria-pressed="true"]{background:var(--ss-accent);border-color:var(--ss-accent);color:#fff}
+.ss-ctrl select{
+  width:100%;padding:8px 10px;font:inherit;font-size:.9rem;color:inherit;
+  background:transparent;border:1px solid var(--ss-line-2);border-radius:9px;
+}
+.ss-ctrl .ss-hint{font-size:.8rem;opacity:.65;margin:.5rem 0 0;line-height:1.45}
+
+/* ---------- chord cards ---------- */
+.ss-chordrow{display:flex;gap:12px;flex-wrap:wrap}
+.ss-chordcard{
+  flex:1 1 150px;min-width:138px;max-width:196px;text-align:center;
+  border:1px solid var(--ss-line);border-radius:12px;padding:12px 8px 10px;background:var(--ss-soft);
+}
+.ss-chordcard .ss-cdeg{font-family:var(--font-label,inherit);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ss-accent)}
+.ss-chordcard .ss-cname{font-family:var(--font-display,'Anton',sans-serif);font-size:1.5rem;line-height:1.1;margin-top:2px}
+.ss-chordcard svg{display:block;margin:6px auto 0}
+.ss-chordcard .ss-cnote{font-size:.74rem;opacity:.6;margin-top:4px;min-height:1.1em}
+
+/* ---------- difficulty meter ---------- */
+.ss-meter{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 16px}
+.ss-meter .ss-bar{flex:0 0 156px;height:8px;border-radius:999px;background:var(--ss-line);overflow:hidden}
+.ss-meter .ss-bar i{display:block;height:100%;width:20%;background:var(--ss-teal)}
+.ss-meter.mod .ss-bar i{background:#a97a12}
+.ss-meter.hard .ss-bar i{background:var(--ss-crimson-lift)}
+.ss-meter .ss-lab{font-size:.9rem}
+
+/* ---------- strum ---------- */
+.ss-strum{display:flex;gap:5px;flex-wrap:wrap;align-items:flex-end;margin:.4rem 0 .6rem}
+.ss-strum b{
+  width:34px;height:44px;border:1px solid var(--ss-line-2);border-radius:7px;
+  display:flex;align-items:center;justify-content:center;font-size:1.05rem;font-weight:400;
+}
+.ss-strum b.down{border-bottom-width:3px;border-bottom-color:currentColor}
+.ss-strum b.up{border-top-width:3px;opacity:.62}
+.ss-strum b.rest{opacity:.32;border-style:dashed}
+.ss-strum b.mute{color:var(--ss-crimson-lift)}
+.ss-strum b.beat{position:relative}
+.ss-strum b.beat::after{content:'';position:absolute;bottom:-9px;width:4px;height:4px;border-radius:50%;background:var(--ss-accent)}
+.ss-strum b.hit{background:var(--ss-teal);border-color:var(--ss-teal);color:#fff;opacity:1}
+
+.ss-count{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:2px}
+.ss-count b{width:34px;text-align:center;font-family:var(--font-label,inherit);font-size:.72rem;letter-spacing:.08em;opacity:.65;font-weight:400}
+.ss-legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.84rem;opacity:.8}
+.ss-legend span b{display:inline-block;min-width:1.3em;text-align:center;font-weight:400;border:1px solid var(--ss-line-2);border-radius:5px;padding:0 4px;margin-right:5px}
+
+/* ---------- table ---------- */
+.ss-tablewrap{overflow-x:auto}
+.ss-table{width:100%;border-collapse:collapse;font-size:.92rem}
+.ss-table th,.ss-table td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--ss-line)}
+.ss-table th{font-family:var(--font-label,inherit);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;opacity:.65;font-weight:400}
+.ss-table tr.reco td{background:var(--ss-soft)}
+.ss-table tr.reco td:first-child{box-shadow:inset 3px 0 0 var(--ss-accent)}
+
+/* ---------- form + band ---------- */
+.ss-formrow{display:grid;grid-template-columns:104px 1fr;gap:14px;align-items:start;padding:12px 0;border-bottom:1px solid var(--ss-line)}
+.ss-formrow:last-child{border-bottom:0}
+.ss-formrow .ss-lab{font-family:var(--font-label,inherit);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;opacity:.7;padding-top:.35rem}
+.ss-formrow .ss-progline{font-family:var(--font-display,'Anton',sans-serif);font-size:1.3rem;letter-spacing:.03em}
+.ss-formrow .ss-progline em{font-style:normal;opacity:.5;font-size:.6em;letter-spacing:.14em;display:block;line-height:1.7}
+.ss-stack{display:grid;gap:12px}
+.ss-part h3{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 .3rem;font-size:1rem}
+.ss-tag{
+  font-family:var(--font-label,inherit);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;
+  border-radius:999px;padding:4px 10px;color:#fff;background:var(--ss-crimson);
+}
+.ss-tag.g2{background:var(--ss-crimson-lift)}
+.ss-tag.bass{background:#3f4d6b}
+.ss-tag.lead{background:var(--ss-teal)}
+.ss-part .ss-line{font-family:var(--font-display,'Anton',sans-serif);font-size:1.3rem;letter-spacing:.04em;margin:.35rem 0 .2rem}
+.ss-part .ss-why{font-size:.9rem;opacity:.75;margin:0}
+
+/* ---------- songs, shelf ---------- */
+.ss-songs{display:flex;flex-wrap:wrap;gap:8px}
+.ss-songs a{border:1px solid var(--ss-line-2);border-radius:999px;padding:6px 14px;font-size:.88rem;text-decoration:none}
+.ss-songs a:hover{border-color:var(--ss-accent)}
+.ss-shelf{display:grid;gap:8px}
+.ss-shelfitem{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 14px;border:1px solid var(--ss-line);border-radius:11px}
+.ss-shelfitem .ss-nm{font-family:var(--font-display,'Anton',sans-serif);font-size:1.15rem;letter-spacing:.03em;flex:1 1 160px}
+.ss-shelfitem .ss-mt{font-size:.78rem;opacity:.6}
+.ss-empty{border:1px dashed var(--ss-line-2);border-radius:12px;padding:18px;opacity:.75;font-size:.92rem}
+
+/* ---------- tuner ---------- */
+.ss-tuner{display:grid;gap:14px}
+.ss-needle{height:66px;border:1px solid var(--ss-line);border-radius:11px;position:relative;overflow:hidden;background:var(--ss-soft)}
+.ss-needle .ss-mid{position:absolute;left:50%;top:0;bottom:0;width:2px;background:var(--ss-line-2)}
+.ss-needle .ss-pin{position:absolute;top:7px;bottom:7px;width:4px;border-radius:2px;background:var(--ss-crimson-lift);left:50%;transition:left .09s linear}
+.ss-needle .ss-pin.intune{background:var(--ss-teal)}
+.ss-tunernote{font-family:var(--font-display,'Anton',sans-serif);font-size:2.4rem;line-height:1;text-align:center}
+.ss-cents{text-align:center;font-size:.86rem;opacity:.7}
+.ss-strings6{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.ss-strings6 b{border:1px solid var(--ss-line-2);border-radius:8px;padding:5px 12px;font-weight:400;font-size:.9rem}
+.ss-strings6 b.on{background:var(--ss-teal);border-color:var(--ss-teal);color:#fff}
+
+/* ---------- sticky actions + toast ---------- */
+.ss-actionbar{
+  position:sticky;bottom:0;z-index:30;margin-top:2rem;
+  backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);
+  background:color-mix(in srgb, Canvas 78%, transparent);
+  border-top:1px solid var(--ss-line);
+}
+.ss-actionbar .wrap{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding-top:11px;padding-bottom:11px}
+.ss-actionbar .ss-grow{flex:1 1 auto}
+.ss-state{font-size:.82rem;opacity:.65}
+.ss-toast{
+  position:fixed;left:50%;transform:translateX(-50%);bottom:84px;z-index:60;
+  background:#14141a;color:#fff;padding:10px 18px;border-radius:999px;font-size:.87rem;
+  opacity:0;pointer-events:none;transition:opacity .2s ease;max-width:88vw;text-align:center;
+}
+.ss-toast.show{opacity:1}
+
+@media (max-width:640px){
+  .ss-formrow{grid-template-columns:1fr}
+  .ss-slot .ss-name{font-size:1.85rem}
+}
+@media (prefers-reduced-motion:reduce){ .ss-slot,.ss-needle .ss-pin{transition:none} }
+@media print{
+  .ss-machine,.ss-controls,.ss-actionbar,.ss-transport,.site-head,.site-foot,
+  .ss-tunerwrap,#ss-shelfSec,.ticker,.hero{display:none!important}
+  .ss-chordcard,.ss-part{break-inside:avoid}
+}
+</style>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 
 <header class="site-head">
-  <div class="wrap nav">
-    <a class="brand" href="index.html" aria-label="Trinity River Guitar Club home">
-      <svg class="brand__mark" viewBox="0 0 40 40" aria-hidden="true">
-        <defs><linearGradient id="pk" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#c8103f"/><stop offset="55%" stop-color="#98002e"/><stop offset="100%" stop-color="#00788a"/>
-        </linearGradient></defs>
-        <path d="M20 2.5c9.2 0 16.2 6 16.2 13.3 0 9.2-10.3 21.7-16.2 21.7S3.8 25 3.8 15.8C3.8 8.5 10.8 2.5 20 2.5z" fill="url(#pk)"/>
-        <g stroke="#dac792" stroke-width="1.1" opacity=".85">
-          <line x1="13" y1="7" x2="13" y2="30"/><line x1="20" y1="5.5" x2="20" y2="33"/><line x1="27" y1="7" x2="27" y2="30"/>
-        </g>
-      </svg>
-      <span class="brand__txt"><span class="brand__name">Trinity River</span><span class="brand__sub">Guitar Club</span></span>
-    </a>
-    <button class="nav__toggle" aria-expanded="false" aria-controls="primary-nav" aria-label="Menu"><span></span><span></span><span></span></button>
-    <ul class="nav__links" id="primary-nav">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="media.html">Media</a></li>
-      <li><a href="play-along.html">Play Along</a></li>
-      <li><a href="progressions.html" aria-current="page">Song Starter</a></li>
-      <li><a href="guitar-care.html">Guitar Care</a></li>
-      <li><a href="calendar.html">Calendar</a></li>
-      <li class="nav__cta"><a class="btn btn--sm" href="mailto:jared.stewart@tccd.edu?subject=Trinity%20River%20Guitar%20Club">Contact TRGC</a></li>
-    </ul>
-  </div>
+<div class="wrap nav">
+<a class="brand" href="index.html" aria-label="Trinity River Guitar Club home">
+<svg class="brand__mark" viewBox="0 0 40 40" aria-hidden="true">
+<defs><linearGradient id="pk" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0%" stop-color="#c8103f"/><stop offset="55%" stop-color="#98002e"/><stop offset="100%" stop-color="#00788a"/>
+</linearGradient></defs>
+<path d="M20 2.5c9.2 0 16.2 6 16.2 13.3 0 9.2-10.3 21.7-16.2 21.7S3.8 25 3.8 15.8C3.8 8.5 10.8 2.5 20 2.5z" fill="url(#pk)"/>
+<g stroke="#dac792" stroke-width="1.1" opacity=".85">
+<line x1="13" y1="7" x2="13" y2="30"/><line x1="20" y1="5.5" x2="20" y2="33"/><line x1="27" y1="7" x2="27" y2="30"/>
+</g>
+</svg>
+<span class="brand__txt"><span class="brand__name">Trinity River</span><span class="brand__sub">Guitar Club</span></span>
+</a>
+<button class="nav__toggle" aria-expanded="false" aria-controls="primary-nav" aria-label="Menu"><span></span><span></span><span></span></button>
+<ul class="nav__links" id="primary-nav">
+<li><a href="index.html">Home</a></li>
+<li><a href="media.html">Media</a></li>
+<li><a href="play-along.html">Play Along</a></li>
+<li><a href="progressions.html" aria-current="page">Song Starter</a></li>
+<li><a href="calendar.html">Calendar</a></li>
+<li class="nav__cta"><a class="btn btn--sm" href="mailto:jared.stewart@tccd.edu?subject=Trinity%20River%20Guitar%20Club">Contact TRGC</a></li>
+</ul>
+</div>
 </header>
 
 <main id="main">
 
 <!-- ===================== HERO ===================== -->
 <section class="hero hero--page grain">
-  <div class="hero__media">
-    <img src="hero.jpg" alt="Students in a circle of chairs with guitars around a lit fire pit" fetchpriority="high" width="2200" height="1650">
-  </div>
-  <div class="hero__scrim"></div>
-  <div class="wrap hero__inner">
-    <p class="eyebrow">Song Starter</p>
-    <h1 class="display d1" style="font-size:clamp(2.6rem,8vw,5.4rem)">Six questions.<br>One song idea.</h1>
-    <p class="lede hero__sub">
-      Tell it what you can play and what you want it to sound like. It hands back a progression that
-      real songs are built on, the fingerings for your hands, a strum, and a button that plays it.
-    </p>
-  </div>
+<div class="hero__media">
+<img src="hero.jpg" alt="Students in a circle of chairs with guitars around a lit fire pit" fetchpriority="high" width="1050" height="1400">
+</div>
+<div class="hero__scrim"></div>
+<div class="wrap hero__inner">
+<p class="eyebrow">Song Starter</p>
+<h1 class="display d1" style="font-size:clamp(2.6rem,8vw,5.4rem)">Something<br>is already<br>playing.</h1>
+<p class="lede hero__sub">Lock the chords you want to keep and spin the rest. Real fingerings, the capo maths done for you, and a part for everyone in the room.</p>
+</div>
 </section>
 
-<!-- ===================== THE FORM ===================== -->
-<section class="pad" id="prep">
-  <div class="wrap wrap--narrow">
+<div class="ticker" aria-hidden="true">
+<div class="ticker__track">
+<span>40 progressions</span><span>Lock a chord, spin the rest</span><span>Capo math done for you</span><span>Parts for the whole room</span><span>Built-in tuner</span>
+<span>40 progressions</span><span>Lock a chord, spin the rest</span><span>Capo math done for you</span><span>Parts for the whole room</span><span>Built-in tuner</span>
+</div>
+</div>
 
-    <p class="eyebrow">Start here</p>
-    <h2 class="display d2">What are you<br>working with?</h2>
-    <p class="lede mt2" style="max-width:62ch">
-      Nothing here is graded and nothing is saved. Answer honestly about what your hands can do today —
-      the tool works around it. <span class="sand">Every progression below is one that real songs use.</span>
-      None of it is made up on the spot.
-    </p>
+<!-- ===================== THE MACHINE ===================== -->
+<section class="pad glow-crimson" id="starter">
+<div class="wrap wrap--wide">
+<div class="reveal" style="max-width:62ch">
+<p class="eyebrow">The machine</p>
+<h2 class="display d2">Press play,<br>then start meddling.</h2>
+<p class="dim mt1">Every progression below is one real songs are built on. Nothing here is invented on the spot, and nothing is graded.</p>
+</div>
 
-    <div class="qgrid mt3">
+<details class="acc mt3 reveal">
+<summary>Never used this before? Thirty seconds, start here</summary>
+<div class="acc__body">
+<p><strong class="sand">Press Play.</strong> You will hear four clicks, then the chords. The one playing lifts and turns teal. Each chord gets one bar (four beats) before the next.</p>
+<p><strong class="sand">Play along.</strong> The diagrams further down show where your fingers go. Do not worry about the strum yet. Hit each chord once when it changes and you are already playing the song.</p>
+<p><strong class="sand">Like a chord? Lock it.</strong> The padlock on each card keeps that chord. <em>Spin the unlocked</em> swaps the others for something else real songs use.</p>
+<p><strong class="sand">Too hard? Say so.</strong> Set <em>What your hands can do</em> to open chords only and the tool will never hand you a barre chord. If a change still feels impossible, press <em>Same sound, easier hands</em>.</p>
+<p class="mb0"><strong class="sand">The small numerals</strong> above each chord (I, IV, V, vi) are its job in the key: I is home, V pulls you back home, lowercase means minor. You do not need them yet. They are there so that one day you notice every song uses the same handful of moves.</p>
+</div>
+</details>
 
-      <div class="q" role="group" aria-labelledby="q1-lg">
-        <p class="q__lg" id="q1-lg"><span class="q__n">1</span> How many chords?</p>
-        <div class="opts" data-field="n">
-          <button type="button" data-v="any" aria-pressed="true">Doesn’t matter</button>
-          <button type="button" data-v="2" aria-pressed="false">2</button>
-          <button type="button" data-v="3" aria-pressed="false">3</button>
-          <button type="button" data-v="4" aria-pressed="false">4</button>
-          <button type="button" data-v="5" aria-pressed="false">5 or more</button>
-        </div>
-        <p class="q__hint">Two is a real answer. Plenty of great songs never use a third.</p>
-      </div>
+<div class="panel ss-machine mt3">
+<div class="ss-slots" id="slots" role="list" aria-label="Chord progression"></div>
+<div class="ss-between" id="between" aria-hidden="true"></div>
+<div class="ss-transport">
+<button class="btn" id="playBtn" aria-label="Play the progression">Play</button>
+<button class="btn btn--ghost" id="spinBtn">Spin the unlocked</button>
+<button class="btn btn--ghost btn--sm" id="unlockBtn">Clear locks</button>
+<div class="ss-tempo"><label for="bpm">Tempo</label><input type="range" id="bpm" min="50" max="180" value="96" step="2"><output id="bpmOut">96</output></div>
+<div class="ss-toggles">
+<label title="A metronome tick on every beat"><input type="checkbox" id="metro"> Metronome click</label>
+<label title="Four clicks before the music starts so you come in on time"><input type="checkbox" id="countin" checked> Count-in</label>
+<label title="Otherwise it plays the loop four times and stops"><input type="checkbox" id="loopchk"> Keep looping</label>
+</div>
+</div>
+<p class="dim mb0 mt2" style="font-size:.84rem">Plays the loop four times, then stops, unless you tick <em>Keep looping</em>. Tempo is beats per minute. Slower is fine. Clean first, fast later. Keyboard: space plays and stops, R spins.</p>
+</div>
 
-      <div class="q" role="group" aria-labelledby="q2-lg">
-        <p class="q__lg" id="q2-lg"><span class="q__n">2</span> What can your hands do?</p>
-        <div class="opts" data-field="skill">
-          <button type="button" data-v="open" aria-pressed="true">Open chords only</button>
-          <button type="button" data-v="some" aria-pressed="false">A barre or two is fine</button>
-          <button type="button" data-v="any" aria-pressed="false">Anything</button>
-        </div>
-        <p class="q__hint">Open chords are the ones with open strings ringing — G, C, D, Em, Am. If barre chords still buzz, say so.</p>
-      </div>
-
-      <div class="q q--wide q--split" role="group" aria-labelledby="q3-lg">
-        <p class="q__lg" id="q3-lg"><span class="q__n">3</span> Do you have a capo?</p>
-        <div class="q__body">
-          <div class="opts" data-field="capo">
-            <button type="button" data-v="yes" aria-pressed="true">Yes</button>
-            <button type="button" data-v="no" aria-pressed="false">No</button>
-          </div>
-          <p class="q__hint">This is the big one. A capo lets you play open shapes in keys that would otherwise need barre chords. The club has spares.</p>
-        </div>
-      </div>
-
-      <div class="q q--wide" role="group" aria-labelledby="q4-lg">
-        <p class="q__lg" id="q4-lg"><span class="q__n">4</span> What should it feel like?</p>
-        <div class="opts" data-field="mood">
-          <button type="button" data-v="any" aria-pressed="true">Surprise me</button>
-          <button type="button" data-v="bright">Bright</button>
-          <button type="button" data-v="sad">Sad</button>
-          <button type="button" data-v="bittersweet">Bittersweet</button>
-          <button type="button" data-v="dreamy">Dreamy</button>
-          <button type="button" data-v="driving">Driving</button>
-          <button type="button" data-v="dark">Dark</button>
-          <button type="button" data-v="tense">Tense</button>
-        </div>
-        <p class="q__hint">Each of these points at a different harmonic trick, not just major versus minor.</p>
-      </div>
-
-      <div class="q q--wide" role="group" aria-labelledby="q5-lg">
-        <p class="q__lg" id="q5-lg"><span class="q__n">5</span> Any particular style?</p>
-        <div class="opts opts--wrap" data-field="genre">
-          <button type="button" data-v="any" aria-pressed="true">Leave it open</button>
-          <button type="button" data-v="pop">Pop</button>
-          <button type="button" data-v="rock">Rock</button>
-          <button type="button" data-v="blues">Blues</button>
-          <button type="button" data-v="country">Country</button>
-          <button type="button" data-v="bluegrass">Bluegrass</button>
-          <button type="button" data-v="folk">Folk</button>
-          <button type="button" data-v="indie">Indie</button>
-          <button type="button" data-v="punk">Punk</button>
-          <button type="button" data-v="metal">Metal</button>
-          <button type="button" data-v="jazz">Jazz</button>
-          <button type="button" data-v="bossa">Bossa nova</button>
-          <button type="button" data-v="latin">Latin</button>
-          <button type="button" data-v="worship">Worship</button>
-          <button type="button" data-v="flamenco">Flamenco</button>
-          <button type="button" data-v="classical">Classical</button>
-        </div>
-        <p class="q__hint">Genre mostly lives in the strum, not the chords. This sets your rhythm and tempo too.</p>
-      </div>
-
-      <div class="q q--wide q--split" role="group" aria-labelledby="q6-lg">
-        <p class="q__lg" id="q6-lg"><span class="q__n">6</span> What key?</p>
-        <div class="q__body">
-        <div class="q__sel">
-          <label class="vh" for="pkey">Key</label>
-          <select id="pkey">
-            <option value="auto" selected>Pick the easiest one for me</option>
-            <option value="7">G</option>
-            <option value="0">C</option>
-            <option value="2">D</option>
-            <option value="9">A</option>
-            <option value="4">E</option>
-            <option value="5">F</option>
-            <option value="10">B♭</option>
-            <option value="3">E♭</option>
-            <option value="11">B</option>
-            <option value="8">A♭</option>
-            <option value="1">D♭</option>
-            <option value="6">F♯</option>
-          </select>
-        </div>
-        <p class="q__hint">If you are singing it, the key that suits your voice beats the key that suits your hands. That is what the capo is for.</p>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="btn-row mt3">
-      <button type="button" class="btn" id="prep-go">Give me a progression</button>
-    </div>
-
-    <div id="prep-out" class="mt3" hidden aria-live="polite"></div>
-
-  </div>
+<div class="panel panel--outline mt2 ss-controls">
+<div class="ss-ctrl-grid">
+<div class="ss-ctrl"><h3>How many chords</h3><div class="ss-chips" id="cLen" role="group" aria-label="Number of chords"></div>
+<p class="ss-hint">Two is a real answer. Plenty of great songs never use a third.</p></div>
+<div class="ss-ctrl"><h3>What your hands can do</h3><div class="ss-chips" id="cHands" role="group" aria-label="Hand ability"></div>
+<p class="ss-hint">A barre chord is one where your index finger lies flat across all six strings, like F. If yours still buzz, pick <em>open chords only</em>. This rates the <em>moves between</em> chords, not just the shapes, because that is where beginners get stuck.</p></div>
+<div class="ss-ctrl"><h3>Capo</h3><div class="ss-chips" id="cCapo" role="group" aria-label="Capo available"></div>
+<p class="ss-hint">A capo is a clamp that pins all six strings at one fret. It moves the "open" position up the neck, so the easy shapes you already know sound higher without any new fingerings. Say yes if you own one. The club has spares.</p></div>
+<div class="ss-ctrl"><h3>Feel</h3><div class="ss-chips" id="cMood" role="group" aria-label="Mood"></div>
+<p class="ss-hint">Each of these points at a different harmonic trick, not just major versus minor. Try two and hear the difference.</p></div>
+<div class="ss-ctrl"><h3>Style</h3><select id="cGenre" aria-label="Style"></select>
+<p class="ss-hint">Style mostly lives in the strum. This sets your rhythm and tempo too.</p></div>
+<div class="ss-ctrl"><h3>Key it sounds in</h3><select id="cKey" aria-label="Key"></select>
+<p class="ss-hint" id="keyHint">Not sure? Leave it on G. A key is just which note feels like home. If you are singing and it sits too high or too low for your voice, change this and let the capo sort out your hands.</p></div>
+</div>
+</div>
+</div>
 </section>
 
-<!-- ===================== FIND A SONG ===================== -->
-<section class="pad-sm glow-teal" id="find">
-  <div class="wrap wrap--narrow">
-    <p class="eyebrow">Find a song</p>
-    <h2 class="display d3">Chase down the real thing.</h2>
-    <p class="dim mt1" style="max-width:60ch">
-      Every result above names songs built on your progression. Type one in — or anything else you
-      want to play — and search the three big tab sites in one click. The tabs live on their sites,
-      where they're licensed.
-    </p>
+<hr class="rule">
 
-    <div class="findbar reveal mt3">
-      <label class="vh" for="findq">Song or artist</label>
-      <input type="search" id="findq" placeholder="Try &ldquo;Stand By Me&rdquo; or &ldquo;CCR&rdquo;&hellip;" autocomplete="off" spellcheck="false">
-      <div class="findbar__sites">
-        <a class="btn btn--sm" id="find-ug" href="https://www.ultimate-guitar.com/" target="_blank" rel="noopener">Ultimate Guitar</a>
-        <a class="btn btn--sm btn--ghost" id="find-ss" href="https://www.songsterr.com/" target="_blank" rel="noopener">Songsterr</a>
-        <a class="btn btn--sm btn--ghost" id="find-cf" href="https://chordify.net/" target="_blank" rel="noopener">Chordify</a>
-      </div>
-    </div>
-    <p class="dim reveal mt2" style="font-size:.92rem;max-width:60ch">
-      Enter searches Ultimate Guitar. Charts the club writes for itself live on our
-      <a href="https://canvas.tccd.edu/courses/104217" target="_blank" rel="noopener">Canvas page</a>
-      &mdash; sign in with your TCC account.
-    </p>
-  </div>
+<!-- ===================== HANDS ===================== -->
+<section class="pad" id="hands">
+<div class="wrap wrap--wide">
+<div class="reveal" style="max-width:62ch">
+<p class="eyebrow">Under your fingers</p>
+<h2 class="display d2">The change is<br>the hard part.</h2>
+<p class="dim mt1" id="whyLine"></p>
+</div>
+<div class="ss-meter mt2" id="ss-meter">
+<span class="ss-bar"><i></i></span>
+<span class="ss-lab" id="meterLab"></span>
+<button class="btn btn--sm btn--ghost" id="easierBtn">Same sound, easier hands</button>
+</div>
+<p class="dim mb0" style="font-size:.9rem;max-width:66ch">Diagrams are the neck as you would see it held upright in front of you: thickest string on the left, nut at the top. Numbers in the dots are fingers (<b class="sand">1</b> index, <b class="sand">2</b> middle, <b class="sand">3</b> ring, <b class="sand">4</b> pinky). A hollow circle above a string means play it open. An <b class="sand">×</b> means leave that string out. A thick bar is your index finger flattened across several strings. Numbers under each card are the frets, thick string to thin. <a href="play-along.html#chords">Forty more shapes on Play Along.</a></p>
+<div class="ss-chordrow mt2" id="chords"></div>
+
+<div class="panel panel--outline mt3">
+<h3 class="display d4" style="margin-bottom:.6rem">Strum <span class="dim" id="strumName"></span></h3>
+<p class="dim" style="font-size:.9rem">One box per half-beat, counted <em>1 &amp; 2 &amp; 3 &amp; 4 &amp;</em>. Your strumming hand swings down on the numbers and up on the "ands" the whole time. The pattern only decides which swings touch the strings.</p>
+<div class="ss-count" aria-hidden="true"><b>1</b><b>&amp;</b><b>2</b><b>&amp;</b><b>3</b><b>&amp;</b><b>4</b><b>&amp;</b></div>
+<div class="ss-strum" id="strum"></div>
+<p class="dim" style="font-size:.9rem" id="strumNote"></p>
+<div class="ss-legend" id="strumLegend"></div>
+</div>
+</div>
 </section>
 
-<!-- ===================== HOW TO USE IT ===================== -->
-<section class="pad-sm alt">
-  <div class="wrap wrap--narrow">
-    <p class="eyebrow">What to do with it</p>
-    <h2 class="display d3">A progression is not a song yet.</h2>
-    <div class="prose mt2">
-      <p>
-        Four chords in a loop is a foundation, not a finished thing. What turns it into music is
-        everything the generator can’t decide for you: where you put the emphasis, which chord you
-        hang on an extra bar, what you sing over it, where you stop playing entirely.
-      </p>
-      <p>
-        The fastest way to use this: draw a progression, play the loop until your hands stop thinking
-        about it, then start changing one thing at a time. Hold the first chord twice as long. Cut the
-        last chord early. Hum something over the top and follow wherever it goes. Nothing here is
-        precious — hit <em>Another one</em> as often as you want.
-      </p>
-      <p class="mb0">
-        Bring whatever you end up with to a Tuesday or Friday meeting. Somebody will know what to do
-        with it, and <strong>Dr. Héctor A. Torres González</strong> can tell you what you accidentally
-        invented and what it is called.
-      </p>
-    </div>
-    <div class="btn-row mt3">
-      <a class="btn btn--ghost" href="play-along.html">Learn the shapes first</a>
-      <a class="btn btn--ghost" href="calendar.html">Come to a meeting</a>
-    </div>
-  </div>
+<hr class="rule">
+
+<!-- ===================== CAPO ===================== -->
+<section class="pad glow-teal" id="capo">
+<div class="wrap">
+<div class="reveal" style="max-width:62ch">
+<p class="eyebrow">Capo calculator</p>
+<h2 class="display d2">Same key,<br>easier shapes.</h2>
+<p class="dim mt1">Every way to play this progression in the same sounding key. The marked row is what is on screen above.</p>
+</div>
+
+<div class="prose mt3 reveal" style="max-width:66ch">
+<p><strong class="sand">What a capo does.</strong> Clamp it on fret 3 and the guitar behaves as if fret 3 is the nut. Every shape you already know now sounds three frets (three half steps) higher. Your fingers make a G, the room hears a B♭. Nothing about the shape changed; the whole instrument moved.</p>
+<p><strong class="sand">Why that matters.</strong> Guitars are easy in C, G, D, A and E because those keys use open strings. Singers do not care about that, and a lot of songs live in E♭, F, A♭ or B♭. Without a capo those keys mean barre chords all the way through. With one, they mean the same five shapes you learned first.</p>
+<p class="mb0"><strong class="sand">Reading this table.</strong> The <em>Capo</em> column is where to clamp. <em>Shapes you play</em> is what your hands do. Every row sounds identical to a listener; they differ only in how hard the changes are. Put the capo just behind the fret wire, not on top of it, and only as tight as it needs to be. Over-clamping pulls everything sharp.</p>
+</div>
+<div class="panel mt3 ss-tablewrap">
+<table class="ss-table" id="capoTable">
+<thead><tr><th>Capo on fret</th><th>Shapes you play</th><th>Hardest change</th><th><span class="vh">Action</span></th></tr></thead>
+<tbody></tbody>
+</table>
+</div>
+</div>
+</section>
+
+<hr class="rule">
+
+<!-- ===================== FORM ===================== -->
+<section class="pad">
+<div class="wrap">
+<div class="reveal" style="max-width:62ch">
+<p class="eyebrow">Structure</p>
+<h2 class="display d2">A progression<br>is not a song yet.</h2>
+<p class="dim mt1">Four chords in a loop is a foundation. Here is a shape to hang it on. The chorus is built out of your verse, not pulled out of a hat.</p>
+<p class="dim mt1" style="font-size:.92rem">A <b class="sand">verse</b> is where the story goes and it repeats with different words. The <b class="sand">chorus</b> is the part everyone sings, same words every time, usually higher. A <b class="sand">pre-chorus</b> is the short ramp between them. A <b class="sand">bridge</b> shows up once, late, to break the pattern before the last chorus. Verse, verse, chorus, verse, chorus, bridge, chorus is a whole song.</p>
+</div>
+<div class="panel mt3" style="padding-top:.4rem;padding-bottom:.4rem" id="form"></div>
+</div>
+</section>
+
+<hr class="rule">
+
+<!-- ===================== BAND ===================== -->
+<section class="pad glow-crimson">
+<div class="wrap">
+<div class="reveal" style="max-width:62ch">
+<p class="eyebrow">Parts for the room</p>
+<h2 class="display d2">Four people,<br>four things to play.</h2>
+<p class="dim mt1">When six guitars all strum full chords it turns to mud. Hand these out and the same progression starts sounding arranged.</p>
+<p class="dim mt1" style="font-size:.92rem">Two words that come up below. The <b class="sand">root</b> is the note a chord is named after: the G in a G chord. It is the lowest note in every open shape on this page. <b class="sand">Pentatonic</b> means five notes, chosen so that none of them clash with any chord in the key. That is why a beginner can wander around the box below and nothing sounds wrong.</p>
+</div>
+<div class="ss-stack mt3" id="band"></div>
+</div>
+</section>
+
+<hr class="rule">
+
+<!-- ===================== SONGS ===================== -->
+<section class="pad glow-teal" id="find">
+<div class="wrap">
+<div class="reveal" style="max-width:62ch">
+<p class="eyebrow">Chase down the real thing</p>
+<h2 class="display d2">Songs built<br>on this.</h2>
+<p class="dim mt1">Tabs live on their own sites, where they are licensed. Each one opens a search.</p>
+</div>
+<div class="ss-songs mt3" id="songs"></div>
+
+<div class="findbar reveal mt3">
+<label class="vh" for="findq">Song or artist</label>
+<input type="search" id="findq" placeholder="Try &ldquo;Stand By Me&rdquo; or &ldquo;CCR&rdquo;&hellip;" autocomplete="off" spellcheck="false">
+<div class="findbar__sites">
+<a class="btn btn--sm" id="find-ug" href="https://www.ultimate-guitar.com/" target="_blank" rel="noopener">Ultimate Guitar</a>
+<a class="btn btn--sm btn--ghost" id="find-ss" href="https://www.songsterr.com/" target="_blank" rel="noopener">Songsterr</a>
+<a class="btn btn--sm btn--ghost" id="find-cf" href="https://chordify.net/" target="_blank" rel="noopener">Chordify</a>
+</div>
+</div>
+<p class="dim reveal mt2" style="font-size:.92rem;max-width:60ch">
+Enter searches Ultimate Guitar. Charts the club writes for itself live on our
+<a href="https://canvas.tccd.edu/courses/104217" target="_blank" rel="noopener">Canvas page</a>
+&mdash; sign in with your TCC account.
+</p>
+</div>
+</section>
+
+<hr class="rule">
+
+<!-- ===================== SHELF ===================== -->
+<section class="pad" id="ss-shelfSec">
+<div class="wrap">
+<div class="reveal" style="max-width:62ch">
+<p class="eyebrow">Kept</p>
+<h2 class="display d2">Take it with you.</h2>
+<p class="dim mt1">Saved progressions stay in this browser only. Nothing is uploaded, and the copied link carries the whole thing to anybody you send it to.</p>
+</div>
+<div class="ss-shelf mt3" id="shelf"></div>
+</div>
+</section>
+
+<hr class="rule">
+
+<!-- ===================== TUNER ===================== -->
+<section class="pad ss-tunerwrap">
+<div class="wrap">
+<div class="reveal" style="max-width:62ch">
+<p class="eyebrow">First things first</p>
+<h2 class="display d2">Tune it.</h2>
+<p class="dim mt1">Uses the microphone in this browser only. Nothing is recorded and nothing leaves the page. Play one string at a time and let it ring. The six strings, thickest to thinnest, are <b class="sand">E A D G B e</b>. <b class="sand">Flat</b> means too low, turn the peg to tighten. <b class="sand">Sharp</b> means too high, loosen it. If you overshoot, go a little below the note and come back up; approaching from below is what makes it stay in tune.</p>
+</div>
+<div class="panel ss-tuner mt3">
+<button class="btn btn--teal" id="ss-tunerBtn" style="justify-self:start">Turn on the tuner</button>
+<div class="ss-tunernote" id="ss-tunerNote">&mdash;</div>
+<div class="ss-needle"><span class="ss-mid"></span><span class="ss-pin" id="ss-tunerPin"></span></div>
+<div class="ss-cents" id="ss-tunerCents">Flat is left of the line, sharp is right. Green means you are there.</div>
+<div class="ss-strings6" id="ss-tunerStrings"></div>
+</div>
+</div>
+</section>
+
+<!-- ===================== CTA ===================== -->
+<section class="pad-sm">
+<div class="wrap">
+<div class="panel panel--sand grain center reveal">
+<h2 class="display d2">Bring it Tuesday.</h2>
+<p class="lede mt2" style="max-width:52ch;margin-inline:auto">
+Play the loop until your hands stop thinking about it, then change one thing. Somebody at the meeting will tell you what you accidentally invented and what it is called.
+</p>
+<div class="btn-row mt2" style="justify-content:center">
+<a class="btn" href="calendar.html">See the calendar</a>
+<a class="btn btn--ghost" href="play-along.html">Learn the shapes first</a>
+</div>
+</div>
+</div>
 </section>
 
 </main>
 
+<div class="ss-actionbar">
+<div class="wrap">
+<button class="btn btn--sm" id="keepBtn">Keep this one</button>
+<button class="btn btn--sm btn--ghost" id="shareBtn">Copy link</button>
+<button class="btn btn--sm btn--ghost" id="printBtn">Print chart</button>
+<span class="ss-grow"></span>
+<span class="ss-state" id="stateLine"></span>
+</div>
+</div>
+
 <footer class="site-foot">
-  <div class="wrap">
-    <div class="foot__grid foot">
-      <div>
-        <a class="brand" href="index.html" style="margin-bottom:1rem">
-          <svg class="brand__mark" viewBox="0 0 40 40" aria-hidden="true">
-            <defs><linearGradient id="pk2" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#c8103f"/><stop offset="55%" stop-color="#98002e"/><stop offset="100%" stop-color="#00788a"/>
-            </linearGradient></defs>
-            <path d="M20 2.5c9.2 0 16.2 6 16.2 13.3 0 9.2-10.3 21.7-16.2 21.7S3.8 25 3.8 15.8C3.8 8.5 10.8 2.5 20 2.5z" fill="url(#pk2)"/>
-            <g stroke="#dac792" stroke-width="1.1" opacity=".85">
-              <line x1="13" y1="7" x2="13" y2="30"/><line x1="20" y1="5.5" x2="20" y2="33"/><line x1="27" y1="7" x2="27" y2="30"/>
-            </g>
-          </svg>
-          <span class="brand__txt"><span class="brand__name">Trinity River</span><span class="brand__sub">Guitar Club</span></span>
-        </a>
-        <p class="dim" style="max-width:38ch;font-size:.94rem">A student and faculty guitar club in Fort Worth, Texas. All skill levels. All genres. Bring your guitar, or borrow one of ours.</p>
-      </div>
-      <div>
-        <h4>Site</h4>
-        <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="media.html">Media</a></li>
-          <li><a href="play-along.html">Play Along</a></li>
-          <li><a href="progressions.html">Song Starter</a></li>
-          <li><a href="calendar.html">Club Calendar</a></li>
-          <li><a href="trgc-constitution.pdf">Constitution</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>Contact</h4>
-        <ul>
-          <li>Stew &mdash; <a href="mailto:jared.stewart@tccd.edu">jared.stewart@tccd.edu</a></li>
-          <li>Hal &mdash; <a href="mailto:harold.macias@tccd.edu">harold.macias@tccd.edu</a></li>
-          <li><span class="dim">Tuesdays 11:30 AM – 12:30 PM</span></li>
-          <li><span class="dim">Fridays 12:00 – 1:00 PM</span></li>
-          <li><span class="dim">Trinity River Campus · Fort Worth</span></li>
-        </ul>
-      </div>
-    </div>
-    <div class="foot__bottom">
-      <span>© <span data-year>2026</span> Trinity River Guitar Club</span>
-      <span>Built by students, for students. <span class="sand">Thank you, Dr. Sean Madison.</span></span>
-    </div>
-  </div>
+<div class="wrap">
+<div class="foot__grid foot">
+<div>
+<a class="brand" href="index.html" style="margin-bottom:1rem">
+<svg class="brand__mark" viewBox="0 0 40 40" aria-hidden="true">
+<defs><linearGradient id="pk2" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0%" stop-color="#c8103f"/><stop offset="55%" stop-color="#98002e"/><stop offset="100%" stop-color="#00788a"/>
+</linearGradient></defs>
+<path d="M20 2.5c9.2 0 16.2 6 16.2 13.3 0 9.2-10.3 21.7-16.2 21.7S3.8 25 3.8 15.8C3.8 8.5 10.8 2.5 20 2.5z" fill="url(#pk2)"/>
+<g stroke="#dac792" stroke-width="1.1" opacity=".85">
+<line x1="13" y1="7" x2="13" y2="30"/><line x1="20" y1="5.5" x2="20" y2="33"/><line x1="27" y1="7" x2="27" y2="30"/>
+</g>
+</svg>
+<span class="brand__txt"><span class="brand__name">Trinity River</span><span class="brand__sub">Guitar Club</span></span>
+</a>
+<p class="dim" style="max-width:38ch;font-size:.94rem">A student and faculty guitar club in Fort Worth, Texas. All skill levels. All genres. Bring your guitar, or borrow one of ours.</p>
+</div>
+<div>
+<h4>Site</h4>
+<ul>
+<li><a href="index.html">Home</a></li>
+<li><a href="media.html">Media</a></li>
+<li><a href="play-along.html">Play Along</a></li>
+<li><a href="progressions.html">Song Starter</a></li>
+<li><a href="calendar.html">Club Calendar</a></li>
+<li><a href="trgc-constitution.pdf">Constitution</a></li>
+</ul>
+</div>
+<div>
+<h4>Contact</h4>
+<ul>
+<li>Stew &mdash; <a href="mailto:jared.stewart@tccd.edu">jared.stewart@tccd.edu</a></li>
+<li>Hal &mdash; <a href="mailto:harold.macias@tccd.edu">harold.macias@tccd.edu</a></li>
+<li><span class="dim">Tuesdays 11:30 AM – 12:30 PM</span></li>
+<li><span class="dim">Fridays 12:00 – 1:00 PM</span></li>
+<li><span class="dim">Trinity River Campus · Fort Worth</span></li>
+</ul>
+</div>
+</div>
+<div class="foot__bottom">
+<span>© <span data-year>2026</span> Trinity River Guitar Club</span>
+<span>Built by students, for students. <span class="sand">Thank you, Dr. Sean Madison.</span></span>
+</div>
+</div>
 </footer>
 
+<div class="ss-toast" id="ss-toast" role="status" aria-live="polite"></div>
+
 <script src="site.js" defer></script>
-<script src="progressions.js" defer></script>
+<script>
+/* ============================================================
+   SONG STARTER — engine
+   Everything runs in the browser. No network, no storage beyond
+   this device's localStorage.
+   ============================================================ */
+'use strict';
+
+const PC = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const FLAT = {'C#':'D\u266d','D#':'E\u266d','F#':'F#','G#':'A\u266d','A#':'B\u266d'};
+const OPEN_MIDI = [40,45,50,55,59,64];           // E2 A2 D3 G3 B3 E4
+
+const pcOf = n => PC.indexOf(n);
+const pretty = n => String(n).replace(/^([A-G]#)/, m => FLAT[m] || m);
+
+/* ---------- chord shapes ----------
+   f = frets low-E..high-e (-1 muted, 0 open)
+   d = finger per string (0 none, 1 index .. 4 pinky)
+   b = barre fret if the index finger lies flat                */
+const SHAPES = {
+  'C':      {f:[-1,3,2,0,1,0], d:[0,3,2,0,1,0]},
+  'Cadd9':  {f:[-1,3,2,0,3,0], d:[0,3,2,0,4,0], note:'Anchor grip'},
+  'Cmaj7':  {f:[-1,3,2,0,0,0], d:[0,3,2,0,0,0]},
+  'C7':     {f:[-1,3,2,3,1,0], d:[0,3,2,4,1,0]},
+  'Csus2':  {f:[-1,3,0,0,3,3], d:[0,2,0,0,3,4]},
+  'Cm':     {f:[-1,3,5,5,4,3], d:[0,1,3,4,2,1], b:3},
+  'C#m':    {f:[-1,4,6,6,5,4], d:[0,1,3,4,2,1], b:4},
+  'C#m7':   {f:[-1,4,6,4,5,4], d:[0,1,3,1,2,1], b:4},
+  'D':      {f:[-1,-1,0,2,3,2], d:[0,0,0,1,3,2]},
+  'Dm':     {f:[-1,-1,0,2,3,1], d:[0,0,0,2,3,1]},
+  'Dm7':    {f:[-1,-1,0,2,1,1], d:[0,0,0,2,1,1]},
+  'D7':     {f:[-1,-1,0,2,1,2], d:[0,0,0,2,1,3]},
+  'Dmaj7':  {f:[-1,-1,0,2,2,2], d:[0,0,0,1,1,1]},
+  'Dsus2':  {f:[-1,-1,0,2,3,0], d:[0,0,0,1,2,0]},
+  'Dsus4':  {f:[-1,-1,0,2,3,3], d:[0,0,0,1,2,3]},
+  'D#':     {f:[-1,6,8,8,8,6], d:[0,1,2,3,4,1], b:6},
+  'E':      {f:[0,2,2,1,0,0], d:[0,2,3,1,0,0]},
+  'Em':     {f:[0,2,2,0,0,0], d:[0,2,3,0,0,0]},
+  'Em7':    {f:[0,2,0,0,0,0], d:[0,2,0,0,0,0]},
+  'E7':     {f:[0,2,0,1,0,0], d:[0,2,0,1,0,0]},
+  'Emaj7':  {f:[0,2,1,1,0,0], d:[0,3,1,2,0,0]},
+  'Esus4':  {f:[0,2,2,2,0,0], d:[0,1,2,3,0,0]},
+  'F':      {f:[1,3,3,2,1,1], d:[1,3,4,2,1,1], b:1},
+  'Fmaj7':  {f:[-1,-1,3,2,1,0], d:[0,0,3,2,1,0], note:'No barre'},
+  'Fm':     {f:[1,3,3,1,1,1], d:[1,3,4,1,1,1], b:1},
+  'F7':     {f:[1,3,1,2,1,1], d:[1,3,1,2,1,1], b:1},
+  'F#m':    {f:[2,4,4,2,2,2], d:[1,3,4,1,1,1], b:2},
+  'F#m7':   {f:[2,4,2,2,2,2], d:[1,3,1,1,1,1], b:2},
+  'F#':     {f:[2,4,4,3,2,2], d:[1,3,4,2,1,1], b:2},
+  'G':      {f:[3,2,0,0,0,3], d:[2,1,0,0,0,3]},
+  'G4':     {f:[3,2,0,0,3,3], d:[2,1,0,0,3,4], name:'G', note:'Anchor grip'},
+  'G7':     {f:[3,2,0,0,0,1], d:[3,2,0,0,0,1]},
+  'Gmaj7':  {f:[3,2,0,0,0,2], d:[3,2,0,0,0,1]},
+  'Gm':     {f:[3,5,5,3,3,3], d:[1,3,4,1,1,1], b:3},
+  'G#':     {f:[4,6,6,5,4,4], d:[1,3,4,2,1,1], b:4},
+  'G#m':    {f:[4,6,6,4,4,4], d:[1,3,4,1,1,1], b:4},
+  'A':      {f:[-1,0,2,2,2,0], d:[0,0,1,2,3,0]},
+  'Am':     {f:[-1,0,2,2,1,0], d:[0,0,2,3,1,0]},
+  'Am7':    {f:[-1,0,2,0,1,0], d:[0,0,2,0,1,0]},
+  'A7':     {f:[-1,0,2,0,2,0], d:[0,0,2,0,3,0]},
+  'Amaj7':  {f:[-1,0,2,1,2,0], d:[0,0,2,1,3,0]},
+  'Asus2':  {f:[-1,0,2,2,0,0], d:[0,0,1,2,0,0]},
+  'Asus4':  {f:[-1,0,2,2,3,0], d:[0,0,1,2,3,0]},
+  'A#':     {f:[-1,1,3,3,3,1], d:[0,1,2,3,4,1], b:1},
+  'A#m':    {f:[-1,1,3,3,2,1], d:[0,1,3,4,2,1], b:1},
+  'B':      {f:[-1,2,4,4,4,2], d:[0,1,2,3,4,1], b:2},
+  'Bm':     {f:[-1,2,4,4,3,2], d:[0,1,3,4,2,1], b:2},
+  'Bm7':    {f:[-1,2,4,2,3,2], d:[0,1,3,1,2,1], b:2},
+  'B7':     {f:[-1,2,1,2,0,2], d:[0,2,1,3,0,4]}
+};
+
+/* barre fallback for anything not in the library */
+const E_SHAPE = {maj:[0,2,2,1,0,0],min:[0,2,2,0,0,0],'7':[0,2,0,1,0,0],m7:[0,2,0,0,0,0],maj7:[0,2,1,1,0,0]};
+const A_SHAPE = {maj:[-1,0,2,2,2,0],min:[-1,0,2,2,1,0],'7':[-1,0,2,0,2,0],m7:[-1,0,2,0,1,0],maj7:[-1,0,2,1,2,0]};
+const E_FING  = {maj:[0,3,4,2,1,1],min:[0,3,4,1,1,1],'7':[0,3,1,2,1,1],m7:[0,3,1,1,1,1],maj7:[0,4,2,3,1,1]};
+const A_FING  = {maj:[0,1,2,3,4,1],min:[0,1,3,4,2,1],'7':[0,1,3,1,4,1],m7:[0,1,3,1,2,1],maj7:[0,1,3,2,4,1]};
+
+function buildBarre(rootPc, quality){
+  const eFret = ((rootPc - 4) % 12 + 12) % 12;
+  const aFret = ((rootPc - 9) % 12 + 12) % 12;
+  const useA = (aFret > 0 && aFret <= 5) || (eFret === 0);
+  const base = useA ? aFret : (eFret === 0 ? 12 : eFret);
+  const tpl  = useA ? A_SHAPE[quality] : E_SHAPE[quality];
+  const fing = useA ? A_FING[quality]  : E_FING[quality];
+  if(!tpl) return null;
+  return {f: tpl.map(v => v < 0 ? -1 : v + base), d: fing.slice(), b: base};
+}
+
+const SUFFIX = {maj:'', min:'m', '7':'7', m7:'m7', maj7:'maj7', sus4:'sus4', sus2:'sus2', add9:'add9'};
+
+const COLOUR = {sus4:1, sus2:1, add9:1};
+
+function shapeFor(rootPc, quality){
+  const nm = PC[rootPc] + (SUFFIX[quality] ?? '');
+  if(SHAPES[nm]) return Object.assign({name:nm}, SHAPES[nm]);
+  // a colour chord we have no open voicing for degrades to plain major,
+  // name and all, rather than showing a diagram that is a lie
+  if(COLOUR[quality]) return shapeFor(rootPc, 'maj');
+  const b = buildBarre(rootPc, quality);
+  return b ? Object.assign({name:nm}, b) : Object.assign({name:nm}, SHAPES['C']);
+}
+
+/* ---------- degrees ---------- */
+const DEG = {
+  'I':   {s:0,  q:'maj'},  'Imaj7':{s:0, q:'maj7'}, 'I7':{s:0,q:'7'},
+  'ii':  {s:2,  q:'min'},  'ii7': {s:2,  q:'m7'},   'II':{s:2,q:'maj'},
+  'iii': {s:4,  q:'min'},  'III': {s:4,  q:'maj'},
+  'IV':  {s:5,  q:'maj'},  'IVmaj7':{s:5,q:'maj7'}, 'iv':{s:5,q:'min'},
+  'V':   {s:7,  q:'maj'},  'V7':  {s:7,  q:'7'},    'v':{s:7,q:'min'},
+  'vi':  {s:9,  q:'min'},  'vi7': {s:9,  q:'m7'},   'VI':{s:9,q:'maj'},
+  'bIII':{s:3,  q:'maj'},  'bVI': {s:8,  q:'maj'},  'bVII':{s:10,q:'maj'},
+  'Isus4':{s:0, q:'sus4'}, 'Iadd9':{s:0, q:'add9'}
+};
+
+/* minor-tonic progressions get their own map */
+const DEG_MIN = {
+  'i':   {s:0,  q:'min'},  'i7':  {s:0,  q:'m7'},
+  'ii':  {s:2,  q:'min'},  'III': {s:3,  q:'maj'},
+  'iv':  {s:5,  q:'min'},  'IV':  {s:5,  q:'maj'},
+  'v':   {s:7,  q:'min'},  'V':   {s:7,  q:'maj'},  'V7':{s:7,q:'7'},
+  'VI':  {s:8,  q:'maj'},  'bVI': {s:8,  q:'maj'},
+  'VII': {s:10, q:'maj'},  'bVII':{s:10, q:'maj'}
+};
+
+const GUITAR_KEYS     = ['C','G','D','A','E'];    // keys with real open shapes
+const GUITAR_KEYS_MIN = ['A','E','D','B'];        // open-shape minor tonics
+
+/* ---------- transition cost ----------
+   The wall for a beginner is the change, not the chord.        */
+function transitionCost(a, b){
+  let cost = 0;
+  const aBar = !!a.b, bBar = !!b.b;
+  if(bBar) cost += 2.4;
+  if(aBar && bBar && Math.abs(a.b - b.b) > 0) cost += 1.2;
+  if(!aBar && bBar) cost += 1.4;
+
+  let shared = 0, moved = 0, placed = 0;
+  for(let s = 0; s < 6; s++){
+    const af = a.f[s], bf = b.f[s];
+    if(bf > 0) placed++;
+    if(af > 0 && bf > 0){
+      if(af === bf && a.d[s] === b.d[s]) shared++;
+      else moved += Math.abs(af - bf);
+    } else if(bf > 0){ moved += 1; }
+  }
+  cost += moved * 0.34;
+  cost -= shared * 1.15;
+  if(placed === 0) cost -= 0.6;
+  const spanA = fretSpan(a), spanB = fretSpan(b);
+  if(spanB >= 4) cost += 0.8;
+  if(Math.abs(spanA - spanB) >= 3) cost += 0.4;
+  return Math.max(0, cost);
+}
+function fretSpan(c){
+  const on = c.f.filter(v => v > 0);
+  return on.length ? Math.max(...on) - Math.min(...on) + 1 : 0;
+}
+function costLabel(c){
+  if(c < 1.6) return {k:'easy', t:'easy'};
+  if(c < 3.4) return {k:'mod',  t:'takes a minute'};
+  return {k:'hard', t:'this is the hard one'};
+}
+
+/* ---------- progression bank ----------
+   Every one of these is load-bearing in real songs.            */
+const BANK = [
+  {d:['I','V'],            m:['bright','driving'],  g:['pop','rock','punk','country','worship'],
+   why:'Home and away, nothing else. The oldest trick there is and it never stopped working.',
+   s:['Iko Iko','Achy Breaky Heart','Jambalaya']},
+  {d:['I','IV'],           m:['bright','dreamy'],   g:['rock','indie','folk','worship'],
+   why:'No V means no push home, so it floats instead of resolving. Good under a long vocal line.',
+   s:['Jane Says','Feelin\u2019 Alright','Beast of Burden']},
+  {d:['vi','IV'],          m:['sad','dreamy'],      g:['indie','pop','metal'],
+   why:'Minor home leaning on the brightest chord in the key. Melancholy without being dreary.',
+   s:['Stay With Me','Africa (chorus)']},
+  {d:['i','bVII'],         m:['dark','driving'],    g:['rock','metal','blues'],
+   why:'Minor to the flat seven. No leading tone, so it never resolves. That is the point.',
+   s:['Sunshine of Your Love','Cocaine']},
+  {d:['I','bVII'],         m:['driving','dark'],    g:['rock','punk','metal','blues'],
+   why:'Borrowed from the parallel minor. Adds grit to a major key without going minor.',
+   s:['Franklin\u2019s Tower','Fire on the Mountain']},
+  {d:['I','V','vi','IV'],  m:['bright','bittersweet'], g:['pop','rock','worship','country','punk'],
+   why:'The four chords the internet made fun of. It still works because the vi lands like a small surprise.',
+   s:['Let It Be','Don\u2019t Stop Believin\u2019','With or Without You','No Woman No Cry']},
+  {d:['vi','IV','I','V'],  m:['sad','bittersweet'], g:['pop','rock','indie'],
+   why:'Same four chords starting on the minor. Feels like the sad version of the same song, because it is.',
+   s:['Grenade','Zombie','Complicated']},
+  {d:['I','IV','V'],       m:['bright','driving'],  g:['blues','rock','country','punk','bluegrass'],
+   why:'Three chords and the truth. Every twelve-bar blues and half of country lives here.',
+   s:['Twist and Shout','La Bamba','Wild Thing']},
+  {d:['I','vi','IV','V'],  m:['bright','bittersweet'], g:['pop','rock','country'],
+   why:'The doo-wop turnaround. The vi in slot two makes the whole thing sound like 1958 on purpose.',
+   s:['Stand By Me','Every Breath You Take','Perfect']},
+  {d:['ii','V','I'],       m:['bittersweet','dreamy'], g:['jazz','bossa nova','pop'],
+   why:'The engine of jazz. Two-five-one is tension, more tension, home, and you can chain it forever.',
+   s:['Autumn Leaves','Fly Me to the Moon']},
+  {d:['I','V','vi','iii','IV','I','IV','V'], m:['bright','bittersweet'], g:['classical','pop','worship'],
+   why:'Pachelbel. Eight chords with a bass line that walks down and back. Longer than it looks on paper.',
+   s:['Canon in D','Basket Case','Let It Go']},
+  {d:['vi','V','IV','V'],  m:['sad','tense'],       g:['rock','metal','indie'],
+   why:'Sits on the minor and refuses to go home. The IV to V keeps promising a resolution it never delivers.',
+   s:['All Along the Watchtower']},
+  {d:['I','iii','IV','V'], m:['bright','dreamy'],   g:['pop','folk','worship'],
+   why:'The iii is the softest way to leave home. Barely a change, big difference in colour.',
+   s:['Crocodile Rock']},
+  {d:['I','IV','vi','V'],  m:['bright','driving'],  g:['pop','rock','punk','worship'],
+   why:'Same family as the big four, reordered so the minor arrives late and hits harder.',
+   s:['She Will Be Loved','Take On Me']},
+  {d:['IV','I','V','vi'],  m:['bittersweet','dreamy'], g:['indie','pop','folk'],
+   why:'Starting on IV means starting mid-thought. Feels like the song was already going when you arrived.',
+   s:['Umbrella','Boulevard of Broken Dreams']},
+  {d:['I','bVII','IV','I'], m:['driving','bright'], g:['rock','country','blues'],
+   why:'The Mixolydian cadence. Flat seven instead of the V, which is why it sounds like a highway.',
+   s:['Sweet Home Alabama','Sympathy for the Devil']},
+  {d:['I','V','IV'],       m:['driving','bright'],  g:['rock','punk','country'],
+   why:'The V before the IV inverts the usual pull, so the IV feels like a landing rather than a step out.',
+   s:['Louie Louie','Twist and Shout']},
+  {d:['vi','iii','IV','I'], m:['sad','dreamy'],     g:['indie','folk','jazz'],
+   why:'Two minors in a row before the light comes back. Patient. Do not rush the third chord.',
+   s:['Someone Like You']},
+  {d:['I','iv'],           m:['bittersweet','dark'], g:['indie','folk','jazz','worship'],
+   why:'The minor four is the saddest sound in a major key. One chord and the whole room turns.',
+   s:['Creep (the turn)','In My Life']},
+  {d:['I','III','IV','iv'], m:['bittersweet','tense'], g:['rock','indie','metal'],
+   why:'A major three pulls somewhere it should not, then the minor four collapses it. Creep, essentially.',
+   s:['Creep','Space Oddity']},
+  {d:['I','V','bVII','IV'], m:['driving','bright'], g:['rock','country','folk'],
+   why:'The bVII sneaks in between two bright chords and nobody notices until it is gone.',
+   s:['Wagon Wheel','Ramblin\u2019 Man']},
+  {d:['i','VI','III','VII'], m:['dark','sad'],      g:['metal','rock','indie'],
+   why:'The natural minor loop. Every chord is diatonic and it still sounds like weather coming in.',
+   s:['Zombie','Numb']},
+  {d:['i','iv','v'],       m:['dark','sad'],        g:['blues','metal','flamenco','classical'],
+   why:'Minor blues. The minor v instead of a dominant is what keeps it from sounding hopeful.',
+   s:['The Thrill Is Gone']},
+  {d:['i','bVI','bVII','i'], m:['dark','driving'],  g:['metal','rock'],
+   why:'The Andalusian family rearranged. Climbs two steps and drops back into the minor.',
+   s:['Stairway (the turn)','Hit the Road Jack']},
+  {d:['i','bVII','bVI','V'], m:['dark','tense'],    g:['flamenco','metal','classical','rock'],
+   why:'The Andalusian cadence. Walks down four steps to a major V that never quite gets you home.',
+   s:['Hit the Road Jack','Sultans of Swing (feel)']},
+  {d:['I','vi','ii','V'],  m:['bittersweet','dreamy'], g:['jazz','bossa nova','pop','worship'],
+   why:'The rhythm changes turnaround. Circle of fifths in miniature, which is why it never sounds stuck.',
+   s:['Blue Moon','Heart and Soul']},
+  {d:['Imaj7','IVmaj7'],   m:['dreamy','bittersweet'], g:['bossa nova','jazz','indie','latin'],
+   why:'Two major sevenths and nothing else. Nowhere to resolve, so it just hangs in the air.',
+   s:['Girl from Ipanema (feel)','Wave']},
+  {d:['ii7','V7','Imaj7','vi7'], m:['dreamy','bittersweet'], g:['jazz','bossa nova','latin'],
+   why:'Two-five-one with the vi tacked on so it loops back to the top without stopping.',
+   s:['Autumn Leaves','Take the A Train']},
+  {d:['I','I7','IV','iv'], m:['bittersweet','bright'], g:['blues','jazz','folk','country'],
+   why:'The I7 turns home into a dominant that drags you to the IV. Then the minor four takes it back.',
+   s:['Something','Bad Moon (feel)']},
+  {d:['I','V','ii','IV'],  m:['bright','driving'],  g:['pop','indie','folk'],
+   why:'The ii where you expect the vi. Same softness, different colour, and nobody hears it coming.',
+   s:['Save Tonight']},
+  {d:['I','IV','I','V'],   m:['bright','driving'],  g:['bluegrass','country','folk','blues'],
+   why:'The bluegrass shuffle. Home twice as often as anything else, which is what makes it danceable.',
+   s:['Wagon Wheel','Man of Constant Sorrow']},
+  {d:['vi','IV','I','V','vi','IV','II','V'], m:['bittersweet','tense'], g:['pop','rock'],
+   why:'Runs the sad loop twice, but the second pass swaps in a major two that lifts the whole thing.',
+   s:['Grenade','Africa']},
+  {d:['I','Isus4','I','IV'], m:['bright','dreamy'], g:['rock','folk','worship','country'],
+   why:'A suspension is not a new chord, it is one finger. Add it and hold it a beat too long.',
+   s:['Free Fallin\u2019','Pinball Wizard']},
+  {d:['Iadd9','V','vi','IV'], m:['dreamy','bright'], g:['indie','worship','pop'],
+   why:'Add nine instead of plain major. Same function, more air, and on guitar it is often easier.',
+   s:['Wonderwall (feel)','Boulevard']},
+  {d:['I','V','vi','V'],   m:['bright','bittersweet'], g:['country','pop','worship'],
+   why:'The V twice, framing the minor. Common in worship and country because it sings easily.',
+   s:['Take Me Home, Country Roads']},
+  {d:['vi','V','I'],       m:['bittersweet','driving'], g:['rock','indie','pop'],
+   why:'Three chords that climb out of the minor. Short enough to loop twice a bar.',
+   s:['Hey Soul Sister (feel)']},
+  {d:['I','II','IV','I'],  m:['bright','tense'],    g:['rock','folk','country'],
+   why:'The major two is the V of the V. It sounds wrong for exactly one beat and then it sounds inevitable.',
+   s:['Eight Days a Week','Hey Good Lookin\u2019']},
+  {d:['i','v','bVI','bVII'], m:['dark','sad'],      g:['metal','rock','classical'],
+   why:'Minor with a minor five, then a climb. Bleak on the way down, defiant on the way up.',
+   s:['House of the Rising Sun (feel)']},
+  {d:['I','vi','iii','IV'], m:['bittersweet','dreamy'], g:['jazz','indie','pop'],
+   why:'Falls a third at a time. Every chord shares two notes with the last, so it barely moves and still travels.',
+   s:['Fly Me to the Moon']},
+  {d:['I','IV','ii','V'],  m:['bright','bittersweet'], g:['jazz','bossa nova','country','worship'],
+   why:'A gentler two-five. The IV first softens the landing before the ii pulls you into the turn.',
+   s:['Blue Bayou']}
+];
+/* ============================================================
+   STRUM PATTERNS
+   8 slots per bar (eighth notes). D down, u up, x chuck, - rest
+   ============================================================ */
+const STRUMS = {
+  pop:      {name:'Down, down-up, up-down-up', p:['D','-','D','u','-','u','D','u'], bpm:96,  note:'The one everybody learns. Keep your hand moving on the rests.'},
+  rock:     {name:'Straight eighths',          p:['D','u','D','u','D','u','D','u'], bpm:120, note:'All downstrokes if you want it meaner. Palm the low strings.'},
+  punk:     {name:'Downstrokes only',          p:['D','D','D','D','D','D','D','D'], bpm:168, note:'No upstrokes. Your forearm is the instrument.'},
+  metal:    {name:'Chug on the low strings',   p:['D','x','D','x','D','D','x','D'], bpm:140, note:'Palm mute everything, hit only the bottom three strings.'},
+  country:  {name:'Bass note, then strum',     p:['B','-','D','u','B','-','D','u'], bpm:104, note:'B is the root note alone. Alternate root and fifth if you can find it.'},
+  bluegrass:{name:'Boom-chuck',                p:['B','-','x','-','B','-','x','-'], bpm:132, note:'Bass note, muted chop. The chop is the snare drum.'},
+  folk:     {name:'Down, down-up, down-up',    p:['D','-','D','u','-','u','D','-'], bpm:88,  note:'Lighter than pop. Let the low string ring under it.'},
+  indie:    {name:'Fingerpicked, thumb steady',p:['P','p','P','p','P','p','P','p'], bpm:82,  note:'Thumb on the root, fingers on the top three. P is thumb.'},
+  blues:    {name:'Shuffle',                   p:['D','-','u','D','-','u','D','u'], bpm:92,  note:'Swing the eighths. Long-short, long-short.'},
+  jazz:     {name:'Four to the bar',           p:['D','-','D','-','D','-','D','-'], bpm:132, note:'Short, even, no ring. Freddie Green played nothing else for forty years.'},
+  bossa:    {name:'Thumb and syncopated top',  p:['P','-','p','P','-','p','-','p'], bpm:126, note:'Thumb on beats, fingers off them. The gap is the groove.'},
+  latin:    {name:'Syncopated, accent the and',p:['D','-','-','u','D','u','-','u'], bpm:112, note:'Accent the upbeats. The downbeat can be silent.'},
+  worship:  {name:'Open, ringing eighths',     p:['D','-','D','u','D','-','D','u'], bpm:76,  note:'Let everything ring. Nothing muted, nothing rushed.'},
+  flamenco: {name:'Rasgueado feel',            p:['D','u','u','D','-','u','D','u'], bpm:118, note:'Roll your fingers out across the strings instead of picking.'},
+  classical:{name:'Arpeggiated',               p:['P','p','p','P','p','p','P','p'], bpm:72,  note:'One string at a time, low to high. Never strum.'}
+};
+const GENRE_LABEL = {pop:'Pop',rock:'Rock',punk:'Punk',metal:'Metal',country:'Country',bluegrass:'Bluegrass',
+  folk:'Folk',indie:'Indie',blues:'Blues',jazz:'Jazz',bossa:'Bossa nova',latin:'Latin',worship:'Worship',
+  flamenco:'Flamenco',classical:'Classical'};
+
+const MOODS = ['bright','sad','bittersweet','dreamy','driving','dark','tense'];
+
+/* ============================================================
+   RESOLVE a progression into playable chords
+   ============================================================ */
+function isMinorProg(p){ return p.d.some(x => x === 'i' || x === 'i7'); }
+
+function degreeInfo(prog, deg){
+  const map = isMinorProg(prog) ? DEG_MIN : DEG;
+  return map[deg] || DEG[deg] || {s:0, q:'maj'};
+}
+
+/* soundingKey = what the audience hears. shapeKey = what your hands play. */
+function resolve(prog, soundingKeyPc, shapeKeyPc){
+  const capo = ((soundingKeyPc - shapeKeyPc) % 12 + 12) % 12;
+  const chords = prog.d.map(deg => {
+    const info = degreeInfo(prog, deg);
+    const shapeRoot = (shapeKeyPc + info.s) % 12;
+    const soundRoot = (soundingKeyPc + info.s) % 12;
+    const sh = shapeFor(shapeRoot, info.q);
+    return {
+      deg, shape: sh,
+      played: sh.name,
+      sounding: PC[soundRoot] + (SUFFIX[info.q] ?? ''),
+      quality: info.q,
+      rootPc: shapeRoot
+    };
+  });
+  let worst = 0, costs = [];
+  for(let i = 0; i < chords.length; i++){
+    const a = chords[i].shape, b = chords[(i + 1) % chords.length].shape;
+    const c = chords.length > 1 ? transitionCost(a, b) : 0;
+    costs.push(c);
+    if(c > worst) worst = c;
+  }
+  const barres = chords.filter(c => c.shape.b).length;
+  return {capo, chords, costs, worst, barres, shapeKeyPc, soundingKeyPc};
+}
+
+/* every capo position that keeps the same sounding key */
+function capoOptions(prog, soundingKeyPc, allowCapo, minor){
+  const pool = minor ? GUITAR_KEYS_MIN : GUITAR_KEYS;
+  const out = [];
+  for(const k of pool){
+    const pc = pcOf(k);
+    const capo = ((soundingKeyPc - pc) % 12 + 12) % 12;
+    if(capo > 7) continue;                 // past 7 it gets silly and thin
+    if(!allowCapo && capo !== 0) continue;
+    out.push(resolve(prog, soundingKeyPc, pc));
+  }
+  if(!out.length) out.push(resolve(prog, soundingKeyPc, soundingKeyPc));
+  return out.sort((a, b) => a.worst - b.worst);
+}
+
+const HAND_CAP = {open:1.9, some:3.6, any:99};
+
+function pickVoicing(prog, soundingKeyPc, allowCapo, hands){
+  const opts = capoOptions(prog, soundingKeyPc, allowCapo, isMinorProg(prog));
+  const cap = HAND_CAP[hands];
+  const fits = opts.filter(o => o.worst <= cap && (hands !== 'open' || o.barres === 0));
+  return (fits[0] || opts[0]);
+}
+
+/* ============================================================
+   SONG FORM — the chorus is built from the verse, not invented
+   ============================================================ */
+function deriveForm(prog){
+  const v = prog.d.slice();
+  const minor = isMinorProg(prog);
+  let chorus;
+  if(v.length >= 4){
+    // rotate so the section opens on the brightest chord available
+    const target = minor ? 'VI' : 'IV';
+    const at = v.indexOf(target);
+    chorus = at > 0 ? v.slice(at).concat(v.slice(0, at)) : v.slice(1).concat(v.slice(0, 1));
+  } else {
+    chorus = v.concat(minor ? ['VI','VII'] : ['IV','V']);
+  }
+  const pre    = minor ? ['iv','V'] : ['ii','V'];
+  const bridge = minor ? ['VI','III','VII','i'] : ['vi','iii','IV','V'];
+  return [
+    {lab:'Verse',      d:v,      note:'Where you are now. Play it twice before anything changes.'},
+    {lab:'Pre-chorus', d:pre,    note:'Two bars that refuse to resolve. Sit on the last chord one beat too long.'},
+    {lab:'Chorus',     d:chorus, note:'Your verse, re-entered from a different door. Same chords, higher voice.'},
+    {lab:'Bridge',     d:bridge, note:'Go here once, around two thirds through, then never again.'}
+  ];
+}
+
+/* ============================================================
+   PARTS FOR THE ROOM
+   ============================================================ */
+const PENTA_MIN = [[0,3],[0,2],[0,2],[0,2],[0,3],[0,3]];   // frets rel. to root, low->high
+
+function bandParts(prog, voicing, soundingKeyPc){
+  const minor = isMinorProg(prog);
+  const g1 = voicing;
+
+  // second guitar: a different shape key, ideally 4-7 frets up, same sounding chords
+  const pool = capoOptions(prog, soundingKeyPc, true, minor)
+    .filter(o => o.capo !== g1.capo)
+    .sort((a, b) => (Math.abs(b.capo - g1.capo) - Math.abs(a.capo - g1.capo)) || (a.worst - b.worst));
+  const g2 = pool.find(o => o.capo > g1.capo) || pool[0] || g1;
+
+  // lead: minor pentatonic of the relative minor (or the tonic, in a minor key)
+  const leadRootPc = minor ? soundingKeyPc : (soundingKeyPc + 9) % 12;
+  const lowEFret = ((leadRootPc - 4) % 12 + 12) % 12;
+
+  return {
+    g1, g2,
+    bass: g1.chords.map(c => pretty(c.sounding.replace(/(maj7|m7|sus4|sus2|add9|m|7)$/,''))),
+    lead: {
+      root: pretty(PC[leadRootPc]),
+      fret: lowEFret === 0 ? 12 : lowEFret,
+      name: pretty(PC[leadRootPc]) + ' minor pentatonic',
+      targets: g1.chords.map(c => pretty(c.sounding))
+    }
+  };
+}
+/* ============================================================
+   STATE
+   ============================================================ */
+const state = {
+  progIdx: 5,
+  keyPc: 7,             // G
+  hands: 'open',
+  capoOk: true,
+  mood: 'any',
+  genre: 'any',
+  len: 'any',
+  locks: {},            // slot index -> sounding chord name
+  shapeOverride: null,  // pc, set from the capo table
+  bpm: 96
+};
+let voicing = null, band = null, prog = null;
+
+const $  = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+
+function toast(msg){
+  const t = $('#ss-toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._x); t._x = setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+/* ---------- candidate filtering ---------- */
+function matchesFilters(p){
+  if(state.len !== 'any'){
+    const n = +state.len;
+    if(n === 5 ? p.d.length < 5 : p.d.length !== n) return false;
+  }
+  if(state.mood  !== 'any' && !p.m.includes(state.mood))  return false;
+  if(state.genre !== 'any' && !p.g.includes(state.genre)) return false;
+  return true;
+}
+
+function playableUnder(p){
+  const v = pickVoicing(p, state.keyPc, state.capoOk, state.hands);
+  if(state.hands === 'open' && v.barres > 0) return false;
+  return v.worst <= HAND_CAP[state.hands] + 0.9;
+}
+
+function lockScore(p){
+  const keys = Object.keys(state.locks);
+  if(!keys.length) return 0;
+  const v = pickVoicing(p, state.keyPc, state.capoOk, state.hands);
+  let hits = 0;
+  for(const k of keys){
+    const i = +k;
+    if(v.chords[i] && v.chords[i].sounding === state.locks[k]) hits++;
+  }
+  return hits;
+}
+
+function spin(){
+  let pool = BANK.filter(matchesFilters);
+  if(!pool.length) pool = BANK.slice();
+  const fit = pool.filter(playableUnder);
+  if(fit.length) pool = fit;
+
+  const lockKeys = Object.keys(state.locks);
+  if(lockKeys.length){
+    const scored = pool.map(p => ({p, s: lockScore(p)}));
+    const best = Math.max(...scored.map(x => x.s));
+    pool = scored.filter(x => x.s === best).map(x => x.p);
+    if(best < lockKeys.length) toast('Kept ' + best + ' of your locked chords. Nothing in the bank held them all.');
+  }
+  const current = BANK[state.progIdx];
+  const others  = pool.filter(p => p !== current);
+  const pick    = (others.length ? others : pool)[Math.floor(Math.random() * (others.length ? others.length : pool.length))];
+  state.progIdx = BANK.indexOf(pick);
+  state.shapeOverride = null;
+  render();
+}
+
+const LOCK_OFF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.5-2"/></svg>';
+const LOCK_ON  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
+
+/* ============================================================
+   CHORD DIAGRAM
+   ============================================================ */
+function diagram(sh, size){
+  const sx = size === 'sm' ? 11 : 15, fy = size === 'sm' ? 14 : 19;
+  const x0 = 14, y0 = 22, W = x0 * 2 + sx * 5, H = y0 + fy * 5 + 14;
+  const on = sh.f.filter(v => v > 0);
+  const hi = on.length ? Math.max(...on) : 0;
+  const lo = on.length ? Math.min(...on) : 1;
+  const base = hi > 5 ? lo : 1;
+  const X = i => x0 + i * sx, Y = r => y0 + (r - 0.5) * fy;
+
+  let g = '';
+  for(let j = 0; j <= 5; j++){
+    const w = (j === 0 && base === 1) ? 3.4 : 1;
+    g += `<line x1="${x0}" y1="${y0 + j * fy}" x2="${x0 + sx * 5}" y2="${y0 + j * fy}" stroke="currentColor" stroke-width="${w}" opacity="${j === 0 && base === 1 ? .9 : .28}"/>`;
+  }
+  for(let i = 0; i < 6; i++)
+    g += `<line x1="${X(i)}" y1="${y0}" x2="${X(i)}" y2="${y0 + fy * 5}" stroke="currentColor" stroke-width="1" opacity=".28"/>`;
+
+  if(base > 1)
+    g += `<text x="${x0 - 5}" y="${Y(1) + 4}" font-size="10" text-anchor="end" fill="currentColor" opacity=".65">${base}</text>`;
+
+  if(sh.b){
+    const row = sh.b - base + 1;
+    const first = sh.f.findIndex(v => v === sh.b);
+    const last  = 5 - sh.f.slice().reverse().findIndex(v => v === sh.b);
+    if(row >= 1 && row <= 5 && first >= 0)
+      g += `<rect x="${X(first) - 5}" y="${Y(row) - 5.5}" width="${X(last - 1) - X(first) + 10}" height="11" rx="5.5" fill="currentColor" opacity=".92"/>`;
+  }
+
+  for(let i = 0; i < 6; i++){
+    const f = sh.f[i];
+    if(f === -1){
+      g += `<text x="${X(i)}" y="${y0 - 6}" font-size="11" text-anchor="middle" fill="currentColor" opacity=".55">\u00d7</text>`;
+    } else if(f === 0){
+      g += `<circle cx="${X(i)}" cy="${y0 - 9}" r="3.6" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".65"/>`;
+    } else {
+      const row = f - base + 1;
+      if(row < 1 || row > 5) continue;
+      if(sh.b && f === sh.b){
+        if(sh.d[i]) g += `<text x="${X(i)}" y="${Y(row) + 3.2}" font-size="8.5" text-anchor="middle" fill="var(--ss-dot-text,#fff)">${sh.d[i]}</text>`;
+        continue;
+      }
+      g += `<circle cx="${X(i)}" cy="${Y(row)}" r="5.4" fill="currentColor"/>`;
+      if(sh.d[i]) g += `<text x="${X(i)}" y="${Y(row) + 3.2}" font-size="8.5" text-anchor="middle" fill="var(--ss-dot-text,#fff)">${sh.d[i]}</text>`;
+    }
+  }
+  return `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${sh.name} fingering">${g}</svg>`;
+}
+
+function fingerText(sh){
+  const parts = [];
+  for(let i = 0; i < 6; i++){
+    if(sh.f[i] === -1) parts.push('x');
+    else parts.push(String(sh.f[i]));
+  }
+  return parts.join(' ');
+}
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+function render(){
+  prog = BANK[state.progIdx];
+  const minor = isMinorProg(prog);
+  voicing = state.shapeOverride !== null
+    ? resolve(prog, state.keyPc, state.shapeOverride)
+    : pickVoicing(prog, state.keyPc, state.capoOk, state.hands);
+  band = bandParts(prog, voicing, state.keyPc);
+  for(const k of Object.keys(state.locks)){
+    const c = voicing.chords[+k];
+    if(!c || c.sounding !== state.locks[k]) delete state.locks[k];
+  }
+
+  renderSlots();
+  renderDetail();
+  renderCapoTable();
+  renderForm();
+  renderBand();
+  renderSongs();
+  const kn = pretty(PC[state.keyPc]) + (minor ? ' minor' : ' major');
+  $('#keyHint').textContent = minor
+    ? 'This progression starts on a minor chord, so ' + pretty(PC[state.keyPc]) + ' here means ' + kn + '. If you are singing and it sits too high or too low, change this and let the capo sort out your hands.'
+    : 'Not sure? Leave it on G. A key is just which note feels like home. If you are singing and it sits too high or too low for your voice, change this and let the capo sort out your hands.';
+  $('#stateLine').textContent = kn + ' \u00b7 ' + (voicing.capo ? 'capo ' + voicing.capo : 'no capo')
+    + ' \u00b7 ' + voicing.chords.map(c => pretty(c.sounding)).join(' ');
+  writeHash();
+}
+
+function renderSlots(){
+  const box = $('#slots'); box.innerHTML = '';
+  voicing.chords.forEach((c, i) => {
+    const locked = !!state.locks[i];
+    const el = document.createElement('div');
+    el.className = 'ss-slot'; el.setAttribute('role', 'listitem');
+    el.dataset.locked = locked; el.dataset.i = i;
+    el.innerHTML =
+      `<div class="ss-deg">${c.deg}</div>
+       <div class="ss-name">${pretty(c.played)}</div>
+       <div class="ss-bars">${c.played === c.sounding ? 'no capo, sounds as written' : 'with the capo it sounds like ' + pretty(c.sounding)}</div>
+       <button class="ss-lock" aria-pressed="${locked}" aria-label="${locked ? 'Unlock' : 'Lock'} ${pretty(c.sounding)}" title="${locked ? 'Locked. Spin will keep this chord.' : 'Lock this chord so Spin keeps it.'}">${locked ? LOCK_ON : LOCK_OFF}</button>`;
+    el.querySelector('.ss-lock').addEventListener('click', () => {
+      if(state.locks[i]) delete state.locks[i]; else state.locks[i] = c.sounding;
+      renderSlots(); writeHash();
+    });
+    box.appendChild(el);
+  });
+
+  const bt = $('#between'); bt.innerHTML = '';
+  voicing.chords.forEach((c, i) => {
+    const nxt = voicing.chords[(i + 1) % voicing.chords.length];
+    const L = costLabel(voicing.costs[i]);
+    const s = document.createElement('span');
+    s.className = 'ss-chg-' + L.k;
+    const last = i === voicing.chords.length - 1;
+    s.innerHTML = voicing.chords.length > 1
+      ? `${pretty(c.played)}\u2009\u2192\u2009${pretty(nxt.played)}${last ? ' (back to the top)' : ''} <b>${L.t}</b>` : '';
+    bt.appendChild(s);
+  });
+}
+
+function renderDetail(){
+  const L = costLabel(voicing.worst);
+  const m = $('#ss-meter'); m.className = 'ss-meter ' + (L.k === 'easy' ? '' : L.k);
+  m.querySelector('.bar i').style.width = Math.min(100, 18 + voicing.worst * 20) + '%';
+  $('#meterLab').textContent = (voicing.barres
+    ? `Hardest move between chords: ${L.t}. ${voicing.barres} barre chord${voicing.barres > 1 ? 's' : ''}.`
+    : `Hardest move between chords: ${L.t}. No barres.`);
+  $('#whyLine').textContent = prog.why;
+
+  const row = $('#chords'); row.innerHTML = '';
+  voicing.chords.forEach(c => {
+    const d = document.createElement('div');
+    d.className = 'ss-chordcard';
+    d.innerHTML = `<div class="ss-cdeg">${c.deg}</div><div class="ss-cname">${pretty(c.played)}</div>`
+      + diagram(c.shape) + `<div class="ss-cnote">${c.shape.note || fingerText(c.shape)}</div>`;
+    row.appendChild(d);
+  });
+
+  const gk = state.genre === 'any' ? guessGenre() : state.genre;
+  currentGenreKey = gk;
+  const st = STRUMS[gk];
+  $('#strumName').textContent = '\u00b7 ' + st.name;
+  $('#strumNote').textContent = st.note;
+  const sbox = $('#strum'); sbox.innerHTML = '';
+  st.p.forEach((sym, i) => {
+    const b = document.createElement('b');
+    b.dataset.i = i;
+    if(i % 2 === 0) b.classList.add('beat');
+    if(sym === 'D' || sym === 'B' || sym === 'P'){ b.classList.add('down'); b.textContent = sym === 'D' ? '\u2193' : sym; }
+    else if(sym === 'u' || sym === 'p'){ b.classList.add('up'); b.textContent = sym === 'u' ? '\u2191' : sym; }
+    else if(sym === 'x'){ b.classList.add('mute'); b.textContent = '\u00d7'; }
+    else { b.classList.add('rest'); b.textContent = '\u00b7'; }
+    sbox.appendChild(b);
+  });
+  const LEG = {
+    'D':'<b>\u2193</b>downstroke, all the strings',
+    'u':'<b>\u2191</b>upstroke, just the top three or four',
+    '-':'<b>\u00b7</b>keep your hand swinging, miss the strings',
+    'x':'<b>\u00d7</b>chuck: relax your fretting hand and hit the dead strings for a click',
+    'B':'<b>B</b>bass note only, the thickest string in the shape',
+    'P':'<b>P</b>thumb plucks the bass string',
+    'p':'<b>p</b>fingers pluck the top three strings together'
+  };
+  const seen = Array.from(new Set(st.p));
+  $('#strumLegend').innerHTML = seen.map(k => `<span>${LEG[k] || ''}</span>`).join('')
+    + '<span><b style="border:0;color:var(--ss-accent)">\u25cf</b>dot under a box = a beat you count out loud</span>';
+}
+
+function guessGenre(){
+  const gs = prog.g;                       // deterministic, so a shared link
+  return gs[state.progIdx % gs.length] || 'pop';   // reproduces exactly
+}
+
+function renderCapoTable(){
+  const tb = $('#capoTable tbody'); tb.innerHTML = '';
+  const opts = capoOptions(prog, state.keyPc, true, isMinorProg(prog));
+  opts.sort((a, b) => a.capo - b.capo).forEach(o => {
+    const L = costLabel(o.worst);
+    const tr = document.createElement('tr');
+    if(o.capo === voicing.capo) tr.className = 'reco';
+    tr.innerHTML = `<td>${o.capo === 0 ? 'No capo' : o.capo}</td>
+      <td>${o.chords.map(c => pretty(c.played)).join('  ')}</td>
+      <td>${L.t}${o.barres ? ' \u00b7 ' + o.barres + ' barre' : ''}</td>
+      <td><button class="btn btn--sm btn--ghost" data-pc="${o.shapeKeyPc}">Use this</button></td>`;
+    tr.querySelector('button').addEventListener('click', () => {
+      state.shapeOverride = o.shapeKeyPc; render();
+      $('#starter').scrollIntoView({behavior:'smooth', block:'start'});
+    });
+    tb.appendChild(tr);
+  });
+}
+
+function renderForm(){
+  const box = $('#form'); box.innerHTML = '';
+  deriveForm(prog).forEach(sec => {
+    const chords = sec.d.map(deg => {
+      const info = degreeInfo(prog, deg);
+      return pretty(PC[(state.keyPc + info.s) % 12] + (SUFFIX[info.q] ?? ''));
+    });
+    const r = document.createElement('div');
+    r.className = 'ss-formrow';
+    r.innerHTML = `<div class="ss-lab">${sec.lab}</div>
+      <div><div class="ss-progline">${chords.join('  \u00b7  ')}<em>${sec.d.join('  ')}</em></div>
+      <p class="ss-why" style="font-size:.85rem;color:var(--ink-3);margin:2px 0 0">${sec.note}</p></div>`;
+    box.appendChild(r);
+  });
+}
+
+function renderBand(){
+  const box = $('#band'); box.innerHTML = '';
+  const parts = [
+    {tag:'GTR 1', cls:'', title:'Whoever is least sure',
+     line: band.g1.chords.map(c => pretty(c.played)).join('  \u00b7  '),
+     why: (band.g1.capo ? 'Capo on fret ' + band.g1.capo + '. ' : 'No capo. ') + 'The easiest shapes that land in this key. Strum the pattern above, or just hit each chord once on the change.'},
+    {tag:'GTR 2', cls:'g2', title:'Whoever has a capo',
+     line: band.g2.chords.map(c => pretty(c.played)).join('  \u00b7  '),
+     why: (band.g2.capo ? 'Capo on fret ' + band.g2.capo + '. ' : 'No capo. ') + 'These are the same chords the room hears, just made with different shapes higher up the neck. Two guitars playing identical shapes fight over the same notes; put one of them here and the sound opens up.'},
+    {tag:'LOW', cls:'bass', title:'Bass, or a low-tuned guitar',
+     line: band.bass.join('  \u00b7  '),
+     why:'One note per chord: the root, which is the note the chord is named after. Find it on the thickest two strings, play it on beat 1, and leave the rest alone. Silence is part of the job.'},
+    {tag:'LEAD', cls:'lead', title:'Whoever wants to solo',
+     line: band.lead.name + ' \u00b7 box starts at fret ' + band.lead.fret,
+     why:'Any dot in the box below sounds fine over any of these chords, so wander. When the chord changes, try to land on the note it is named after: ' + band.lead.targets.join(', ') + '. Gold dots are home.'}
+  ];
+  parts.forEach(p => {
+    const d = document.createElement('div');
+    d.className = 'panel panel--outline ss-part';
+    d.innerHTML = `<h3><span class="ss-tag ${p.cls}">${p.tag}</span> ${p.title}</h3>
+      <div class="ss-line">${p.line}</div><p class="ss-why">${p.why}</p>`;
+    box.appendChild(d);
+  });
+  const fb = document.createElement('div');
+  fb.className = 'panel panel--outline ss-part';
+  fb.innerHTML = `<h3><span class="ss-tag lead">BOX</span> ${band.lead.name}</h3>
+    <p class="ss-why">Drawn like TAB: thickest string at the bottom, numbers along the base are frets. Each dot is a place to press. Gold dots are the root. Start on the lowest gold dot and walk up through every dot in order, then back down. That is the whole scale.</p>`
+    + pentaSVG(band.lead.fret);
+  box.appendChild(fb);
+}
+
+function pentaSVG(startFret){
+  const sx = 46, fy = 26, x0 = 34, y0 = 22, W = x0 + sx * 4 + 24, H = y0 + fy * 5 + 20;
+  let g = '';
+  for(let i = 0; i < 6; i++){
+    const y = y0 + i * fy;
+    g += `<line x1="${x0}" y1="${y}" x2="${x0 + sx * 4}" y2="${y}" stroke="currentColor" opacity=".3"/>`;
+  }
+  for(let j = 0; j <= 4; j++){
+    const x = x0 + j * sx;
+    g += `<line x1="${x}" y1="${y0}" x2="${x}" y2="${y0 + fy * 5}" stroke="currentColor" opacity=".22"/>`;
+    if(j < 4) g += `<text x="${x + sx / 2}" y="${y0 + fy * 5 + 14}" font-size="10" text-anchor="middle" fill="currentColor" opacity=".55">${startFret + j}</text>`;
+  }
+  PENTA_MIN.forEach((frets, s) => {
+    const y = y0 + (5 - s) * fy;   // string 0 = low E, drawn at the bottom
+    frets.forEach(f => {
+      const x = x0 + (f + 0.5) * sx;
+      const isRoot = (s === 0 && f === 0) || (s === 2 && f === 2) || (s === 5 && f === 0);
+      g += `<circle cx="${x}" cy="${y}" r="8" fill="${isRoot ? 'var(--gold)' : 'currentColor'}" opacity="${isRoot ? 1 : .82}"/>`;
+    });
+  });
+  ['E','A','D','G','B','e'].forEach((n, s) => {
+    g += `<text x="${x0 - 8}" y="${y0 + (5 - s) * fy + 3.5}" font-size="10" text-anchor="end" fill="currentColor" opacity=".6">${n}</text>`;
+  });
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" style="max-width:360px;margin-top:8px" role="img" aria-label="Pentatonic box starting at fret ${startFret}">${g}</svg>`;
+}
+
+function renderSongs(){
+  const box = $('#songs'); box.innerHTML = '';
+  (prog.s || []).forEach(s => {
+    const a = document.createElement('a');
+    a.href = 'https://www.ultimate-guitar.com/search.php?search_type=title&value=' + encodeURIComponent(s);
+    a.target = '_blank'; a.rel = 'noopener';
+    a.innerHTML = s + ' <i>\u2197</i>';
+    box.appendChild(a);
+  });
+}
+
+/* ============================================================
+   SHELF + SHARING
+   ============================================================ */
+const SHELF_KEY = 'trgc.songstarter.v2';
+
+function readShelf(){
+  try { return JSON.parse(localStorage.getItem(SHELF_KEY) || '[]'); }
+  catch(e){ return []; }
+}
+function writeShelf(list){
+  try { localStorage.setItem(SHELF_KEY, JSON.stringify(list.slice(0, 40))); }
+  catch(e){ toast('This browser will not let the page save. The link still works.'); }
+}
+function renderShelf(){
+  const box = $('#shelf'); const list = readShelf(); box.innerHTML = '';
+  if(!list.length){
+    box.innerHTML = '<div class="ss-empty">Nothing kept yet. When something sounds right, hit <b>Keep this one</b> and it will wait here for you.</div>';
+    return;
+  }
+  list.forEach((it, idx) => {
+    const d = document.createElement('div');
+    d.className = 'ss-shelfitem';
+    d.innerHTML = `<span class="ss-nm">${it.n}</span><span class="ss-mt">${it.k}${it.c ? ' \u00b7 capo ' + it.c : ''}</span>
+      <button class="btn btn--sm btn--ghost" data-a="load">Load</button><button class="btn btn--sm btn--ghost" data-a="del" aria-label="Remove">Remove</button>`;
+    d.querySelector('[data-a=load]').addEventListener('click', () => { applyState(it.s); toast('Loaded.'); });
+    d.querySelector('[data-a=del]').addEventListener('click', () => {
+      const l = readShelf(); l.splice(idx, 1); writeShelf(l); renderShelf();
+    });
+    box.appendChild(d);
+  });
+}
+function keepCurrent(){
+  const list = readShelf();
+  const rec = {
+    n: voicing.chords.map(c => pretty(c.sounding)).join(' '),
+    k: pretty(PC[state.keyPc]) + (isMinorProg(prog) ? 'm' : ''),
+    c: voicing.capo,
+    s: snapshot()
+  };
+  if(list.some(x => x.n === rec.n && x.k === rec.k)){ toast('Already on the shelf.'); return; }
+  list.unshift(rec); writeShelf(list); renderShelf(); toast('Kept. It stays on this device.');
+}
+
+function snapshot(){
+  return {p:state.progIdx, k:state.keyPc, h:state.hands, c:state.capoOk ? 1 : 0,
+          m:state.mood, g:state.genre, l:state.len, o:state.shapeOverride, b:state.bpm,
+          x:state.locks};
+}
+function applyState(s){
+  if(!s) return;
+  state.progIdx = s.p ?? state.progIdx;
+  state.keyPc   = s.k ?? state.keyPc;
+  state.hands   = s.h || state.hands;
+  state.capoOk  = s.c !== 0;
+  state.mood    = s.m || 'any';
+  state.genre   = s.g || 'any';
+  state.len     = s.l || 'any';
+  state.shapeOverride = (s.o === undefined ? null : s.o);
+  state.bpm     = s.b || 96;
+  state.locks   = s.x || {};
+  syncControls();
+  render();
+}
+function writeHash(){
+  try {
+    const enc = btoa(unescape(encodeURIComponent(JSON.stringify(snapshot()))))
+      .replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+    history.replaceState(null, '', '#p=' + enc);
+  } catch(e){ /* not fatal */ }
+}
+function readHash(){
+  const m = location.hash.match(/#p=(.+)$/);
+  if(!m) return null;
+  try {
+    const b = m[1].replace(/-/g,'+').replace(/_/g,'/');
+    return JSON.parse(decodeURIComponent(escape(atob(b))));
+  } catch(e){ return null; }
+}
+/* ============================================================
+   AUDIO — plucked string by Karplus-Strong, rendered once per
+   note into a buffer and cached. No samples, no libraries.
+   ============================================================ */
+let ctx = null, master = null;
+const bufCache = new Map();
+
+function audio(){
+  if(ctx) return ctx;
+  const AC = window.AudioContext || window.webkitAudioContext;
+  ctx = new AC();
+  master = ctx.createGain();
+  master.gain.value = 0.85;
+  const soft = ctx.createBiquadFilter();
+  soft.type = 'lowpass'; soft.frequency.value = 5200;
+  master.connect(soft); soft.connect(ctx.destination);
+  return ctx;
+}
+
+function pluckBuffer(midi){
+  if(bufCache.has(midi)) return bufCache.get(midi);
+  const sr = ctx.sampleRate;
+  const freq = 440 * Math.pow(2, (midi - 69) / 12);
+  const N = Math.max(2, Math.round(sr / freq));
+  const len = Math.floor(sr * 2.4);
+  const buf = ctx.createBuffer(1, len, sr);
+  const y = buf.getChannelData(0);
+
+  // noise burst, low-passed so it reads as flesh on a wound string
+  let last = 0;
+  for(let i = 0; i < N; i++){
+    const n = Math.random() * 2 - 1;
+    last = last * 0.62 + n * 0.38;
+    y[i] = last;
+  }
+  const damp = midi > 60 ? 0.494 : 0.4975;      // higher strings die faster
+  for(let i = N; i < len; i++){
+    y[i] = (y[i - N] + y[i - N + 1]) * damp * (1 - 0.00002);
+  }
+  // fade the tail so nothing clicks when it is cut off
+  const f = Math.floor(sr * 0.12);
+  for(let i = len - f; i < len; i++) y[i] *= (len - i) / f;
+
+  bufCache.set(midi, buf);
+  return buf;
+}
+
+function note(midi, t, gain, dur){
+  const src = ctx.createBufferSource();
+  src.buffer = pluckBuffer(midi);
+  const g = ctx.createGain();
+  g.gain.value = gain;
+  if(dur){
+    g.gain.setValueAtTime(gain, t + dur * 0.7);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  }
+  src.connect(g); g.connect(master);
+  src.start(t);
+  src.stop(t + (dur || 2.3));
+  live.push(src);
+}
+
+function chuck(t){
+  const dur = 0.09, sr = ctx.sampleRate;
+  const b = ctx.createBuffer(1, Math.floor(sr * dur), sr);
+  const d = b.getChannelData(0);
+  for(let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length) * 0.5;
+  const s = ctx.createBufferSource(); s.buffer = b;
+  const f = ctx.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 1400; f.Q.value = 1.1;
+  const g = ctx.createGain(); g.gain.value = 0.5;
+  s.connect(f); f.connect(g); g.connect(master); s.start(t); live.push(s);
+}
+
+function click(t, accent){
+  const o = ctx.createOscillator(), g = ctx.createGain();
+  o.frequency.value = accent ? 1500 : 1000;
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(accent ? 0.3 : 0.16, t + 0.002);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.06);
+  o.connect(g); g.connect(master); o.start(t); o.stop(t + 0.08);
+  live.push(o);
+}
+
+/* strum one shape */
+function strike(shape, capo, t, sym){
+  const idx = [0,1,2,3,4,5].filter(i => shape.f[i] >= 0);
+  if(!idx.length) return;
+  const midiOf = i => OPEN_MIDI[i] + shape.f[i] + capo;
+
+  if(sym === 'B' || sym === 'P'){
+    note(midiOf(idx[0]), t, 0.85, sym === 'P' ? 1.6 : 0.9);
+    if(sym === 'P' && idx.length > 1) note(midiOf(idx[1]), t + 0.004, 0.28, 1.4);
+    return;
+  }
+  if(sym === 'p'){
+    const top = idx.slice(-3);
+    top.forEach((s, k) => note(midiOf(s), t + k * 0.022, 0.5 - k * 0.05, 1.2));
+    return;
+  }
+  if(sym === 'x'){ chuck(t); return; }
+
+  const down = (sym === 'D');
+  const order = down ? idx : idx.slice().reverse();
+  const use = down ? order : order.slice(0, Math.min(4, order.length));
+  const spread = down ? 0.014 : 0.010;
+  use.forEach((s, k) => {
+    const v = (down ? 0.62 : 0.42) * (1 - k * 0.035) * (0.94 + Math.random() * 0.12);
+    note(midiOf(s), t + k * spread, Math.max(0.12, v), down ? 1.9 : 1.3);
+  });
+}
+
+/* ---------- transport ---------- */
+let live = [], playing = false, marks = [], rafId = 0;
+
+function stopAll(){
+  playing = false;
+  live.forEach(s => { try{ s.stop(); }catch(e){} });
+  live = []; marks = [];
+  cancelAnimationFrame(rafId);
+  $$('.ss-slot').forEach(s => s.classList.remove('playing'));
+  $$('.ss-strum b').forEach(b => b.classList.remove('hit'));
+  $('#playBtn').textContent = 'Play';
+  $('#playBtn').setAttribute('aria-label', 'Play the progression');
+}
+
+function play(skipCount){
+  audio();
+  if(ctx.state === 'suspended') ctx.resume();
+  stopAll();
+  playing = true;
+  $('#playBtn').textContent = 'Stop';
+  $('#playBtn').setAttribute('aria-label', 'Stop');
+
+  const bpm = state.bpm;
+  const beat = 60 / bpm, eighth = beat / 2;
+  const gk = state.genre === 'any' ? currentGenreKey : state.genre;
+  const pat = STRUMS[gk].p;
+  const metro = $('#metro').checked;
+  let t = ctx.currentTime + 0.12;
+
+  if($('#countin').checked && !skipCount){
+    for(let i = 0; i < 4; i++){ click(t + i * beat, i === 0); }
+    t += 4 * beat;
+  }
+
+  const REPEATS = 4;
+  const chords = voicing.chords;
+  for(let r = 0; r < REPEATS; r++){
+    chords.forEach((c, ci) => {
+      const barStart = t;
+      marks.push({at: barStart, slot: ci});
+      pat.forEach((sym, si) => {
+        const at = barStart + si * eighth;
+        if(sym !== '-') strike(c.shape, voicing.capo, at, sym);
+        if(metro && si % 2 === 0) click(at, si === 0);
+        marks.push({at, cell: si});
+      });
+      t += eighth * 8;
+    });
+  }
+  const endAt = t;
+
+  const tick = () => {
+    if(!playing) return;
+    const now = ctx.currentTime;
+    if(now > endAt){
+      if($('#loopchk').checked){ play(true); return; }
+      stopAll(); return;
+    }
+    for(let i = marks.length - 1; i >= 0; i--){
+      const m = marks[i];
+      if(m.at <= now && !m.done && now - m.at < 0.12){
+        m.done = true;
+        if(m.slot !== undefined){
+          $$('.ss-slot').forEach(s => s.classList.toggle('playing', +s.dataset.i === m.slot));
+        }
+        if(m.cell !== undefined){
+          $$('.ss-strum b').forEach(b => b.classList.toggle('hit', +b.dataset.i === m.cell));
+        }
+      }
+    }
+    rafId = requestAnimationFrame(tick);
+  };
+  rafId = requestAnimationFrame(tick);
+}
+
+/* ============================================================
+   TUNER — autocorrelation, mic stays in the browser
+   ============================================================ */
+let tuning = false, tstream = null;
+const STRING_NAMES = ['E','A','D','G','B','e'];
+
+function noteFromFreq(f){
+  const midi = 69 + 12 * Math.log2(f / 440);
+  const near = Math.round(midi);
+  return {name: PC[((near % 12) + 12) % 12], cents: Math.round((midi - near) * 100), midi: near};
+}
+
+function autocorrelate(buf, sr){
+  let rms = 0;
+  for(let i = 0; i < buf.length; i++) rms += buf[i] * buf[i];
+  rms = Math.sqrt(rms / buf.length);
+  if(rms < 0.01) return -1;
+
+  let r1 = 0, r2 = buf.length - 1;
+  const thres = 0.2;
+  for(let i = 0; i < buf.length / 2; i++) if(Math.abs(buf[i]) < thres){ r1 = i; break; }
+  for(let i = 1; i < buf.length / 2; i++) if(Math.abs(buf[buf.length - i]) < thres){ r2 = buf.length - i; break; }
+  const b = buf.slice(r1, r2), n = b.length;
+  const c = new Float32Array(n).fill(0);
+  for(let lag = 0; lag < n; lag++)
+    for(let i = 0; i < n - lag; i++) c[lag] += b[i] * b[i + lag];
+
+  let d = 0; while(d < n - 1 && c[d] > c[d + 1]) d++;
+  let max = -1, pos = -1;
+  for(let i = d; i < n; i++) if(c[i] > max){ max = c[i]; pos = i; }
+  if(pos <= 0) return -1;
+  const x1 = c[pos - 1], x2 = c[pos], x3 = c[pos + 1] || 0;
+  const a = (x1 + x3 - 2 * x2) / 2, bb = (x3 - x1) / 2;
+  const T = a ? pos - bb / (2 * a) : pos;
+  return sr / T;
+}
+
+async function toggleTuner(){
+  const btn = $('#ss-tunerBtn');
+  if(tuning){
+    tuning = false;
+    if(tstream) tstream.getTracks().forEach(t => t.stop());
+    btn.textContent = 'Turn on the tuner';
+    $('#ss-tunerNote').textContent = '\u2014';
+    return;
+  }
+  try{
+    tstream = await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false, noiseSuppression:false, autoGainControl:false}});
+  }catch(e){
+    toast('No microphone access. Check the browser permission for this site.');
+    return;
+  }
+  audio();
+  if(ctx.state === 'suspended') ctx.resume();
+  const src = ctx.createMediaStreamSource(tstream);
+  const an = ctx.createAnalyser(); an.fftSize = 2048;
+  src.connect(an);
+  const data = new Float32Array(an.fftSize);
+  tuning = true;
+  btn.textContent = 'Turn off the tuner';
+
+  const loop = () => {
+    if(!tuning) return;
+    an.getFloatTimeDomainData(data);
+    const f = autocorrelate(data, ctx.sampleRate);
+    if(f > 55 && f < 1400){
+      const n = noteFromFreq(f);
+      $('#ss-tunerNote').textContent = pretty(n.name);
+      $('#ss-tunerCents').textContent = (n.cents === 0 ? 'In tune' : (n.cents > 0 ? '+' : '') + n.cents + ' cents')
+        + ' \u00b7 ' + f.toFixed(1) + ' Hz';
+      const pin = $('#ss-tunerPin');
+      pin.style.left = Math.max(2, Math.min(98, 50 + n.cents * 0.9)) + '%';
+      pin.classList.toggle('intune', Math.abs(n.cents) <= 4);
+      const si = OPEN_MIDI.indexOf(n.midi);
+      $$('#ss-tunerStrings b').forEach((b, i) => b.classList.toggle('on', i === si));
+    }
+    requestAnimationFrame(loop);
+  };
+  loop();
+}
+
+/* ============================================================
+   CONTROLS
+   ============================================================ */
+let currentGenreKey = 'pop';
+
+function chipGroup(sel, items, get, set){
+  const box = $(sel); box.innerHTML = '';
+  items.forEach(it => {
+    const b = document.createElement('button');
+    b.className = 'ss-chip'; b.type = 'button';
+    b.textContent = it.label; b.dataset.v = it.v;
+    b.setAttribute('aria-pressed', String(get() === it.v));
+    b.addEventListener('click', () => {
+      set(it.v);
+      Array.from(box.children).forEach(c => c.setAttribute('aria-pressed', String(c.dataset.v === String(it.v))));
+      state.shapeOverride = null;
+      render();
+    });
+    box.appendChild(b);
+  });
+}
+
+function syncControls(){
+  $$('#cLen .ss-chip').forEach(c => c.setAttribute('aria-pressed', String(c.dataset.v === String(state.len))));
+  $$('#cHands .ss-chip').forEach(c => c.setAttribute('aria-pressed', String(c.dataset.v === state.hands)));
+  $$('#cCapo .ss-chip').forEach(c => c.setAttribute('aria-pressed', String(c.dataset.v === String(state.capoOk))));
+  $$('#cMood .ss-chip').forEach(c => c.setAttribute('aria-pressed', String(c.dataset.v === state.mood)));
+  $('#cGenre').value = state.genre;
+  $('#cKey').value = String(state.keyPc);
+  $('#bpm').value = state.bpm; $('#bpmOut').textContent = state.bpm;
+}
+
+function buildControls(){
+  chipGroup('#cLen', [
+    {label:'Any', v:'any'}, {label:'2', v:'2'}, {label:'3', v:'3'}, {label:'4', v:'4'}, {label:'5+', v:'5'}
+  ], () => state.len, v => state.len = v);
+
+  chipGroup('#cHands', [
+    {label:'Open chords only', v:'open'}, {label:'A barre or two', v:'some'}, {label:'Anything', v:'any'}
+  ], () => state.hands, v => state.hands = v);
+
+  chipGroup('#cCapo', [
+    {label:'I have a capo', v:'true'}, {label:'No capo', v:'false'}
+  ], () => String(state.capoOk), v => state.capoOk = (v === 'true'));
+
+  chipGroup('#cMood', [{label:'Surprise me', v:'any'}].concat(
+    MOODS.map(m => ({label: m[0].toUpperCase() + m.slice(1), v:m}))
+  ), () => state.mood, v => state.mood = v);
+
+  const g = $('#cGenre');
+  g.innerHTML = '<option value="any">Leave it open</option>' +
+    Object.keys(STRUMS).map(k => `<option value="${k}">${GENRE_LABEL[k]}</option>`).join('');
+  g.addEventListener('change', () => {
+    state.genre = g.value;
+    if(state.genre !== 'any'){ state.bpm = STRUMS[state.genre].bpm; $('#bpm').value = state.bpm; $('#bpmOut').textContent = state.bpm; }
+    state.shapeOverride = null; render();
+  });
+
+  const k = $('#cKey');
+  k.innerHTML = [7,0,2,9,4,5,10,3,11,8,1,6]
+    .map(pc => `<option value="${pc}">${pretty(PC[pc])}</option>`).join('');
+  k.addEventListener('change', () => { state.keyPc = +k.value; state.shapeOverride = null; state.locks = {}; render(); });
+
+  $('#bpm').addEventListener('input', e => {
+    state.bpm = +e.target.value; $('#bpmOut').textContent = state.bpm;
+    if(playing){ play(true); }
+  });
+
+  $('#playBtn').addEventListener('click', () => playing ? stopAll() : play());
+  $('#spinBtn').addEventListener('click', () => { const was = playing; stopAll(); spin(); if(was) play(); });
+  $('#unlockBtn').addEventListener('click', () => { state.locks = {}; renderSlots(); writeHash(); });
+
+  $('#easierBtn').addEventListener('click', () => {
+    const opts = capoOptions(prog, state.keyPc, true, isMinorProg(prog));
+    const better = opts.find(o => o.worst < voicing.worst - 0.2);
+    if(better){
+      state.shapeOverride = better.shapeKeyPc; render();
+      toast(better.capo ? 'Capo ' + better.capo + '. Same sounding chords, easier changes.' : 'Open shapes, no capo needed.');
+    } else {
+      toast('This is already the easiest way to play it in ' + pretty(PC[state.keyPc]) + '.');
+    }
+  });
+
+  $('#keepBtn').addEventListener('click', keepCurrent);
+  $('#printBtn').addEventListener('click', () => window.print());
+  $('#shareBtn').addEventListener('click', async () => {
+    writeHash();
+    try{ await navigator.clipboard.writeText(location.href); toast('Link copied. Send it to whoever needs to play this.'); }
+    catch(e){ toast('Copy the address bar. The whole progression is in the link.'); }
+  });
+
+  $('#ss-tunerStrings').innerHTML = STRING_NAMES.map(n => `<b>${n}</b>`).join('');
+  $('#ss-tunerBtn').addEventListener('click', toggleTuner);
+
+  document.addEventListener('keydown', e => {
+    if(e.target.matches('input,select,textarea')) return;
+    if(e.code === 'Space'){ e.preventDefault(); playing ? stopAll() : play(); }
+    if(e.key === 'r' || e.key === 'R'){ spin(); }
+  });
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+(function init(){
+  buildControls();
+  const fromLink = readHash();
+  if(fromLink){ applyState(fromLink); }
+  else {
+    state.progIdx = BANK.findIndex(p => p.d.length === 4 && p.m.includes('bright'));
+    if(state.progIdx < 0) state.progIdx = 0;
+    syncControls();
+    render();
+  }
+  currentGenreKey = guessGenre();
+  renderShelf();
+  window.addEventListener('pagehide', stopAll);
+})();
+
+</script>
 </body>
 </html>

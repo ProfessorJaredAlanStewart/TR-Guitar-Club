@@ -112,6 +112,11 @@
 }
 .ss-chip:hover{border-color:var(--ss-accent)}
 .ss-chip[aria-pressed="true"]{background:var(--ss-accent);border-color:var(--ss-accent);color:#fff}
+.ss-chip--fam{display:flex;flex-direction:column;align-items:flex-start;gap:2px;border-radius:10px;padding:7px 12px 6px;line-height:1.1;text-align:left}
+.ss-chip--fam b{font-family:var(--font-display,'Anton',sans-serif);font-weight:400;font-size:1.15rem;letter-spacing:.02em}
+.ss-chip--fam small{font-size:.72rem;opacity:.75;white-space:nowrap}
+.ss-chip--fam[aria-pressed="true"] small{opacity:.92}
+.ss-ctrl--wide{grid-column:1 / -1}
 .ss-ctrl select{
   width:100%;padding:8px 10px;font:inherit;font-size:.9rem;color:inherit;
   background:transparent;border:1px solid var(--ss-line-2);border-radius:9px;
@@ -300,7 +305,7 @@
 <p><strong class="sand">Play along.</strong> The diagrams further down show where your fingers go. Do not worry about the strum yet. Hit each chord once when it changes and you are already playing the song.</p>
 <p><strong class="sand">Like a chord? Lock it.</strong> The padlock on each card keeps that chord. <em>Spin the unlocked</em> swaps the others for something else real songs use.</p>
 <p><strong class="sand">Too hard? Say so.</strong> Set <em>What your hands can do</em> to open chords only and the tool will never hand you a barre chord. If a change still feels impossible, press <em>Same sound, easier hands</em>.</p>
-<p><strong class="sand">The capo.</strong> The cards show the shapes your fingers make. The capo changes what those shapes sound like, not what they look like. G shapes, capo on 2, and the room hears A. The ruler under the cards shows every fret and what you would sound like there. Tap one.</p>
+<p><strong class="sand">The capo.</strong> The cards show the chords your fingers make. The capo changes what those chords sound like, not what they look like. G-family chords with the capo on fret 2, and the room hears A. The ruler under the cards shows every fret and what you would sound like there. Tap one.</p>
 <p class="mb0"><strong class="sand">The small numerals</strong> above each chord (I, IV, V, vi) are its job in the key: I is home, V pulls you back home, lowercase means minor. You do not need them yet. They are there so that one day you notice every song uses the same handful of moves.</p>
 </div>
 </details>
@@ -311,7 +316,7 @@
 
 <div class="ss-readout" aria-live="polite">
 <div class="ss-eq">
-<span class="ss-eq__part"><small>you play</small><b id="readShapes"></b></span>
+<span class="ss-eq__part"><small>chords you make</small><b id="readShapes"></b></span>
 <span class="ss-eq__op">+</span>
 <span class="ss-eq__part"><small>capo</small><b id="readCapo"></b></span>
 <span class="ss-eq__op">=</span>
@@ -321,7 +326,7 @@
 </div>
 
 <div class="ss-rulerwrap">
-<div class="ss-rulerlab">Move the capo. The key under each fret is what your shapes will sound like there.</div>
+<div class="ss-rulerlab">Move the capo. The key under each fret is what your chords will sound like from there.</div>
 <div class="ss-ruler" id="capoRuler" role="group" aria-label="Capo position"></div>
 </div>
 <div class="ss-transport">
@@ -344,14 +349,14 @@
 <p class="ss-hint">Two is a real answer. Plenty of great songs never use a third.</p></div>
 <div class="ss-ctrl"><h3>What your hands can do</h3><div class="ss-chips" id="cHands" role="group" aria-label="Hand ability"></div>
 <p class="ss-hint">A barre chord is one where your index finger lies flat across all six strings, like F. If yours still buzz, pick <em>open chords only</em>. This rates the <em>moves between</em> chords, not just the shapes, because that is where beginners get stuck.</p></div>
-<div class="ss-ctrl"><h3>Shapes you play</h3><div class="ss-chips" id="cShape" role="group" aria-label="Open shapes"></div>
-<p class="ss-hint">The five keys a guitar is easy in. Pick the one whose chords you know. Every card above is drawn in these shapes; the capo decides what they sound like.</p></div>
+<div class="ss-ctrl ss-ctrl--wide"><h3>Chords you know</h3><div class="ss-chips" id="cShape" role="group" aria-label="Chord family"></div>
+<p class="ss-hint">Songs are built from a small family of chords that belong together, named after the one that feels like home. Each button is one family, with its four main chords underneath. Pick the family whose chords you can already make. Most people start with G or D because neither needs a barre chord; the C family has F in it, and F is a rite of passage, not a beginning.</p></div>
 <div class="ss-ctrl"><h3>Capo</h3><div class="ss-chips" id="cCapo" role="group" aria-label="Capo available"></div>
-<p class="ss-hint">A capo is a clamp that pins all six strings at one fret. Each fret it moves up raises everything a half step. G shapes with the capo on 2 sound like A; on 4 they sound like B. Use the ruler above to move it. Say no here and the ruler locks to none.</p></div>
+<p class="ss-hint">A capo is a clamp that pins all six strings at one fret. Each fret it moves up raises everything a half step. The G family with the capo on fret 2 sounds like A; on fret 4, like B. Use the ruler above to move it. Say no here and the ruler locks to none.</p></div>
 <div class="ss-ctrl"><h3>Feel</h3><div class="ss-chips" id="cMood" role="group" aria-label="Mood"></div>
 <p class="ss-hint">Each of these points at a different harmonic trick, not just major versus minor. Try two and hear the difference.</p></div>
 <div class="ss-ctrl"><h3>Style</h3><select id="cGenre" aria-label="Style"></select>
-<p class="ss-hint">Style mostly lives in the strum. This sets your rhythm and tempo too.</p></div>
+<p class="ss-hint">Leave this on the standard strum until it is automatic. It has both downstrokes and upstrokes in it, and it fits nearly everything. Every other style changes the pattern and the tempo.</p></div>
 <div class="ss-ctrl"><h3>Make it sound in&hellip;</h3><select id="cKey" aria-label="Key you want it to sound in"></select>
 <p class="ss-hint" id="keyHint"></p></div>
 </div>
@@ -409,7 +414,7 @@
 <div class="panel mt3 ss-tablewrap">
 <table class="ss-table" id="capoTable">
 <caption class="ss-caption">Ways to sound in <b id="capoTableKey"></b></caption>
-<thead><tr><th>Play these shapes</th><th>Capo</th><th>Chords you make</th><th>Hardest change</th><th><span class="vh">Action</span></th></tr></thead>
+<thead><tr><th>Chord family</th><th>Capo</th><th>Chords you make</th><th>Hardest change</th><th><span class="vh">Action</span></th></tr></thead>
 <tbody></tbody>
 </table>
 </div>
@@ -600,7 +605,13 @@ const FLAT = {'C#':'D\u266d','D#':'E\u266d','F#':'F#','G#':'A\u266d','A#':'B\u26
 const OPEN_MIDI = [40,45,50,55,59,64];           // E2 A2 D3 G3 B3 E4
 
 const pcOf = n => PC.indexOf(n);
-const pretty = n => String(n).replace(/^([A-G]#)/, m => FLAT[m] || m);
+const SHARP_KEYS = [7,2,9,4,11,6];          // G D A E B F# spell their accidentals as sharps
+let spellFlats = true;                       // set per render from the key the room hears
+const keyUsesFlats = pc => !SHARP_KEYS.includes(((pc % 12) + 12) % 12);
+const pretty = (n, flats) => {
+  const useFlats = (flats === undefined) ? spellFlats : flats;
+  return String(n).replace(/^([A-G]#)/, m => (useFlats && FLAT[m]) ? FLAT[m] : m);
+};
 
 /* ---------- chord shapes ----------
    f = frets low-E..high-e (-1 muted, 0 open)
@@ -754,124 +765,124 @@ function costLabel(c){
    Every one of these is load-bearing in real songs.            */
 const BANK = [
   {d:['I','V'],            m:['bright','driving'],  g:['pop','rock','punk','country','worship'],
-   why:'Home and away, nothing else. The oldest trick there is and it never stopped working.',
+   why:'Two chords. One feels like home, the other feels like leaving. Back and forth between them is already a song.',
    s:['Iko Iko','Achy Breaky Heart','Jambalaya']},
   {d:['I','IV'],           m:['bright','dreamy'],   g:['rock','indie','folk','worship'],
-   why:'No V means no push home, so it floats instead of resolving. Good under a long vocal line.',
+   why:'Two chords that both feel calm. Nothing is pulling you anywhere, so it floats. Good when you want to sing a lot of words over not much.',
    s:['Jane Says','Feelin\u2019 Alright','Beast of Burden']},
   {d:['vi','IV'],          m:['sad','dreamy'],      g:['indie','pop','metal'],
-   why:'Minor home leaning on the brightest chord in the key. Melancholy without being dreary.',
+   why:'A sad chord and a happy chord taking turns. Wistful, not miserable.',
    s:['Stay With Me','Africa (chorus)']},
   {d:['i','bVII'],         m:['dark','driving'],    g:['rock','metal','blues'],
-   why:'Minor to the flat seven. No leading tone, so it never resolves. That is the point.',
+   why:'A minor chord, then the chord one whole step below it. It never lands anywhere, which is exactly why it sounds tough.',
    s:['Sunshine of Your Love','Cocaine']},
   {d:['I','bVII'],         m:['driving','dark'],    g:['rock','punk','metal','blues'],
-   why:'Borrowed from the parallel minor. Adds grit to a major key without going minor.',
+   why:'A major chord and the one a whole step below it. Nothing sad about it, just gritty. Sounds like a highway.',
    s:['Franklin\u2019s Tower','Fire on the Mountain']},
   {d:['I','V','vi','IV'],  m:['bright','bittersweet'], g:['pop','rock','worship','country','punk'],
-   why:'The four chords the internet made fun of. It still works because the vi lands like a small surprise.',
+   why:'The four chords behind hundreds of hits. The third one is minor and arrives like a small surprise; the fourth lifts you back out.',
    s:['Let It Be','Don\u2019t Stop Believin\u2019','With or Without You','No Woman No Cry']},
   {d:['vi','IV','I','V'],  m:['sad','bittersweet'], g:['pop','rock','indie'],
-   why:'Same four chords starting on the minor. Feels like the sad version of the same song, because it is.',
+   why:'The same four chords, started on the minor one. That one change makes the whole loop feel sad instead of hopeful.',
    s:['Grenade','Zombie','Complicated']},
   {d:['I','IV','V'],       m:['bright','driving'],  g:['blues','rock','country','punk','bluegrass'],
-   why:'Three chords and the truth. Every twelve-bar blues and half of country lives here.',
+   why:'Three chords and the truth. Nearly every blues song and half of all country songs use only these.',
    s:['Twist and Shout','La Bamba','Wild Thing']},
   {d:['I','vi','IV','V'],  m:['bright','bittersweet'], g:['pop','rock','country'],
-   why:'The doo-wop turnaround. The vi in slot two makes the whole thing sound like 1958 on purpose.',
+   why:'The 1950s slow-dance loop. The minor chord comes second, and that is what makes it sound like an oldie.',
    s:['Stand By Me','Every Breath You Take','Perfect']},
   {d:['ii','V','I'],       m:['bittersweet','dreamy'], g:['jazz','bossa','pop'],
-   why:'The engine of jazz. Two-five-one is tension, more tension, home, and you can chain it forever.',
+   why:'Jazz in three chords. Each one leans harder on the next until the last one lands. Play it round and round.',
    s:['Autumn Leaves','Fly Me to the Moon']},
   {d:['I','V','vi','iii','IV','I','IV','V'], m:['bright','bittersweet'], g:['classical','pop','worship'],
-   why:'Pachelbel. Eight chords with a bass line that walks down and back. Longer than it looks on paper.',
+   why:'Pachelbel\u2019s Canon. Eight chords whose low notes walk down a staircase and back up. Longer than it looks, so take it slow.',
    s:['Canon in D','Basket Case','Let It Go']},
   {d:['vi','V','IV','V'],  m:['sad','tense'],       g:['rock','metal','indie'],
-   why:'Sits on the minor and refuses to go home. The IV to V keeps promising a resolution it never delivers.',
+   why:'Starts on the sad chord and keeps circling it. The last two chords promise to land and never do. Tense on purpose.',
    s:['All Along the Watchtower']},
   {d:['I','iii','IV','V'], m:['bright','dreamy'],   g:['pop','folk','worship'],
-   why:'The iii is the softest way to leave home. Barely a change, big difference in colour.',
+   why:'The second chord is the gentlest way to leave the first. It barely feels like a change, but the mood shifts.',
    s:['Crocodile Rock']},
   {d:['I','IV','vi','V'],  m:['bright','driving'],  g:['pop','rock','punk','worship'],
-   why:'Same family as the big four, reordered so the minor arrives late and hits harder.',
+   why:'The same family as the big four, reordered so the sad chord comes late and hits harder.',
    s:['She Will Be Loved','Take On Me']},
   {d:['IV','I','V','vi'],  m:['bittersweet','dreamy'], g:['indie','pop','folk'],
-   why:'Starting on IV means starting mid-thought. Feels like the song was already going when you arrived.',
+   why:'Starts mid-thought. It feels like the song was already going before you walked in.',
    s:['Umbrella','Boulevard of Broken Dreams']},
   {d:['I','bVII','IV','I'], m:['driving','bright'], g:['rock','country','blues'],
-   why:'The Mixolydian cadence. Flat seven instead of the V, which is why it sounds like a highway.',
+   why:'Sweet Home Alabama. The second chord is one whole step below the first, and that one move is the whole southern-rock sound.',
    s:['Sweet Home Alabama','Sympathy for the Devil']},
   {d:['I','V','IV'],       m:['driving','bright'],  g:['rock','punk','country'],
-   why:'The V before the IV inverts the usual pull, so the IV feels like a landing rather than a step out.',
+   why:'The Louie Louie loop. Three chords, and the second one is the furthest from home, so the third one feels like coming back instead of leaving.',
    s:['Louie Louie','Twist and Shout']},
   {d:['vi','iii','IV','I'], m:['sad','dreamy'],     g:['indie','folk','jazz'],
-   why:'Two minors in a row before the light comes back. Patient. Do not rush the third chord.',
+   why:'Two sad chords in a row before the light comes back. Patient. Do not rush the third one.',
    s:['Someone Like You']},
   {d:['I','iv'],           m:['bittersweet','dark'], g:['indie','folk','jazz','worship'],
-   why:'The minor four is the saddest sound in a major key. One chord and the whole room turns.',
+   why:'A happy chord, then its minor neighbour. That second chord is the saddest sound you can make in a happy key. One change and the room goes quiet.',
    s:['Creep (the turn)','In My Life']},
   {d:['I','III','IV','iv'], m:['bittersweet','tense'], g:['rock','indie','metal'],
-   why:'A major three pulls somewhere it should not, then the minor four collapses it. Creep, essentially.',
+   why:'Creep. The second chord sounds slightly wrong for a moment, then the last one turns minor and the whole thing collapses. Beautifully.',
    s:['Creep','Space Oddity']},
   {d:['I','V','bVII','IV'], m:['driving','bright'], g:['rock','country','folk'],
-   why:'The bVII sneaks in between two bright chords and nobody notices until it is gone.',
+   why:'Wagon Wheel with a twist. The third chord is a step below where you started. It slips in between two bright chords and you barely notice until it is gone.',
    s:['Wagon Wheel','Ramblin\u2019 Man']},
   {d:['i','VI','III','VII'], m:['dark','sad'],      g:['metal','rock','indie'],
-   why:'The natural minor loop. Every chord is diatonic and it still sounds like weather coming in.',
+   why:'Four chords that all belong to the minor key. Nothing exotic in it, and it still sounds like weather coming in.',
    s:['Zombie','Numb']},
   {d:['i','iv','v'],       m:['dark','sad'],        g:['blues','metal','flamenco','classical'],
-   why:'Minor blues. The minor v instead of a dominant is what keeps it from sounding hopeful.',
+   why:'The blues, but sad. All three chords are minor, which is what keeps it from sounding hopeful.',
    s:['The Thrill Is Gone']},
   {d:['i','bVI','bVII','i'], m:['dark','driving'],  g:['metal','rock'],
-   why:'The Andalusian family rearranged. Climbs two steps and drops back into the minor.',
+   why:'Minor, then two steps up, then back down to where you started. An old flamenco move that metal borrowed.',
    s:['Stairway (the turn)','Hit the Road Jack']},
   {d:['i','bVII','bVI','V'], m:['dark','tense'],    g:['flamenco','metal','classical','rock'],
-   why:'The Andalusian cadence. Walks down four steps to a major V that never quite gets you home.',
+   why:'Walks down four steps. The last chord is major, which makes you expect a landing that never comes. Hit the Road Jack.',
    s:['Hit the Road Jack','Sultans of Swing (feel)']},
   {d:['I','vi','ii','V'],  m:['bittersweet','dreamy'], g:['jazz','bossa','pop','worship'],
-   why:'The rhythm changes turnaround. Circle of fifths in miniature, which is why it never sounds stuck.',
+   why:'Heart and Soul. Four chords that go round in a circle and never get stuck anywhere.',
    s:['Blue Moon','Heart and Soul']},
   {d:['Imaj7','IVmaj7'],   m:['dreamy','bittersweet'], g:['bossa','jazz','indie','latin'],
-   why:'Two major sevenths and nothing else. Nowhere to resolve, so it just hangs in the air.',
+   why:'Two dreamy chords and nothing else. Nowhere to land, so it hangs in the air. Bossa nova lives here.',
    s:['Girl from Ipanema (feel)','Wave']},
   {d:['ii7','V7','Imaj7','vi7'], m:['dreamy','bittersweet'], g:['jazz','bossa','latin'],
-   why:'Two-five-one with the vi tacked on so it loops back to the top without stopping.',
+   why:'A jazz turnaround. Three chords that lean into a landing, then a fourth that sends you back to the top.',
    s:['Autumn Leaves','Take the A Train']},
   {d:['I','I7','IV','iv'], m:['bittersweet','bright'], g:['blues','jazz','folk','country'],
-   why:'The I7 turns home into a dominant that drags you to the IV. Then the minor four takes it back.',
+   why:'The first chord grows a seventh, which drags you to the second. Then the last one goes minor and takes it all back.',
    s:['Something','Bad Moon (feel)']},
   {d:['I','V','ii','IV'],  m:['bright','driving'],  g:['pop','indie','folk'],
-   why:'The ii where you expect the vi. Same softness, different colour, and nobody hears it coming.',
+   why:'The big four with the third chord swapped for a different minor one. Same softness, slightly different colour.',
    s:['Save Tonight']},
   {d:['I','IV','I','V'],   m:['bright','driving'],  g:['bluegrass','country','folk','blues'],
-   why:'The bluegrass shuffle. Home twice as often as anything else, which is what makes it danceable.',
+   why:'The bluegrass shuffle. You come home twice as often as anywhere else, which is what makes it danceable.',
    s:['Wagon Wheel','Man of Constant Sorrow']},
   {d:['vi','IV','I','V','vi','IV','II','V'], m:['bittersweet','tense'], g:['pop','rock'],
-   why:'Runs the sad loop twice, but the second pass swaps in a major two that lifts the whole thing.',
+   why:'The sad loop twice, but the second time through, the third chord goes major. It lifts the whole thing.',
    s:['Grenade','Africa']},
   {d:['I','Isus4','I','IV'], m:['bright','dreamy'], g:['rock','folk','worship','country'],
-   why:'A suspension is not a new chord, it is one finger. Add it and hold it a beat too long.',
+   why:'Free Fallin\u2019. The second chord is just the first one with one finger added. Add it, hold it a beat too long, take it away.',
    s:['Free Fallin\u2019','Pinball Wizard']},
   {d:['Iadd9','V','vi','IV'], m:['dreamy','bright'], g:['indie','worship','pop'],
-   why:'Add nine instead of plain major. Same function, more air, and on guitar it is often easier.',
+   why:'The big four, but the first chord has one extra note in it. More air, and on guitar it is often the easier shape.',
    s:['Wonderwall (feel)','Boulevard']},
   {d:['I','V','vi','V'],   m:['bright','bittersweet'], g:['country','pop','worship'],
-   why:'The V twice, framing the minor. Common in worship and country because it sings easily.',
+   why:'Country Roads. The second chord comes back after the minor one, wrapping it. Easy to sing over.',
    s:['Take Me Home, Country Roads']},
   {d:['vi','V','I'],       m:['bittersweet','driving'], g:['rock','indie','pop'],
-   why:'Three chords that climb out of the minor. Short enough to loop twice a bar.',
+   why:'Three chords climbing out of the minor. Short enough to play twice a bar.',
    s:['Hey Soul Sister (feel)']},
   {d:['I','II','IV','I'],  m:['bright','tense'],    g:['rock','folk','country'],
-   why:'The major two is the V of the V. It sounds wrong for exactly one beat and then it sounds inevitable.',
+   why:'Eight Days a Week. The second chord is major where you expect minor. It sounds wrong for one beat and then it sounds like the Beatles.',
    s:['Eight Days a Week','Hey Good Lookin\u2019']},
   {d:['i','v','bVI','bVII'], m:['dark','sad'],      g:['metal','rock','classical'],
-   why:'Minor with a minor five, then a climb. Bleak on the way down, defiant on the way up.',
+   why:'Minor and bleak for two chords, then two chords climb back up, defiant. House of the Rising Sun feel.',
    s:['House of the Rising Sun (feel)']},
   {d:['I','vi','iii','IV'], m:['bittersweet','dreamy'], g:['jazz','indie','pop'],
-   why:'Falls a third at a time. Every chord shares two notes with the last, so it barely moves and still travels.',
+   why:'Each chord shares two notes with the one before, so it barely moves and still travels. Fly Me to the Moon.',
    s:['Fly Me to the Moon']},
   {d:['I','IV','ii','V'],  m:['bright','bittersweet'], g:['jazz','bossa','country','worship'],
-   why:'A gentler two-five. The IV first softens the landing before the ii pulls you into the turn.',
+   why:'A gentler jazz turn. The second chord softens things before the third one pulls you round to the top.',
    s:['Blue Bayou']}
 ];
 /* ============================================================
@@ -880,15 +891,15 @@ const BANK = [
    ============================================================ */
 const STRUMS = {
   pop:      {name:'Down, down-up, up-down-up', p:['D','-','D','u','-','u','D','u'], bpm:96,  note:'The one everybody learns. Keep your hand moving on the rests.'},
-  rock:     {name:'Straight eighths',          p:['D','u','D','u','D','u','D','u'], bpm:120, note:'All downstrokes if you want it meaner. Palm the low strings.'},
-  punk:     {name:'Downstrokes only',          p:['D','D','D','D','D','D','D','D'], bpm:168, note:'No upstrokes. Your forearm is the instrument.'},
+  rock:     {name:'Down, then down-up, down-up, down-up', p:['D','-','D','u','D','u','D','u'], bpm:120, note:'A long first stroke, then steady down-up. Rest the side of your hand on the low strings for grit.'},
+  punk:     {name:'Fast, even down-up',         p:['D','u','D','u','D','u','D','u'], bpm:168, note:'Every stroke the same weight. Punk records often use all downstrokes, but learn it alternating first: same speed, half the effort, and your upstroke gets a workout.'},
   metal:    {name:'Chug on the low strings',   p:['D','x','D','x','D','D','x','D'], bpm:140, note:'Palm mute everything, hit only the bottom three strings.'},
   country:  {name:'Bass note, then strum',     p:['B','-','D','u','B','-','D','u'], bpm:104, note:'B is the root note alone. Alternate root and fifth if you can find it.'},
   bluegrass:{name:'Boom-chuck',                p:['B','-','x','-','B','-','x','-'], bpm:132, note:'Bass note, muted chop. The chop is the snare drum.'},
   folk:     {name:'Down, down-up, down-up',    p:['D','-','D','u','-','u','D','-'], bpm:88,  note:'Lighter than pop. Let the low string ring under it.'},
   indie:    {name:'Fingerpicked, thumb steady',p:['P','p','P','p','P','p','P','p'], bpm:82,  note:'Thumb on the root, fingers on the top three. P is thumb.'},
   blues:    {name:'Shuffle',                   p:['D','-','u','D','-','u','D','u'], bpm:92,  note:'Swing the eighths. Long-short, long-short.'},
-  jazz:     {name:'Four to the bar',           p:['D','-','D','-','D','-','D','-'], bpm:132, note:'Short, even, no ring. Freddie Green played nothing else for forty years.'},
+  jazz:     {name:'Four to the bar',           p:['D','-','D','-','D','-','D','-'], bpm:132, note:'Four short downstrokes, no ring, no upstrokes on purpose. This is the one style where all-down is the point: it is the drummer\'s job you are doing.'},
   bossa:    {name:'Thumb and syncopated top',  p:['P','-','p','P','-','p','-','p'], bpm:126, note:'Thumb on beats, fingers off them. The gap is the groove.'},
   latin:    {name:'Syncopated, accent the and',p:['D','-','-','u','D','u','-','u'], bpm:112, note:'Accent the upbeats. The downbeat can be silent.'},
   worship:  {name:'Open, ringing eighths',     p:['D','-','D','u','D','-','D','u'], bpm:76,  note:'Let everything ring. Nothing muted, nothing rushed.'},
@@ -1198,6 +1209,7 @@ function render(){
   prog = BANK[state.progIdx];
   const minor = isMinorProg(prog);
   normalizeShape(prog);
+  spellFlats = keyUsesFlats(soundingPc());
   voicing = resolve(prog, soundingPc(), state.shapePc);
   band = bandParts(prog, voicing, soundingPc());
 
@@ -1217,7 +1229,7 @@ function render(){
   renderSongs();
   syncShapeChips();
   const sk = pretty(PC[soundingPc()]) + (minor ? ' minor' : ' major');
-  $('#stateLine').textContent = pretty(PC[state.shapePc]) + (minor ? 'm' : '') + ' shapes'
+  $('#stateLine').textContent = pretty(PC[state.shapePc]) + (minor ? 'm' : '') + ' family'
     + ' \u00b7 ' + (state.capo ? 'capo ' + state.capo : 'no capo') + ' \u00b7 sounds in ' + sk;
   $('#keyHint').textContent = 'Pick a key and the tool finds the shapes and capo that get you there with the least trouble. '
     + (minor ? 'This progression starts on a minor chord, so the keys here are minor keys.' : 'If you are singing and it sits too high or too low, this is the control to change.');
@@ -1228,12 +1240,13 @@ function renderReadout(){
   const minor = isMinorProg(prog);
   const sh = pretty(PC[state.shapePc]) + (minor ? 'm' : '');
   const so = pretty(PC[soundingPc()]) + (minor ? ' minor' : ' major');
-  $('#readShapes').textContent = sh + ' shapes';
+  $('#readShapes').textContent = sh + ' family';
   $('#readCapo').textContent = state.capo ? 'capo on fret ' + state.capo : 'no capo';
   $('#readSound').textContent = so;
+  const fam = familyChords(state.shapePc, minor).join(', ');
   $('#readSentence').textContent = state.capo
-    ? 'Your fingers make ' + sh + ' chords. The capo on fret ' + state.capo + ' raises everything ' + state.capo + ' half step' + (state.capo > 1 ? 's' : '') + ', so the room hears ' + so + '.'
-    : 'No capo, so what your fingers make is exactly what the room hears: ' + so + '.';
+    ? 'Your fingers are making ' + sh + '-family chords (' + fam + '). The capo on fret ' + state.capo + ' raises every one of them ' + state.capo + ' half step' + (state.capo > 1 ? 's' : '') + ', so what the room hears is ' + so + '.'
+    : 'Your fingers are making ' + sh + '-family chords (' + fam + '). No capo, so that is exactly what the room hears: ' + so + '.';
 
   // the ruler: one button per fret, labelled with the key it would sound in
   const r = $('#capoRuler'); r.innerHTML = '';
@@ -1243,7 +1256,8 @@ function renderReadout(){
     b.dataset.f = f;
     b.setAttribute('aria-pressed', String(f === state.capo));
     b.disabled = (!state.capoOk && f !== 0);
-    const key = pretty(PC[(state.shapePc + f) % 12]) + (minor ? 'm' : '');
+    const kp = (state.shapePc + f) % 12;
+    const key = pretty(PC[kp], keyUsesFlats(kp)) + (minor ? 'm' : '');
     b.innerHTML = `<span class="ss-fret__n">${f === 0 ? 'none' : f}</span><span class="ss-fret__k">${key}</span>`;
     b.setAttribute('aria-label', (f === 0 ? 'No capo' : 'Capo on fret ' + f) + ', sounds in ' + key);
     b.addEventListener('click', () => { state.capo = f; render(); });
@@ -1251,15 +1265,28 @@ function renderReadout(){
   }
 }
 
+function familyChords(shapePc, minor){
+  const degs = minor ? ['i','iv','v','VI'] : ['I','IV','V','vi'];
+  const map  = minor ? DEG_MIN : DEG;
+  return degs.map(dg => {
+    const info = map[dg];
+    return pretty(shapeFor((shapePc + info.s) % 12, info.q).name, keyUsesFlats(shapePc));
+  });
+}
+
 function syncShapeChips(){
   const minor = isMinorProg(prog);
   const box = $('#cShape'); box.innerHTML = '';
   allowedShapes(minor).forEach(k => {
+    const pc = pcOf(k);
+    const fam = familyChords(pc, minor);
+    const hasBarre = fam.some(n => { const sh = SHAPES[n.replace('\u266d','#').replace(/^([A-G])\u266d/,'$1#')] ; return sh && sh.b; });
     const b = document.createElement('button');
-    b.type = 'button'; b.className = 'ss-chip';
-    b.textContent = pretty(k) + (minor ? 'm' : '');
-    b.setAttribute('aria-pressed', String(pcOf(k) === state.shapePc));
-    b.addEventListener('click', () => { state.shapePc = pcOf(k); render(); });
+    b.type = 'button'; b.className = 'ss-chip ss-chip--fam';
+    b.setAttribute('aria-pressed', String(pc === state.shapePc));
+    b.setAttribute('aria-label', pretty(k) + (minor ? ' minor' : '') + ' family: ' + fam.join(', '));
+    b.innerHTML = `<b>${pretty(k, keyUsesFlats(pc))}${minor ? 'm' : ''}</b><small>${fam.join(' \u00b7 ')}</small>`;
+    b.addEventListener('click', () => { state.shapePc = pc; render(); });
     box.appendChild(b);
   });
 }
@@ -1345,8 +1372,7 @@ function renderDetail(){
 }
 
 function guessGenre(){
-  const gs = prog.g;                       // deterministic, so a shared link
-  return gs[state.progIdx % gs.length] || 'pop';   // reproduces exactly
+  return 'pop';   // the standard down, down-up, up-down-up: the first strum everybody learns
 }
 
 function renderCapoTable(){
@@ -1359,7 +1385,7 @@ function renderCapoTable(){
     const here = o.shapeKeyPc === state.shapePc && o.capo === state.capo;
     const tr = document.createElement('tr');
     if(here) tr.className = 'reco';
-    tr.innerHTML = `<td>${pretty(PC[o.shapeKeyPc])}${minor ? 'm' : ''} shapes</td>
+    tr.innerHTML = `<td>${pretty(PC[o.shapeKeyPc])}${minor ? 'm' : ''} family</td>
       <td>${o.capo === 0 ? 'No capo' : 'Fret ' + o.capo}</td>
       <td>${o.chords.map(c => pretty(c.played)).join('  ')}</td>
       <td>${L.t}${o.barres ? ' \u00b7 ' + o.barres + ' barre' : ''}</td>
@@ -1850,7 +1876,7 @@ function buildControls(){
   ), () => state.mood, v => state.mood = v);
 
   const g = $('#cGenre');
-  g.innerHTML = '<option value="any">Leave it open</option>' +
+  g.innerHTML = '<option value="any">Standard strum (learn this first)</option>' +
     Object.keys(STRUMS).map(k => `<option value="${k}">${GENRE_LABEL[k]}</option>`).join('');
   g.addEventListener('change', () => {
     state.genre = g.value;
@@ -1868,7 +1894,7 @@ function buildControls(){
     state.shapePc = v.shapeKeyPc; state.capo = v.capo;
     render();
     const minor = isMinorProg(prog);
-    toast('To sound in ' + pretty(PC[target]) + (minor ? ' minor' : '') + ': play ' + pretty(PC[v.shapeKeyPc]) + (minor ? 'm' : '') + ' shapes'
+    toast('To sound in ' + pretty(PC[target]) + (minor ? ' minor' : '') + ': play the ' + pretty(PC[v.shapeKeyPc]) + (minor ? 'm' : '') + ' family'
       + (v.capo ? ' with the capo on fret ' + v.capo + '.' : ', no capo.'));
   });
 
@@ -1887,7 +1913,7 @@ function buildControls(){
     const better = opts.find(o => o.worst < voicing.worst - 0.2);
     if(better){
       state.shapePc = better.shapeKeyPc; state.capo = better.capo; render();
-      toast('Same key the room hears. Now ' + pretty(PC[better.shapeKeyPc]) + (minor ? 'm' : '') + ' shapes' + (better.capo ? ' with the capo on fret ' + better.capo + '.' : ' with no capo.'));
+      toast('Same key the room hears. Now the ' + pretty(PC[better.shapeKeyPc]) + (minor ? 'm' : '') + ' family' + (better.capo ? ' with the capo on fret ' + better.capo + '.' : ' with no capo.'));
     } else {
       toast('This is already the easiest way to sound in ' + pretty(PC[soundingPc()]) + (minor ? ' minor' : '') + (state.capoOk ? '.' : ' without a capo.'));
     }

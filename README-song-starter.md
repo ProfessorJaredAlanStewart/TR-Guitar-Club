@@ -28,3 +28,9 @@ Progressions starting on `i` are treated as minor-key and use the minor degree m
 **Adding a strum.** Search `const STRUMS`. Eight boxes per bar: `D` down, `u` up, `-` rest, `x` chuck, `B` bass note, `P` thumb, `p` fingers. Add the display name to `GENRE_LABEL`. With style left on "Standard strum", the pop pattern is always used.
 
 **Theme.** Same `data-theme` attribute on `<html>` as every other page. All page-specific classes are prefixed `ss-` so nothing collides with `site.css`.
+
+**Nav.** The three Song Starter pages already carry a "Tuner" nav item. To match on the other pages, add this line after the Song Starter item in `index.html`, `media.html`, `play-along.html` and `calendar.html`, and the same in each footer's Site list:
+
+```html
+<li><a href="tuner.html">Tuner</a></li>
+```

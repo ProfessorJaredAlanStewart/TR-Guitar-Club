@@ -38,6 +38,7 @@
       <li><a href="media.html">Media</a></li>
       <li><a href="play-along.html" aria-current="page">Play Along</a></li>
       <li><a href="progressions.html">Song Starter</a></li>
+      <li><a href="tuner.html">Tuner</a></li>
       <li><a href="guitar-care.html">Guitar Care</a></li>
       <li><a href="calendar.html">Calendar</a></li>
       <li class="nav__cta"><a class="btn btn--sm" href="mailto:jared.stewart@tccd.edu?subject=Trinity%20River%20Guitar%20Club">Contact TRGC</a></li>
@@ -57,6 +58,10 @@
     <p class="eyebrow">Play Along</p>
     <h1 class="display d1" style="font-size:clamp(2.6rem,8vw,5.4rem)">Practice<br>between<br>meetings.</h1>
     <p class="lede hero__sub">Chord shapes, the Circle of Fifths, how to read TAB, and the handful of things that actually make you better faster.</p>
+    <div class="btn-row" style="margin-top:1.2rem">
+      <a class="btn btn--teal" href="tuner.html">Open the tuner</a>
+      <a class="btn btn--ghost" href="#metronome">Metronome</a>
+    </div>
   </div>
 </section>
 
@@ -68,6 +73,15 @@
 </div>
 
 <!-- ===================== CHORDS ===================== -->
+<section class="pad-sm" id="metronome">
+  <div class="wrap">
+    <div class="panel panel--outline" style="display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap">
+      <div style="flex:0 0 auto"><h2 class="display d3" style="margin:0">Metronome</h2><p class="dim" style="margin:.2rem 0 0;font-size:.86rem;max-width:22ch">Practice every change to a click before you speed up.</p></div>
+      <div id="trgc-metronome" style="flex:1 1 420px"></div>
+    </div>
+  </div>
+</section>
+
 <section class="pad glow-crimson" id="chords">
   <div class="wrap wrap--wide">
     <div class="reveal" style="max-width:62ch">
@@ -639,6 +653,7 @@ E|-------------------------x----|
           <li><a href="media.html">Media</a></li>
           <li><a href="play-along.html">Play Along</a></li>
           <li><a href="progressions.html">Song Starter</a></li>
+          <li><a href="tuner.html">Tuner</a></li>
           <li><a href="calendar.html">Club Calendar</a></li>
           <li><a href="trgc-constitution.pdf">Constitution</a></li>
         </ul>
@@ -662,5 +677,6 @@ E|-------------------------x----|
 </footer>
 
 <script src="site.js" defer></script>
+<script src="metronome.js"></script>
 </body>
 </html>

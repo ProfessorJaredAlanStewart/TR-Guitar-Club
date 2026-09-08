@@ -4,273 +4,171 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Song Starter — Trinity River Guitar Club</title>
-<meta name="description" content="A progression is already playing. Lock the chords you like, spin the rest, move the capo, and send it as a link.">
+<meta name="description" content="Tap the chords you know. See the songs you can play right now, which chord to learn next, and what a capo does to all of it.">
 <meta name="theme-color" content="#0a0a0c">
 <link rel="canonical" href="https://trinityriverguitarclub.com/progressions.html">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Song Starter — Trinity River Guitar Club">
-<meta property="og:description" content="Lock the chords you like, spin the rest. Real fingerings, capo math, a link you can text.">
+<meta property="og:description" content="Tap the chords you know. See what you can play, what to learn next, and what a capo does.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preload" href="anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="site.css">
 <style>
 /* ============================================================
-   SONG STARTER — page-only styles.
-   Everything is prefixed ss- so nothing collides with site.css.
-   Colours come from the site palette; lines and diagrams use
-   currentColor so all four themes work without edits.
+   SONG STARTER — page-only styles, prefixed sf-.
    ============================================================ */
 :root{
-  --ss-crimson:#98002e;
-  --ss-crimson-lift:#c8103f;
-  --ss-teal:#00788a;
-  --ss-sand:#dac792;
-  --ss-accent:var(--ss-crimson);
-  --ss-line:color-mix(in srgb, currentColor 16%, transparent);
-  --ss-line-2:color-mix(in srgb, currentColor 30%, transparent);
-  --ss-soft:color-mix(in srgb, currentColor 5%, transparent);
+  --sf-line:color-mix(in srgb, currentColor 16%, transparent);
+  --sf-line-2:color-mix(in srgb, currentColor 30%, transparent);
+  --sf-soft:color-mix(in srgb, currentColor 5%, transparent);
   --ss-dot-text:#fff;
 }
-[data-theme="charcoal"], [data-theme="midnight"]{
-  --ss-accent:var(--ss-crimson-lift);
-  --ss-dot-text:#14141a;
-}
+[data-theme="charcoal"], [data-theme="midnight"]{ --ss-dot-text:#14141a; }
 @supports not (color: color-mix(in srgb, red 50%, transparent)){
-  :root{--ss-line:rgba(128,128,128,.32);--ss-line-2:rgba(128,128,128,.5);--ss-soft:rgba(128,128,128,.08)}
+  :root{--sf-line:rgba(128,128,128,.32);--sf-line-2:rgba(128,128,128,.5);--sf-soft:rgba(128,128,128,.08)}
 }
 
-/* ---------- the machine ---------- */
-.ss-machine{border-radius:14px;padding:20px}
-.ss-slots{display:flex;flex-wrap:wrap;gap:10px;margin:4px 0 6px}
-.ss-slot{
-  flex:1 1 132px;min-width:120px;position:relative;text-align:center;
-  border:1px solid var(--ss-line);border-radius:12px;padding:12px 12px 10px;
-  background:var(--ss-soft);transition:border-color .18s ease,transform .18s ease;
+/* step numbers */
+.sf-stepnum{
+  display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;
+  background:var(--crimson,#98002e);color:#fff;font-family:var(--font-display,'Anton',sans-serif);font-size:1.3rem;margin-right:12px;vertical-align:middle;
 }
-.ss-slot[data-locked="true"]{border-color:var(--ss-accent);box-shadow:inset 0 0 0 1px var(--ss-accent)}
-.ss-slot .ss-deg{font-family:var(--font-label,inherit);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ss-accent);height:1.2em}
-.ss-slot .ss-name{font-family:var(--font-display,'Anton',sans-serif);font-size:clamp(1.7rem,5vw,2.4rem);line-height:1.08;margin:2px 0 4px}
-.ss-slot .ss-bars{font-size:.74rem;opacity:.6}
-.ss-slot.playing{transform:translateY(-3px)}
-.ss-slot.playing .ss-name{color:var(--ss-teal)}
-.ss-lock{
-  position:absolute;top:5px;right:5px;width:30px;height:30px;border:0;border-radius:8px;
-  background:none;color:inherit;opacity:.4;font-size:1rem;line-height:1;cursor:pointer;
+.sf-h{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.sf-lead{font-size:1.02rem;max-width:62ch;opacity:.85;margin:.6rem 0 0}
+
+/* hero */
+.sf-hero-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:1.2rem}
+
+/* the three-step strip */
+.sf-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.sf-step{display:flex;gap:14px;align-items:flex-start;text-decoration:none;color:inherit;border:1px solid var(--sf-line);border-radius:12px;padding:14px 16px;background:var(--sf-soft);transition:border-color .15s,transform .15s}
+.sf-step:hover{border-color:var(--crimson,#98002e);transform:translateY(-2px)}
+.sf-step[aria-current="page"]{border-color:var(--crimson,#98002e);box-shadow:inset 0 0 0 1px var(--crimson,#98002e)}
+.sf-step__n{flex:0 0 34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-display,'Anton',sans-serif);font-size:1.1rem;background:var(--sf-line)}
+.sf-step[aria-current="page"] .sf-step__n{background:var(--crimson,#98002e);color:#fff}
+.sf-step__t{font-family:var(--font-display,'Anton',sans-serif);font-size:1.25rem;letter-spacing:.02em;line-height:1.05;display:block}
+.sf-step__d{font-size:.84rem;opacity:.7;margin-top:3px;line-height:1.35;display:block}
+@media (max-width:700px){ .sf-steps{grid-template-columns:1fr} }
+
+/* chord picker */
+.sf-picker{display:flex;flex-wrap:wrap;gap:8px}
+.sf-chord{
+  font:inherit;color:inherit;cursor:pointer;background:var(--sf-soft);border:2px solid var(--sf-line);border-radius:12px;
+  padding:8px 6px 6px;width:96px;display:flex;flex-direction:column;align-items:center;gap:2px;transition:border-color .15s,background .15s;position:relative;
 }
-.ss-lock svg{width:15px;height:15px;display:block;margin:auto}
-.ss-lock:hover{opacity:1;background:var(--ss-soft)}
-.ss-slot[data-locked="true"] .ss-lock{opacity:1;color:var(--ss-accent)}
+.sf-chord b{font-family:var(--font-display,'Anton',sans-serif);font-weight:400;font-size:1.35rem;letter-spacing:.02em;line-height:1}
+.sf-chord svg{display:block}
+.sf-chord small{font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;opacity:.55}
+.sf-chord:hover{border-color:var(--crimson,#98002e)}
+.sf-chord[aria-pressed="true"]{background:var(--crimson,#98002e);border-color:var(--crimson,#98002e);color:#fff;--ss-dot-text:#98002e}
+.sf-chord[aria-pressed="true"]::after{content:'\2713';position:absolute;top:4px;right:7px;font-size:.8rem}
+@media (max-width:520px){ .sf-chord{width:calc(33.333% - 6px);padding:6px 2px 4px} .sf-chord b{font-size:1.2rem} }
+.sf-pickbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+.sf-pickbar .btn{white-space:normal;text-align:center;line-height:1.3}
+.sf-count{font-size:.92rem;opacity:.8;flex:1 1 auto}
+.sf-more summary{font-size:.95rem}
 
-.ss-between{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 14px;font-size:.74rem;opacity:.85}
-.ss-between span{flex:1 1 132px;min-width:120px;text-align:center}
-.ss-chg-easy{color:var(--ss-teal)}
-.ss-chg-mod{color:#a97a12}
-.ss-chg-hard{color:var(--ss-crimson-lift)}
+/* song cards */
+.sf-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+.sf-card{border:1px solid var(--sf-line);border-radius:14px;padding:16px 18px 14px;background:var(--sf-soft);display:flex;flex-direction:column;gap:8px;transition:border-color .15s}
+.sf-card.is-active{border-color:var(--crimson,#98002e);box-shadow:inset 0 0 0 1px var(--crimson,#98002e)}
+.sf-card.is-playing .sf-card__chords span{color:var(--teal,#00788a)}
+.sf-card__chords{display:flex;gap:6px 14px;flex-wrap:wrap;font-family:var(--font-display,'Anton',sans-serif);font-size:1.9rem;line-height:1;letter-spacing:.02em}
+.sf-card__why{margin:0;font-size:.92rem;opacity:.85;flex:1 1 auto}
+.sf-card__meta{margin:0;display:flex;gap:6px;flex-wrap:wrap}
+.sf-tag{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--sf-line-2);border-radius:999px;padding:3px 9px;opacity:.85}
+.sf-tag--easy{color:var(--teal,#00788a);border-color:currentColor}
+.sf-tag--mod{color:#a97a12;border-color:currentColor}
+.sf-tag--hard{color:#c8103f;border-color:currentColor}
+.sf-card__songs{margin:0;font-size:.86rem;line-height:1.6}
+.sf-card__songs a{text-decoration:underline;text-underline-offset:2px}
+.sf-card__act{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.sf-empty{border:1px dashed var(--sf-line-2);border-radius:12px;padding:18px;opacity:.8;font-size:.95rem}
 
-.ss-transport{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:6px}
-.ss-tempo{display:flex;align-items:center;gap:9px;font-size:.86rem}
-.ss-tempo input[type=range]{width:118px;accent-color:var(--ss-accent)}
-.ss-toggles{display:flex;gap:14px;font-size:.85rem;align-items:center;flex-wrap:wrap}
-.ss-toggles label{display:flex;gap:6px;align-items:center;cursor:pointer}
-.ss-toggles input[type=checkbox]{accent-color:var(--ss-accent);width:16px;height:16px}
+/* detail */
+.sf-detail__chords{font-family:var(--font-display,'Anton',sans-serif);font-size:clamp(1.6rem,4vw,2.4rem);letter-spacing:.02em;line-height:1.1;margin:0}
+.sf-diagrams{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
+.sf-diagram{flex:1 1 140px;min-width:130px;max-width:190px;text-align:center;border:1px solid var(--sf-line);border-radius:12px;padding:12px 8px 10px;background:var(--sf-soft);transition:transform .15s}
+.sf-diagram.playing{transform:translateY(-3px);border-color:var(--teal,#00788a)}
+.sf-diagram.playing .sf-diagram__name{color:var(--teal,#00788a)}
+.sf-diagram__name{font-family:var(--font-display,'Anton',sans-serif);font-size:1.5rem;line-height:1.1}
+.sf-diagram svg{display:block;margin:6px auto 0}
+.sf-diagram__note{font-size:.74rem;opacity:.6;margin-top:4px;min-height:1.1em}
+.sf-transport{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin-top:16px}
+.sf-tempo{display:flex;align-items:center;gap:9px;font-size:.88rem}
+.sf-tempo input[type=range]{width:120px;accent-color:var(--crimson,#98002e)}
+.sf-toggles{display:flex;gap:14px;font-size:.86rem;align-items:center;flex-wrap:wrap}
+.sf-toggles label{display:flex;gap:6px;align-items:center;cursor:pointer}
+.sf-toggles input{accent-color:var(--crimson,#98002e);width:16px;height:16px}
+.sf-strumwrap{margin-top:18px}
+.sf-count8{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:2px}
+.sf-count8 b{width:34px;text-align:center;font-size:.72rem;letter-spacing:.08em;opacity:.65;font-weight:400}
+.sf-strum{display:flex;gap:5px;flex-wrap:wrap;align-items:flex-end;margin:.3rem 0 .6rem}
+.sf-strum b{width:34px;height:44px;border:1px solid var(--sf-line-2);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:1.05rem;font-weight:400}
+.sf-strum b.down{border-bottom-width:3px;border-bottom-color:currentColor}
+.sf-strum b.up{border-top-width:3px;opacity:.62}
+.sf-strum b.rest{opacity:.32;border-style:dashed}
+.sf-strum b.beat{position:relative}
+.sf-strum b.beat::after{content:'';position:absolute;bottom:-9px;width:4px;height:4px;border-radius:50%;background:var(--crimson,#98002e)}
+.sf-strum b.hit{background:var(--teal,#00788a);border-color:var(--teal,#00788a);color:#fff;opacity:1}
 
-/* ---------- readout + ruler ---------- */
-.ss-readout{margin:14px 0 6px;padding:14px 16px;border:1px solid var(--ss-line);border-radius:12px;background:var(--ss-soft)}
-.ss-eq{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap}
-.ss-eq__part{display:flex;flex-direction:column;line-height:1.05}
-.ss-eq__part small{font-family:var(--font-label,inherit);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;opacity:.6;margin-bottom:4px}
-.ss-eq__part b{font-family:var(--font-display,'Anton',sans-serif);font-size:1.55rem;font-weight:400;letter-spacing:.02em}
-.ss-eq__part--out b{color:var(--ss-teal);font-size:1.85rem}
-.ss-eq__op{font-family:var(--font-display,'Anton',sans-serif);font-size:1.5rem;opacity:.35;padding-bottom:2px}
-.ss-readout__sentence{margin:.6rem 0 0;font-size:.92rem;opacity:.8}
-.ss-rulerwrap{margin:12px 0 4px}
-.ss-rulerlab{font-size:.84rem;opacity:.7;margin-bottom:6px}
-.ss-ruler{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;border-bottom:3px solid var(--ss-line-2);padding-bottom:6px}
-.ss-fret{
-  font:inherit;color:inherit;cursor:pointer;background:transparent;border:1px solid var(--ss-line);border-radius:8px;
-  padding:7px 2px 6px;display:flex;flex-direction:column;align-items:center;gap:3px;line-height:1;min-width:0;
-}
-.ss-fret:hover{border-color:var(--ss-accent)}
-.ss-fret[aria-pressed="true"]{background:var(--ss-accent);border-color:var(--ss-accent);color:#fff}
-.ss-fret[aria-pressed="true"]::before{content:'';width:70%;height:4px;border-radius:2px;background:var(--ss-sand);margin-bottom:2px}
-.ss-fret:disabled{opacity:.3;cursor:not-allowed}
-.ss-fret__n{font-family:var(--font-label,inherit);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;opacity:.8}
-.ss-fret__k{font-family:var(--font-display,'Anton',sans-serif);font-size:1.15rem}
-.ss-caption{caption-side:top;text-align:left;padding:8px 12px 10px;font-size:.92rem;opacity:.85}
-.ss-caption b{font-family:var(--font-display,'Anton',sans-serif);font-weight:400;font-size:1.1rem;letter-spacing:.02em}
-@media (max-width:520px){ .ss-ruler{grid-template-columns:repeat(4,1fr)} }
+/* two-column: songs + learn */
+.sf-split{display:grid;grid-template-columns:minmax(0,2fr) minmax(260px,1fr);gap:20px;align-items:start}
+@media (max-width:860px){ .sf-split{grid-template-columns:1fr} }
+.sf-learn{display:flex;gap:14px;align-items:center;padding:12px 0;border-bottom:1px solid var(--sf-line)}
+.sf-learn:last-child{border-bottom:0}
+.sf-learn svg{flex:0 0 auto}
+.sf-learn__t{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.sf-learn__t b{font-family:var(--font-display,'Anton',sans-serif);font-weight:400;font-size:1.5rem;line-height:1}
+.sf-learn__t span{font-size:.88rem;opacity:.8}
 
-/* ---------- controls ---------- */
-.ss-ctrl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(212px,1fr));gap:18px 24px}
-.ss-ctrl h3{font-family:var(--font-label,inherit);font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;margin:0 0 .55rem;opacity:.75}
-.ss-chips{display:flex;flex-wrap:wrap;gap:6px}
-.ss-chip{
-  font:inherit;font-size:.84rem;color:inherit;cursor:pointer;
-  border:1px solid var(--ss-line-2);background:transparent;border-radius:999px;padding:5px 12px;
-  transition:background .15s ease,border-color .15s ease;
-}
-.ss-chip:hover{border-color:var(--ss-accent)}
-.ss-chip[aria-pressed="true"]{background:var(--ss-accent);border-color:var(--ss-accent);color:#fff}
-.ss-chip--fam{display:flex;flex-direction:column;align-items:flex-start;gap:2px;border-radius:10px;padding:7px 12px 6px;line-height:1.1;text-align:left}
-.ss-chip--fam b{font-family:var(--font-display,'Anton',sans-serif);font-weight:400;font-size:1.15rem;letter-spacing:.02em}
-.ss-chip--fam small{font-size:.72rem;opacity:.75;white-space:nowrap}
-.ss-chip--fam[aria-pressed="true"] small{opacity:.92}
-.ss-ctrl--wide{grid-column:1 / -1}
-.ss-ctrl select{
-  width:100%;padding:8px 10px;font:inherit;font-size:.9rem;color:inherit;
-  background:transparent;border:1px solid var(--ss-line-2);border-radius:9px;
-}
-.ss-ctrl .ss-hint{font-size:.8rem;opacity:.65;margin:.5rem 0 0;line-height:1.45}
+/* next chord */
+.sf-chips{display:flex;flex-wrap:wrap;gap:6px}
+.sf-chip{font:inherit;font-size:.95rem;color:inherit;cursor:pointer;border:1px solid var(--sf-line-2);background:transparent;border-radius:999px;padding:6px 14px}
+.sf-chip:hover{border-color:var(--crimson,#98002e)}
+.sf-chip[aria-pressed="true"]{background:var(--crimson,#98002e);border-color:var(--crimson,#98002e);color:#fff}
+.sf-nextlist{display:grid;gap:10px;margin-top:16px}
+.sf-next{display:grid;grid-template-columns:150px 1fr auto;gap:16px;align-items:center;border:1px solid var(--sf-line);border-radius:12px;padding:12px 16px;background:var(--sf-soft)}
+.sf-next.have{border-color:var(--teal,#00788a)}
+.sf-next__pair{font-family:var(--font-display,'Anton',sans-serif);font-size:1.5rem;letter-spacing:.02em;display:flex;gap:8px;align-items:center;line-height:1}
+.sf-next__pair i{font-style:normal;opacity:.4;font-size:1.1rem}
+.sf-next__body b{font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--crimson,#98002e)}
+.sf-next__body p{margin:.2rem 0 0;font-size:.9rem}
+.sf-next__tag{opacity:.6;font-size:.82rem!important}
+.sf-next__act{display:flex;flex-direction:column;align-items:center;gap:6px}
+@media (max-width:640px){ .sf-next{grid-template-columns:1fr} .sf-next__act{flex-direction:row} }
 
-/* ---------- chord cards ---------- */
-.ss-chordrow{display:flex;gap:12px;flex-wrap:wrap}
-.ss-chordcard{
-  flex:1 1 150px;min-width:138px;max-width:196px;text-align:center;
-  border:1px solid var(--ss-line);border-radius:12px;padding:12px 8px 10px;background:var(--ss-soft);
-}
-.ss-chordcard .ss-cdeg{font-family:var(--font-label,inherit);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ss-accent)}
-.ss-chordcard .ss-cname{font-family:var(--font-display,'Anton',sans-serif);font-size:1.5rem;line-height:1.1;margin-top:2px}
-.ss-chordcard svg{display:block;margin:6px auto 0}
-.ss-chordcard .ss-cnote{font-size:.74rem;opacity:.6;margin-top:4px;min-height:1.1em}
+/* capo */
+.sf-frets{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;border-bottom:3px solid var(--sf-line-2);padding-bottom:6px;margin-top:12px}
+.sf-fret{font:inherit;color:inherit;cursor:pointer;background:transparent;border:1px solid var(--sf-line);border-radius:8px;padding:7px 2px 6px;display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1;min-width:0}
+.sf-fret span{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
+.sf-fret b{font-family:var(--font-display,'Anton',sans-serif);font-weight:400;font-size:1.15rem}
+.sf-fret:hover{border-color:var(--crimson,#98002e)}
+.sf-fret[aria-pressed="true"]{background:var(--crimson,#98002e);border-color:var(--crimson,#98002e);color:#fff}
+.sf-fret[aria-pressed="true"]::before{content:'';width:70%;height:4px;border-radius:2px;background:#dac792;margin-bottom:2px}
+@media (max-width:520px){ .sf-frets{grid-template-columns:repeat(4,1fr)} }
+.sf-capoline{font-size:1.02rem;line-height:1.55;margin:16px 0 0}
+.sf-capoline b{color:var(--teal,#00788a);font-weight:600}
+.sf-capogrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,300px);gap:20px;align-items:start;margin-top:18px}
+@media (max-width:760px){ .sf-capogrid{grid-template-columns:1fr} }
+.sf-table{width:100%;border-collapse:collapse;font-size:.95rem}
+.sf-table th,.sf-table td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--sf-line)}
+.sf-table th{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;opacity:.65;font-weight:400}
+.sf-table td:last-child{font-weight:600;color:var(--teal,#00788a)}
+#sfCapoHear.is-playing{background:var(--teal,#00788a)}
 
-/* ---------- difficulty meter ---------- */
-.ss-meter{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 16px}
-.ss-meter .ss-bar{flex:0 0 156px;height:8px;border-radius:999px;background:var(--ss-line);overflow:hidden}
-.ss-meter .ss-bar i{display:block;height:100%;width:20%;background:var(--ss-teal)}
-.ss-meter.mod .ss-bar i{background:#a97a12}
-.ss-meter.hard .ss-bar i{background:var(--ss-crimson-lift)}
-.ss-meter .ss-lab{font-size:.9rem}
+/* metronome panel */
+.sf-metro{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap}
+.sf-metro__lab{flex:0 0 auto}
+.sf-metro__lab h2{margin:0;font-size:1.6rem}
+.sf-metro__lab p{margin:.2rem 0 0;font-size:.86rem;opacity:.7;max-width:22ch}
+.sf-metro > div:last-child{flex:1 1 420px}
 
-/* ---------- strum ---------- */
-.ss-strum{display:flex;gap:5px;flex-wrap:wrap;align-items:flex-end;margin:.4rem 0 .6rem}
-.ss-strum b{
-  width:34px;height:44px;border:1px solid var(--ss-line-2);border-radius:7px;
-  display:flex;align-items:center;justify-content:center;font-size:1.05rem;font-weight:400;
-}
-.ss-strum b.down{border-bottom-width:3px;border-bottom-color:currentColor}
-.ss-strum b.up{border-top-width:3px;opacity:.62}
-.ss-strum b.rest{opacity:.32;border-style:dashed}
-.ss-strum b.mute{color:var(--ss-crimson-lift)}
-.ss-strum b.beat{position:relative}
-.ss-strum b.beat::after{content:'';position:absolute;bottom:-9px;width:4px;height:4px;border-radius:50%;background:var(--ss-accent)}
-.ss-strum b.hit{background:var(--ss-teal);border-color:var(--ss-teal);color:#fff;opacity:1}
-
-.ss-count{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:2px}
-.ss-count b{width:34px;text-align:center;font-family:var(--font-label,inherit);font-size:.72rem;letter-spacing:.08em;opacity:.65;font-weight:400}
-.ss-legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.84rem;opacity:.8}
-.ss-legend span b{display:inline-block;min-width:1.3em;text-align:center;font-weight:400;border:1px solid var(--ss-line-2);border-radius:5px;padding:0 4px;margin-right:5px}
-
-/* ---------- table ---------- */
-.ss-tablewrap{overflow-x:auto}
-.ss-table{width:100%;border-collapse:collapse;font-size:.92rem}
-.ss-table th,.ss-table td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--ss-line)}
-.ss-table th{font-family:var(--font-label,inherit);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;opacity:.65;font-weight:400}
-.ss-table tr.reco td{background:var(--ss-soft)}
-.ss-table tr.reco td:first-child{box-shadow:inset 3px 0 0 var(--ss-accent)}
-
-/* ---------- form + band ---------- */
-.ss-formrow{display:grid;grid-template-columns:104px 1fr;gap:14px;align-items:start;padding:12px 0;border-bottom:1px solid var(--ss-line)}
-.ss-formrow:last-child{border-bottom:0}
-.ss-formrow .ss-lab{font-family:var(--font-label,inherit);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;opacity:.7;padding-top:.35rem}
-.ss-formrow .ss-progline{font-family:var(--font-display,'Anton',sans-serif);font-size:1.3rem;letter-spacing:.03em}
-.ss-formrow .ss-progline em{font-style:normal;opacity:.5;font-size:.6em;letter-spacing:.14em;display:block;line-height:1.7}
-.ss-stack{display:grid;gap:12px}
-.ss-part h3{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 .3rem;font-size:1rem}
-.ss-tag{
-  font-family:var(--font-label,inherit);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;
-  border-radius:999px;padding:4px 10px;color:#fff;background:var(--ss-crimson);
-}
-.ss-tag.g2{background:var(--ss-crimson-lift)}
-.ss-tag.bass{background:#3f4d6b}
-.ss-tag.lead{background:var(--ss-teal)}
-.ss-part .ss-line{font-family:var(--font-display,'Anton',sans-serif);font-size:1.3rem;letter-spacing:.04em;margin:.35rem 0 .2rem}
-.ss-part .ss-why{font-size:.9rem;opacity:.75;margin:0}
-
-/* ---------- songs, shelf ---------- */
-.ss-songs{display:flex;flex-wrap:wrap;gap:8px}
-.ss-songs a{border:1px solid var(--ss-line-2);border-radius:999px;padding:6px 14px;font-size:.88rem;text-decoration:none}
-.ss-songs a:hover{border-color:var(--ss-accent)}
-.ss-shelf{display:grid;gap:8px}
-.ss-shelfitem{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 14px;border:1px solid var(--ss-line);border-radius:11px}
-.ss-shelfitem .ss-nm{font-family:var(--font-display,'Anton',sans-serif);font-size:1.15rem;letter-spacing:.03em;flex:1 1 160px}
-.ss-shelfitem .ss-mt{font-size:.78rem;opacity:.6}
-.ss-empty{border:1px dashed var(--ss-line-2);border-radius:12px;padding:18px;opacity:.75;font-size:.92rem}
-
-/* ---------- tuner ---------- */
-.ss-tuner{display:grid;gap:14px}
-.ss-needle{height:66px;border:1px solid var(--ss-line);border-radius:11px;position:relative;overflow:hidden;background:var(--ss-soft)}
-.ss-needle .ss-mid{position:absolute;left:50%;top:0;bottom:0;width:2px;background:var(--ss-line-2)}
-.ss-needle .ss-pin{position:absolute;top:7px;bottom:7px;width:4px;border-radius:2px;background:var(--ss-crimson-lift);left:50%;transition:left .09s linear}
-.ss-needle .ss-pin.intune{background:var(--ss-teal)}
-.ss-tunernote{font-family:var(--font-display,'Anton',sans-serif);font-size:2.4rem;line-height:1;text-align:center}
-.ss-cents{text-align:center;font-size:.86rem;opacity:.7}
-.ss-strings6{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
-.ss-strings6 b{border:1px solid var(--ss-line-2);border-radius:8px;padding:5px 12px;font-weight:400;font-size:.9rem}
-.ss-strings6 b.on{background:var(--ss-teal);border-color:var(--ss-teal);color:#fff}
-
-/* ---------- sticky actions + toast ---------- */
-.ss-actionbar{
-  position:sticky;bottom:0;z-index:30;margin-top:2rem;
-  backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);
-  background:color-mix(in srgb, Canvas 78%, transparent);
-  border-top:1px solid var(--ss-line);
-}
-.ss-actionbar .wrap{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding-top:11px;padding-bottom:11px}
-.ss-actionbar .ss-grow{flex:1 1 auto}
-.ss-state{font-size:.82rem;opacity:.65}
-.ss-toast{
-  position:fixed;left:50%;transform:translateX(-50%);bottom:84px;z-index:60;
-  background:#14141a;color:#fff;padding:10px 18px;border-radius:999px;font-size:.87rem;
-  opacity:0;pointer-events:none;transition:opacity .2s ease;max-width:88vw;text-align:center;
-}
+.ss-toast{position:fixed;left:50%;transform:translateX(-50%);bottom:28px;z-index:60;background:#14141a;color:#fff;padding:10px 18px;border-radius:999px;font-size:.87rem;opacity:0;pointer-events:none;transition:opacity .2s;max-width:88vw;text-align:center}
 .ss-toast.show{opacity:1}
-
-@media (max-width:640px){
-  .ss-formrow{grid-template-columns:1fr}
-  .ss-slot .ss-name{font-size:1.85rem}
-}
-@media (prefers-reduced-motion:reduce){ .ss-slot,.ss-needle .ss-pin{transition:none} }
-@media print{
-  .ss-machine,.ss-controls,.ss-actionbar,.ss-transport,.site-head,.site-foot,
-  .ss-tunerwrap,#ss-shelfSec,.ticker,.hero{display:none!important}
-  .ss-chordcard,.ss-part{break-inside:avoid}
-}
-
-/* ---------- tidy controls ---------- */
-.ss-controls{padding:18px 20px 16px}
-.ss-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px 18px;margin-top:14px}
-.ss-ctrl h3{margin-bottom:.45rem}
-.ss-ctrl .ss-hint{font-size:.78rem;opacity:.6;margin:.35rem 0 0}
-.ss-ctrl select{font-size:.86rem;padding:7px 8px}
-.ss-capotoggle{display:flex;align-items:center;gap:8px;justify-content:space-between;flex-wrap:wrap;margin-bottom:6px}
-.ss-capotoggle .ss-chips{gap:4px}
-.ss-capotoggle .ss-chip{font-size:.76rem;padding:3px 9px}
-.ss-hero-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:1.2rem}
-.ss-state--big{font-family:var(--font-display,'Anton',sans-serif);font-size:clamp(1.2rem,3vw,1.7rem);letter-spacing:.03em;opacity:1}
-.ss-notice{font-size:.9rem;padding:10px 14px;border:1px dashed var(--ss-line-2);border-radius:10px;margin-top:12px}
-
-/* ---------- the three-step pathway, shown on every page ---------- */
-.ss-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:-6px}
-.ss-step{
-  display:flex;gap:14px;align-items:flex-start;text-decoration:none;color:inherit;
-  border:1px solid var(--ss-line);border-radius:12px;padding:14px 16px;background:var(--ss-soft);
-  transition:border-color .15s ease,transform .15s ease;
-}
-.ss-step:hover{border-color:var(--ss-accent);transform:translateY(-2px)}
-.ss-step[aria-current="page"]{border-color:var(--ss-accent);box-shadow:inset 0 0 0 1px var(--ss-accent)}
-.ss-step__n{
-  flex:0 0 34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-  font-family:var(--font-display,'Anton',sans-serif);font-size:1.1rem;background:var(--ss-line);
-}
-.ss-step[aria-current="page"] .ss-step__n{background:var(--ss-accent);color:#fff}
-.ss-step__t{font-family:var(--font-display,'Anton',sans-serif);font-size:1.25rem;letter-spacing:.02em;line-height:1.05}
-.ss-step__d{font-size:.84rem;opacity:.7;margin-top:3px;line-height:1.35}
-.ss-step__go{font-size:.78rem;margin-top:6px;color:var(--ss-teal)}
-.ss-step[aria-current="page"] .ss-step__go{display:none}
-@media (max-width:700px){ .ss-steps{grid-template-columns:1fr} }
-.ss-next{margin-top:1.6rem;display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:14px 18px;border:1px solid var(--ss-line);border-radius:12px;background:var(--ss-soft)}
-.ss-next p{margin:0;flex:1 1 260px;font-size:.92rem}
+@media (prefers-reduced-motion:reduce){ .sf-diagram,.sf-step,.sf-chord{transition:none} }
+@media print{ .site-head,.site-foot,.hero,.sf-steps,.sf-transport,#sfMetroSec{display:none!important} .sf-card,.sf-diagram{break-inside:avoid} }
 </style>
 </head>
 <body>
@@ -313,195 +211,155 @@
 <div class="hero__scrim"></div>
 <div class="wrap hero__inner">
 <p class="eyebrow">Song Starter</p>
-<h1 class="display d1" style="font-size:clamp(2.6rem,8vw,5.4rem)">Something<br>is already<br>playing.</h1>
-<p class="lede hero__sub">Three pages. Tune the guitar. Pick a progression from chords you already know. Then turn it into a song with a part for everyone in the room.</p>
-<div class="ss-hero-btns">
-<a class="btn" href="tuner.html">Tune first</a>
-<a class="btn btn--ghost" href="#starter">Skip to the chords</a>
+<h1 class="display d1" style="font-size:clamp(2.6rem,8vw,5.4rem)">Tell us the<br>chords you<br>know.</h1>
+<p class="lede hero__sub">You get back the songs you can play today, the one chord to learn next, and what a capo does to all of it. Tune first. It takes thirty seconds.</p>
+<div class="sf-hero-btns">
+<a class="btn btn--teal" href="tuner.html">Open the tuner</a>
+<a class="btn btn--ghost" href="#pick">Pick my chords</a>
 </div>
 </div>
 </section>
-
-<div class="ticker" aria-hidden="true">
-<div class="ticker__track">
-<span>40 progressions</span><span>Lock a chord, spin the rest</span><span>Capo math done for you</span><span>Send it as a link</span><span>Then make it a song</span>
-<span>40 progressions</span><span>Lock a chord, spin the rest</span><span>Capo math done for you</span><span>Send it as a link</span><span>Then make it a song</span>
-</div>
-</div>
 
 <section class="pad-sm" aria-label="The three steps">
 <div class="wrap">
-<div class="ss-steps">
-<a class="ss-step" href="tuner.html"><span class="ss-step__n">1</span><span><span class="ss-step__t">Tune it</span><span class="ss-step__d">Thirty seconds with the mic. Every time you pick it up.</span><span class="ss-step__go">Open &rarr;</span></span></a>
-<a class="ss-step" href="progressions.html" data-carry="progressions.html" aria-current="page"><span class="ss-step__n">2</span><span><span class="ss-step__t">Start a song</span><span class="ss-step__d">Pick chords you know, move the capo, lock and spin.</span></span></a>
-<a class="ss-step" href="arrange.html" data-carry="arrange.html"><span class="ss-step__n">3</span><span><span class="ss-step__t">Make it a song</span><span class="ss-step__d">Verse, chorus, bridge, and a part for everyone in the room.</span><span class="ss-step__go">Open &rarr;</span></span></a>
+<div class="sf-steps">
+<a class="sf-step" href="tuner.html"><span class="sf-step__n">1</span><span><span class="sf-step__t">Tune it</span><span class="sf-step__d">Thirty seconds with the mic. Every time you pick it up.</span></span></a>
+<a class="sf-step" href="progressions.html" aria-current="page"><span class="sf-step__n">2</span><span><span class="sf-step__t">Find your songs</span><span class="sf-step__d">Tap the chords you know. See what you can play and what to learn next.</span></span></a>
+<a class="sf-step" href="arrange.html" data-carry="arrange.html"><span class="sf-step__n">3</span><span><span class="sf-step__t">Make it a song</span><span class="sf-step__d">Turn a progression into a verse, chorus and bridge, with a part for everyone.</span></span></a>
 </div>
 </div>
 </section>
 
-<!-- ===================== THE MACHINE ===================== -->
-<section class="pad glow-crimson" id="starter">
-<div class="wrap wrap--wide">
-<div class="reveal" style="max-width:62ch">
-<p class="eyebrow">The machine</p>
-<h2 class="display d2">Press play,<br>then start meddling.</h2>
-<p class="dim mt1">Every progression here is one real songs are built on. Nothing is invented on the spot, and nothing is graded. Out of tune? <a href="tuner.html">Fix that first.</a></p>
-</div>
-
-<details class="acc mt3 reveal">
-<summary>Never used this before? Thirty seconds, start here</summary>
-<div class="acc__body">
-<p><strong class="sand">Press Play.</strong> You will hear four clicks, then the chords. The one playing lifts and turns teal. Each chord gets one bar (four beats) before the next.</p>
-<p><strong class="sand">Play along.</strong> The diagrams further down show where your fingers go. Do not worry about the strum yet. Hit each chord once when it changes and you are already playing the song.</p>
-<p><strong class="sand">Like a chord? Lock it.</strong> The padlock on each card keeps that chord. <em>Spin the unlocked</em> swaps the others for something else real songs use.</p>
-<p><strong class="sand">The capo.</strong> The cards show the chords your fingers make. The capo changes what those chords sound like, not what they look like. G-family chords with the capo on fret 2, and the room hears A. The ruler under the cards shows every fret and what you would sound like there. Tap one.</p>
-<p><strong class="sand">Too hard? Say so.</strong> Set <em>What your hands can do</em> to open chords only and the tool will never hand you a barre chord. If a change still feels impossible, press <em>Same sound, easier hands</em>.</p>
-<p class="mb0"><strong class="sand">The small numerals</strong> above each chord (I, IV, V, vi) are its job in the key: I is home, V pulls you back home, lowercase means minor. You do not need them yet. They are there so that one day you notice every song uses the same handful of moves.</p>
-</div>
-</details>
-
-<div class="panel ss-machine mt3">
-<div class="ss-slots" id="slots" role="list" aria-label="Chord progression"></div>
-<div class="ss-between" id="between" aria-hidden="true"></div>
-
-<div class="ss-readout" aria-live="polite">
-<div class="ss-eq">
-<span class="ss-eq__part"><small>chords you make</small><b id="readShapes"></b></span>
-<span class="ss-eq__op">+</span>
-<span class="ss-eq__part"><small>capo</small><b id="readCapo"></b></span>
-<span class="ss-eq__op">=</span>
-<span class="ss-eq__part ss-eq__part--out"><small>the room hears</small><b id="readSound"></b></span>
-</div>
-<p class="ss-readout__sentence" id="readSentence"></p>
-</div>
-
-<div class="ss-rulerwrap">
-<div class="ss-capotoggle">
-<div class="ss-rulerlab">Move the capo. The key under each fret is what your chords will sound like from there.</div>
-<div class="ss-chips" id="cCapo" role="group" aria-label="Do you have a capo"></div>
-</div>
-<div class="ss-ruler" id="capoRuler" role="group" aria-label="Capo position"></div>
-</div>
-
-<div class="ss-transport">
-<button class="btn" id="playBtn" aria-label="Play the progression">Play</button>
-<button class="btn btn--ghost" id="spinBtn">Spin the unlocked</button>
-<button class="btn btn--ghost btn--sm" id="unlockBtn">Clear locks</button>
-<div class="ss-tempo"><label for="bpm">Tempo</label><input type="range" id="bpm" min="50" max="180" value="96" step="2"><output id="bpmOut">96</output></div>
-<div class="ss-toggles">
-<label title="A metronome tick on every beat"><input type="checkbox" id="metro"> Click</label>
-<label title="Four clicks before the music starts so you come in on time"><input type="checkbox" id="countin" checked> Count-in</label>
-<label title="Otherwise it plays the loop four times and stops"><input type="checkbox" id="loopchk"> Loop</label>
-</div>
-</div>
-<p class="dim mb0 mt2" style="font-size:.82rem">Plays four times through, then stops, unless you tick Loop. Space plays and stops, R spins, arrow keys move the capo.</p>
-</div>
-
-<div class="panel panel--outline mt2 ss-controls">
-<div class="ss-ctrl"><h3>Chords you know</h3><div class="ss-chips" id="cShape" role="group" aria-label="Chord family"></div>
-<p class="ss-hint">Each button is a family of chords that belong together, with its four main chords. Pick the one you can already make. G and D need no barre chords.</p></div>
-
-<div class="ss-row">
-<div class="ss-ctrl"><h3>How many chords</h3><div class="ss-chips" id="cLen" role="group" aria-label="Number of chords"></div>
-<p class="ss-hint">Two is a real answer.</p></div>
-<div class="ss-ctrl"><h3>Your hands</h3><div class="ss-chips" id="cHands" role="group" aria-label="Hand ability"></div>
-<p class="ss-hint">Barre chords still buzz? Pick open only.</p></div>
-<div class="ss-ctrl"><h3>Feel</h3><div class="ss-chips" id="cMood" role="group" aria-label="Mood"></div>
-<p class="ss-hint">Try two and hear the difference.</p></div>
-<div class="ss-ctrl"><h3>Style</h3><select id="cGenre" aria-label="Style"></select>
-<p class="ss-hint">Leave the standard strum on until it is automatic.</p></div>
-<div class="ss-ctrl"><h3>Make it sound in&hellip;</h3><select id="cKey" aria-label="Key you want it to sound in"></select>
-<p class="ss-hint" id="keyHint"></p></div>
-</div>
-
-<details class="acc mt3">
-<summary>What these controls mean</summary>
-<div class="acc__body">
-<p><strong class="sand">Chords you know.</strong> Songs are built from a small family of chords that belong together, named after the one that feels like home. Most people start with G or D because neither needs a barre chord. The C family has F in it, and F is a rite of passage, not a beginning.</p>
-<p><strong class="sand">Your hands.</strong> A barre chord is one where your index finger lies flat across all six strings, like F. This setting rates the <em>moves between</em> chords, not just the shapes, because the move is where beginners get stuck. A barre you never have to jump to is easier than a C to F.</p>
-<p><strong class="sand">Capo.</strong> A clamp that pins all six strings at one fret. Each fret it moves up raises everything a half step, so the G family with the capo on fret 2 sounds like A and on fret 4 like B. Say you do not have one and the ruler locks to none.</p>
-<p><strong class="sand">Feel.</strong> Each of these points at a different harmonic trick, not just major versus minor.</p>
-<p><strong class="sand">Style.</strong> Style mostly lives in the strum. The standard pattern has downstrokes and upstrokes in it and fits nearly everything; every other style changes the pattern and the tempo.</p>
-<p class="mb0"><strong class="sand">Make it sound in.</strong> The rule backwards. You name the key you want the room to hear, the tool picks the chord family and capo fret that get there with the easiest changes, and tells you what it chose.</p>
-</div>
-</details>
-</div>
-</div>
-</section>
-
-<hr class="rule">
-
-<!-- ===================== HANDS ===================== -->
-<section class="pad" id="hands">
-<div class="wrap wrap--wide">
-<div class="reveal" style="max-width:62ch">
-<p class="eyebrow">Under your fingers</p>
-<h2 class="display d2">The change is<br>the hard part.</h2>
-<p class="dim mt1" id="whyLine"></p>
-</div>
-<div class="ss-meter mt2" id="ss-meter">
-<span class="ss-bar"><i></i></span>
-<span class="ss-lab" id="meterLab"></span>
-<button class="btn btn--sm btn--ghost" id="easierBtn">Same sound, easier hands</button>
-</div>
-<div class="ss-chordrow" id="chords"></div>
-<p class="dim mt2" style="font-size:.88rem;max-width:66ch">Diagrams are the neck held upright in front of you: thickest string on the left, nut at the top. Numbers in the dots are fingers (<b class="sand">1</b> index, <b class="sand">2</b> middle, <b class="sand">3</b> ring, <b class="sand">4</b> pinky). A hollow circle above a string means play it open, an <b class="sand">×</b> means leave it out, a thick bar is your index finger flattened across several strings. Numbers under each card are frets, thick string to thin. <a href="play-along.html#chords">Forty more shapes on Play Along.</a></p>
-
-<div class="panel panel--outline mt3">
-<h3 class="display d4" style="margin-bottom:.6rem">Strum <span class="dim" id="strumName"></span></h3>
-<p class="dim" style="font-size:.9rem">One box per half-beat, counted <em>1 &amp; 2 &amp; 3 &amp; 4 &amp;</em>. Your strumming hand swings down on the numbers and up on the "ands" the whole time. The pattern only decides which swings touch the strings.</p>
-<div class="ss-count" aria-hidden="true"><b>1</b><b>&amp;</b><b>2</b><b>&amp;</b><b>3</b><b>&amp;</b><b>4</b><b>&amp;</b></div>
-<div class="ss-strum" id="strum"></div>
-<p class="dim" style="font-size:.9rem" id="strumNote"></p>
-<div class="ss-legend" id="strumLegend"></div>
-</div>
-
-<div class="ss-next">
-<p><strong class="sand">Got it under your fingers?</strong> The next page turns this loop into a verse, a chorus and a bridge, and writes a part for everyone in the room. Your chords, capo and locks come with you.</p>
-<a class="btn" href="arrange.html" data-carry="arrange.html">Make it a song</a>
-</div>
-</div>
-</section>
-
-<hr class="rule">
-
-<!-- ===================== CAPO ===================== -->
-<section class="pad glow-teal" id="capo">
+<!-- ===================== METRONOME ===================== -->
+<section class="pad-sm" id="sfMetroSec">
 <div class="wrap">
-<div class="reveal" style="max-width:62ch">
-<p class="eyebrow">Capo calculator</p>
-<h2 class="display d2">Same key,<br>easier shapes.</h2>
-<p class="dim mt1">First the rule in the direction you use it: chords plus capo equals key. Then the rule backwards: you want a key, here is where to put the capo.</p>
+<div class="panel panel--outline sf-metro">
+<div class="sf-metro__lab"><h2 class="display d3">Metronome</h2><p>Practice every change to a click before you speed up.</p></div>
+<div id="trgc-metronome"></div>
+</div>
+</div>
+</section>
+
+<!-- ===================== 1. PICK ===================== -->
+<section class="pad glow-crimson" id="pick">
+<div class="wrap wrap--wide">
+<h2 class="display d2" style="margin:0"><span class="sf-stepnum">1</span>Tap the chords you can play.</h2>
+<p class="sf-lead">Even badly. If you can make the shape and get most of the strings to ring, it counts. Do not know the names? The little pictures show where the fingers go.</p>
+
+<div class="panel mt2">
+<div class="sf-picker" id="sfPicker" role="group" aria-label="Open chords"></div>
+<div class="sf-pickbar">
+<span class="sf-count" id="sfCount"></span>
+<button class="btn btn--sm btn--ghost" type="button" id="sfStarter">New? Start with G, C, D, Em</button>
+<button class="btn btn--sm btn--ghost" type="button" id="sfClear">Clear</button>
+</div>
+<details class="acc mt2 sf-more">
+<summary>Barre chords (index finger flat across the strings)</summary>
+<div class="acc__body"><div class="sf-picker" id="sfPickerBarre" role="group" aria-label="Barre chords"></div></div>
+</details>
+<details class="acc sf-more">
+<summary>Extra flavours (sus, add9, sevenths)</summary>
+<div class="acc__body"><div class="sf-picker" id="sfPickerExtra" role="group" aria-label="Extra chords"></div></div>
+</details>
+</div>
+</div>
+</section>
+
+<hr class="rule">
+
+<!-- ===================== 2. SONGS ===================== -->
+<section class="pad" id="songs">
+<div class="wrap wrap--wide">
+<h2 class="display d2" style="margin:0"><span class="sf-stepnum">2</span>What you can play right now.</h2>
+<p class="sf-lead">Every progression below is one real songs are built on, using only the chords you tapped. Press <em>Play it</em> and strum along. One chord per bar, four beats each.</p>
+
+<div class="sf-split mt3">
+<div>
+<p class="eyebrow" id="sfSongsHead">Progressions</p>
+<div class="sf-empty" id="sfEmpty"></div>
+<div class="sf-cards" id="sfSongs"></div>
+</div>
+<div class="panel panel--outline">
+<p class="eyebrow">Learn one more chord</p>
+<p class="dim" style="font-size:.9rem;margin-top:.4rem">The single shape that opens the most new songs for you, given what you already know.</p>
+<div id="sfLearn" class="mt1"></div>
+</div>
 </div>
 
-<div class="prose mt3 reveal" style="max-width:66ch">
-<p><strong class="sand">What a capo does.</strong> It is a clamp that presses all six strings down at one fret, so the guitar behaves as if that fret were the nut. Every chord you already know now starts from there. Your fingers make the same G, but the whole instrument has moved up.</p>
-<p><strong class="sand">The rule.</strong> One fret is one half step. Count the frets, count the half steps. G-family chords with the capo on fret 2 are two half steps up from G, which is A. On fret 4, four half steps, which is B. On fret 3 it is B♭, on fret 5 it is C. The ruler in the machine above does the counting for you; this is all it is doing.</p>
-<p><strong class="sand">Why bother.</strong> Guitars are easy in C, G, D, A and E because those keys use open strings. Singers do not care about that, and plenty of songs live in B♭, E♭, F or A♭. Without a capo those keys mean barre chords the whole way through. With one, they mean the chords you learned first, moved up.</p>
-<p class="mb0"><strong class="sand">The table runs the rule backwards.</strong> You want the room to hear one particular key. There are several places to put the capo that all get there, each with a different chord family. Every row sounds identical to a listener; they differ only in how hard the changes are for your hands. Clamp just behind the fret wire, not on top of it, and only as tight as it needs to be. Over-clamping pulls everything sharp.</p>
+<div class="panel mt3" id="sfDetail" hidden>
+<p class="eyebrow">Fingerings &amp; strum</p>
+<p class="sf-detail__chords" id="sfDetailChords"></p>
+<p class="dim mt1" id="sfDetailWhy" style="max-width:62ch"></p>
+<div class="sf-diagrams" id="sfDiagrams"></div>
+<p class="dim mt2" style="font-size:.86rem;max-width:66ch">Diagrams are the neck held upright in front of you: thickest string on the left, nut at the top. Numbers are fingers (1 index, 2 middle, 3 ring, 4 pinky). A hollow circle means play the string open, an <b>&times;</b> means skip it, a bar is your index finger across several strings.</p>
+
+<div class="sf-transport">
+<button class="btn" type="button" id="sfPlay">Play</button>
+<div class="sf-tempo"><label for="sfBpm">Tempo</label><input type="range" id="sfBpm" min="50" max="160" value="96" step="2"><output id="sfBpmOut">96</output></div>
+<div class="sf-toggles">
+<label><input type="checkbox" id="sfCountin" checked> Count me in</label>
+<label><input type="checkbox" id="sfClick"> Click on every beat</label>
+<label><input type="checkbox" id="sfLoop"> Keep looping</label>
+</div>
 </div>
 
-<div class="panel mt3 ss-tablewrap">
-<table class="ss-table" id="capoTable">
-<caption class="ss-caption">Ways to sound in <b id="capoTableKey"></b></caption>
-<thead><tr><th>Chord family</th><th>Capo</th><th>Chords you make</th><th>Hardest change</th><th><span class="vh">Action</span></th></tr></thead>
+<div class="sf-strumwrap">
+<h3 class="display d4" style="margin-bottom:.4rem">The strum: down, down-up, up-down-up</h3>
+<p class="dim" style="font-size:.9rem;max-width:66ch">The first pattern everybody learns, and it fits nearly every song here. Your strumming hand swings down on the numbers and up on the "ands" the whole time; the pattern only decides which swings touch the strings.</p>
+<div class="sf-count8" aria-hidden="true"><b>1</b><b>&amp;</b><b>2</b><b>&amp;</b><b>3</b><b>&amp;</b><b>4</b><b>&amp;</b></div>
+<div class="sf-strum" id="sfStrum"></div>
+<p class="dim" style="font-size:.86rem">&darr; down through all the strings &nbsp;&middot;&nbsp; &uarr; up through the top three or four &nbsp;&middot;&nbsp; &middot; keep the hand moving, miss the strings.</p>
+</div>
+
+<div class="btn-row mt2">
+<a class="btn" href="arrange.html" data-carry="arrange.html">Make it a song &rarr;</a>
+<span class="dim" style="font-size:.86rem">Verse, chorus, bridge, and a part for a second guitar, a bass and a lead player.</span>
+</div>
+</div>
+</div>
+</section>
+
+<hr class="rule">
+
+<!-- ===================== 3. NEXT CHORD ===================== -->
+<section class="pad glow-teal" id="next">
+<div class="wrap wrap--wide">
+<h2 class="display d2" style="margin:0"><span class="sf-stepnum">3</span>What chord sounds good next, and why.</h2>
+<p class="sf-lead">Pick a chord you are playing. Songs move between chords in a handful of ways, and each one has a feel. Press <em>Hear it</em> to listen to the move back and forth.</p>
+<div class="panel mt2">
+<p class="eyebrow">I am playing&hellip;</p>
+<div class="sf-chips mt1" id="sfNextFrom" role="group" aria-label="Chord you are on"></div>
+<div class="sf-nextlist" id="sfNext"></div>
+</div>
+</div>
+</section>
+
+<hr class="rule">
+
+<!-- ===================== 4. CAPO ===================== -->
+<section class="pad" id="capo">
+<div class="wrap wrap--wide">
+<h2 class="display d2" style="margin:0"><span class="sf-stepnum">4</span>Put a capo on. Play the same shapes.</h2>
+<p class="sf-lead">A capo is a clamp across all six strings at one fret. Your fingers keep making the same shapes; the whole guitar just moves up. One fret up is one half step up. That is the entire rule.</p>
+
+<div class="panel mt2">
+<p class="dim" style="font-size:.9rem;margin:0">Tap a fret.</p>
+<div class="sf-frets" id="sfCapoFrets" role="group" aria-label="Capo position"></div>
+<p class="sf-capoline" id="sfCapoLine"></p>
+<div class="btn-row mt2"><button class="btn btn--sm" type="button" id="sfCapoHear" hidden></button></div>
+
+<div class="sf-capogrid">
+<div class="prose" style="max-width:60ch">
+<p><strong class="sand">Why anyone bothers.</strong> Guitars are easy in C, G, D, A and E because those keys use open strings. Singers do not care about that, and plenty of songs live in B&flat;, E&flat; or F. Without a capo those keys mean barre chords all the way through. With one, they mean the chords you learned first, moved up.</p>
+<p><strong class="sand">The other direction.</strong> A song too high to sing? Take the capo off or move it down. Too low? Move it up. Same shapes, same fingers, new key.</p>
+<p class="mb0"><strong class="sand">Putting it on.</strong> Clamp just behind the fret wire, not on top of it, and only as tight as it needs to be. Squeeze too hard and every string goes sharp.</p>
+</div>
+<table class="sf-table" id="sfCapoTable">
+<thead><tr><th>Shape you make</th><th>What the room hears</th></tr></thead>
 <tbody></tbody>
 </table>
 </div>
 </div>
-</section>
-
-<hr class="rule">
-
-<!-- ===================== SHELF ===================== -->
-<section class="pad" id="ss-shelfSec">
-<div class="wrap">
-<div class="reveal" style="max-width:62ch">
-<p class="eyebrow">Kept</p>
-<h2 class="display d2">Take it with you.</h2>
-<p class="dim mt1">Saved progressions stay in this browser only. Nothing is uploaded, and the copied link carries the whole thing to anybody you send it to.</p>
-</div>
-<div class="ss-shelf mt3" id="shelf"></div>
 </div>
 </section>
 
@@ -509,28 +367,15 @@
 <section class="pad-sm">
 <div class="wrap">
 <div class="panel panel--sand grain center reveal">
-<h2 class="display d2">A progression<br>is not a song yet.</h2>
-<p class="lede mt2" style="max-width:52ch;margin-inline:auto">
-Take this one to the next page and get a verse, a chorus, a bridge, and a part for everyone in the room.
-</p>
+<h2 class="display d2">Bring it Tuesday.</h2>
+<p class="lede mt2" style="max-width:52ch;margin-inline:auto">Pick one progression, play it with the metronome every day this week, and we will build the rest of the song together at the next meeting.</p>
 <div class="btn-row mt2" style="justify-content:center">
-<a class="btn" href="arrange.html" data-carry="arrange.html">Make it a song</a>
-<a class="btn btn--ghost" href="calendar.html">See the calendar</a>
+<a class="btn" href="calendar.html">See the calendar</a>
+<a class="btn btn--ghost" href="play-along.html">More chord shapes</a>
 </div>
 </div>
 </div>
 </section>
-
-<div class="ss-actionbar">
-<div class="wrap">
-<button class="btn btn--sm btn--ghost" id="keepBtn">Keep this one</button>
-<button class="btn btn--sm btn--ghost ss-share">Copy link</button>
-<button class="btn btn--sm btn--ghost ss-print">Print chart</button>
-<a class="btn btn--sm" href="arrange.html" data-carry="arrange.html">Next: make it a song &rarr;</a>
-<span class="ss-grow"></span>
-<span class="ss-state"></span>
-</div>
-</div>
 
 </main>
 
@@ -585,5 +430,7 @@ Take this one to the next page and get a verse, a chorus, a bridge, and a part f
 <div class="ss-toast" id="ss-toast" role="status" aria-live="polite"></div>
 <script src="site.js" defer></script>
 <script src="songstarter.js"></script>
+<script src="songfinder.js"></script>
+<script src="metronome.js"></script>
 </body>
 </html>

@@ -232,9 +232,9 @@
         if (state.blue) {
           var blueNotes = [];
           var bpc = mod(m + BLUE_MINOR, 12);
+          // any blue note inside the box's full fret span counts, on every string
           for (s = 0; s < 6; s++) {
-            var lo = notes[s * 2][1], hi = notes[s * 2 + 1][1];
-            for (f = lo; f <= hi; f++) if (noteAt(s, f) === bpc) blueNotes.push([s, f]);
+            for (f = pos.min; f <= pos.max; f++) if (noteAt(s, f) === bpc) blueNotes.push([s, f]);
           }
           pos.blue = blueNotes;
         }

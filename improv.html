@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="daylight">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Improv a Solo — Trinity River Guitar Club</title>
+<meta name="description" content="How to improvise a guitar solo: root notes on the E and A strings, the pentatonic scale in all five positions in every key, string bending that sounds like singing, and phrasing advice from the Trinity River Guitar Club.">
+<meta name="theme-color" content="#0a0a0c">
+<link rel="canonical" href="https://trinityriverguitarclub.com/improv.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Improv a Solo — Trinity River Guitar Club">
+<meta property="og:description" content="Find the root, drop the box, say something. Interactive pentatonic fretboards in every key, bending, and phrasing.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preload" href="anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="site.css">
+<style>
+/* ---- page-only styles: fretboards, position cards, bend curves, phrase map ---- */
+.fb{ display:block; height:auto; overflow:visible; font-family:var(--font-body); }
+.fb__wood{ fill:var(--surface-2); stroke:var(--line); stroke-width:1; }
+.fb__inlay{ fill:var(--dg-fret); }
+.fb__fret{ stroke:var(--dg-fret); stroke-width:2.5; }
+.fb__nut{ fill:var(--dg-nut); }
+.fb__string{ stroke:var(--dg-string); }
+.fb__slabel{ font-family:var(--font-label); font-size:14px; letter-spacing:.08em; fill:var(--text-dim); }
+.fb__fnum{ font-size:11px; fill:var(--text-faint); font-weight:500; }
+.fb__fnum.is-dot{ fill:var(--text-dim); font-weight:700; }
+.fb__fnum.is-sel{ fill:var(--crimson); font-weight:800; font-size:12.5px; }
+.fb__dot circle{ transition:opacity .25s var(--ease), fill .25s var(--ease); }
+.fb__dot.is-faint{ opacity:.18; }
+.fb__dot.is-ghost{ opacity:.55; }
+.fb__dlabel{ font-weight:700; font-family:var(--font-body); pointer-events:none; }
+.fb__fade{ fill:var(--page-solid); opacity:.72; }
+.fb__callout{ font-family:var(--font-label); font-size:12px; letter-spacing:.12em; text-transform:uppercase; fill:var(--crimson); }
+.fb__band{ opacity:.13; transition:opacity .3s var(--ease); }
+.fb__band.is-off{ opacity:.03; }
+.fb__bandlbl{ font-family:var(--font-label); font-size:12px; letter-spacing:.14em; }
+.fb__bandlbl.is-off{ opacity:.35; }
+.fb__dot:hover circle{ filter:brightness(1.12); }
+
+.fbwrap{ overflow-x:auto; -webkit-overflow-scrolling:touch; padding:.4rem 0 .6rem; }
+.fbwrap > svg{ min-width:640px; }
+.fbwrap--sm > svg{ min-width:0; }
+
+.ctl{ display:flex; flex-wrap:wrap; gap:.55rem 1.4rem; align-items:center; margin:1.4rem 0 .6rem; }
+.ctl__lbl{ font-family:var(--font-label); letter-spacing:.16em; text-transform:uppercase; font-size:.86rem; color:var(--text-dim); margin-right:.2rem; }
+.ctl__group{ display:flex; flex-wrap:wrap; gap:.4rem; align-items:center; }
+.filter--note{ padding:.42rem .82rem; font-size:.95rem; min-width:2.6rem; }
+.filter--pos[aria-pressed="true"]{ background:var(--pc,var(--crimson)); border-color:var(--pc,var(--crimson)); }
+.chk{ display:inline-flex; align-items:center; gap:.5rem; font-size:.92rem; color:var(--text-dim); cursor:pointer; }
+.chk input{ width:1.05rem; height:1.05rem; accent-color:var(--crimson); }
+
+.posgrid{ display:grid; gap:1rem; grid-template-columns:1fr; margin-top:1.4rem; }
+@media(min-width:720px){ .posgrid{ grid-template-columns:repeat(2,1fr); } }
+@media(min-width:1100px){ .posgrid{ grid-template-columns:repeat(3,1fr); } }
+.posbox{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:1rem 1rem .6rem; cursor:pointer; transition:.2s var(--ease); position:relative; }
+.posbox:hover{ border-color:var(--pc); transform:translateY(-2px); }
+.posbox.is-sel{ border-color:var(--pc); box-shadow:0 0 0 3px color-mix(in srgb, var(--pc) 22%, transparent); }
+.posbox__head{ display:flex; align-items:center; gap:.6rem; margin-bottom:.4rem; }
+.posbox__num{ width:1.8rem; height:1.8rem; border-radius:50%; background:var(--pc); color:#fff; display:grid; place-items:center; font-family:var(--font-display); font-size:1.05rem; }
+.posbox__title{ font-family:var(--font-label); letter-spacing:.12em; text-transform:uppercase; font-size:1.05rem; color:var(--text-strong); }
+.posbox__tag{ font-size:.8rem; color:var(--text-dim); letter-spacing:.14em; margin-left:.3rem; }
+.posbox__frets{ margin-left:auto; font-size:.82rem; color:var(--text-dim); }
+.posbox__neck{ overflow-x:auto; }
+.posbox__neck svg{ min-width:0; }
+
+.legend{ display:flex; flex-wrap:wrap; gap:.6rem 1.2rem; font-size:.88rem; color:var(--text-dim); margin-top:.8rem; }
+.legend span{ display:inline-flex; align-items:center; gap:.4rem; }
+.legend i{ width:.95rem; height:.95rem; border-radius:50%; display:inline-block; }
+
+.curves{ display:grid; gap:.9rem; grid-template-columns:repeat(2,1fr); margin-top:1.4rem; }
+@media(min-width:720px){ .curves{ grid-template-columns:repeat(3,1fr); } }
+.curve{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:.9rem .95rem 1rem; }
+.curve__svg{ width:100%; height:auto; display:block; }
+.curve__target{ stroke:var(--crimson); stroke-width:1; stroke-dasharray:3 3; opacity:.7; }
+.curve__start{ stroke:var(--line-hover); stroke-width:1; }
+.curve__path{ fill:none; stroke:var(--teal); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+.curve__path.is-silent{ stroke-dasharray:2 4; opacity:.5; }
+.curve__lbl{ fill:var(--crimson); }
+.curve__name{ font-family:var(--font-label); letter-spacing:.12em; text-transform:uppercase; font-size:1.05rem; margin:.5rem 0 .25rem; color:var(--text-strong); }
+.curve__how{ font-size:.88rem; color:var(--text-dim); margin:0; line-height:1.45; }
+
+.pmap{ display:block; height:auto; }
+.pmap__bar{ fill:var(--surface); stroke:var(--line); }
+.pmap__bar.is-four{ stroke:var(--line-hover); stroke-width:1.5; }
+.pmap__chord{ font-family:var(--font-label); font-size:13px; letter-spacing:.1em; fill:var(--text-strong); }
+.pmap__num{ font-size:10px; fill:var(--text-faint); }
+.pmap__phrase{ opacity:.9; }
+.pmap__plbl{ fill:#fff; font-family:var(--font-label); font-size:13px; letter-spacing:.14em; text-transform:uppercase; }
+.pmap__rest{ font-size:22px; fill:var(--text-dim); }
+.pmap__cap{ font-size:11px; fill:var(--text-dim); }
+
+.plan{ display:grid; gap:1px; background:var(--line); border:1px solid var(--line); border-radius:var(--radius-lg); overflow:hidden; }
+@media(min-width:760px){ .plan{ grid-template-columns:repeat(3,1fr); } }
+.plan__step{ background:var(--surface); padding:1.5rem 1.4rem; }
+.plan__n{ font-family:var(--font-display); font-size:2.4rem; line-height:1; color:var(--accent-label); }
+.plan__step h3{ font-family:var(--font-display); text-transform:uppercase; font-size:1.25rem; margin:.5rem 0 .5rem; }
+.plan__step p{ color:var(--text-dim); font-size:.95rem; margin:0; }
+
+.kit{ display:grid; gap:1rem; grid-template-columns:1fr; }
+@media(min-width:760px){ .kit{ grid-template-columns:repeat(2,1fr); } }
+.kit .card h3{ font-size:1.12rem; }
+.kit .card p{ font-size:.95rem; }
+
+.zappa{ margin-top:-1px; }
+.zappa .quote{ font-size:clamp(1.15rem,1rem + .9vw,1.6rem); max-width:52ch; }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <div class="wrap nav">
+    <a class="brand" href="index.html" aria-label="Trinity River Guitar Club home">
+      <svg class="brand__mark" viewBox="0 0 40 40" aria-hidden="true">
+        <defs><linearGradient id="pk" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#c8103f"/><stop offset="55%" stop-color="#98002e"/><stop offset="100%" stop-color="#00788a"/>
+        </linearGradient></defs>
+        <path d="M20 2.5c9.2 0 16.2 6 16.2 13.3 0 9.2-10.3 21.7-16.2 21.7S3.8 25 3.8 15.8C3.8 8.5 10.8 2.5 20 2.5z" fill="url(#pk)"/>
+        <g stroke="#dac792" stroke-width="1.1" opacity=".85">
+          <line x1="13" y1="7" x2="13" y2="30"/><line x1="20" y1="5.5" x2="20" y2="33"/><line x1="27" y1="7" x2="27" y2="30"/>
+        </g>
+      </svg>
+      <span class="brand__txt"><span class="brand__name">Trinity River</span><span class="brand__sub">Guitar Club</span></span>
+    </a>
+    <button class="nav__toggle" aria-expanded="false" aria-controls="primary-nav" aria-label="Menu"><span></span><span></span><span></span></button>
+    <ul class="nav__links" id="primary-nav">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="media.html">Media</a></li>
+      <li><a href="play-along.html">Play Along</a></li>
+      <li><a href="progressions.html">Song Starter</a></li>
+      <li><a href="improv.html" aria-current="page">Improv a Solo</a></li>
+      <li><a href="tuner.html">Tuner</a></li>
+      <li><a href="guitar-care.html">Guitar Care</a></li>
+      <li><a href="calendar.html">Calendar</a></li>
+      <li class="nav__cta"><a class="btn btn--sm" href="mailto:jared.stewart@tccd.edu?subject=Trinity%20River%20Guitar%20Club">Contact TRGC</a></li>
+    </ul>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ===================== HERO ===================== -->
+<section class="hero hero--page grain">
+  <div class="hero__media">
+    <img src="strum-10-seated.jpg" alt="A club member playing an electric guitar through a Marshall amp on the plaza" fetchpriority="high" width="1050" height="1400">
+  </div>
+  <div class="hero__scrim"></div>
+  <div class="wrap hero__inner">
+    <p class="eyebrow">Improv a Solo</p>
+    <h1 class="display d1" style="font-size:clamp(2.6rem,8vw,5.4rem)">Find the root.<br>Drop the box.<br>Say something.</h1>
+    <p class="lede hero__sub">Everything you need to take a solo when someone points at you: where the notes are, the one scale that works almost everywhere, how to make it sing, and what to do with the silence.</p>
+    <div class="btn-row" style="margin-top:1.2rem">
+      <a class="btn btn--teal" href="tuner.html">Open the tuner</a>
+      <a class="btn btn--ghost" href="#pentatonic">Jump to the fretboards</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== ZAPPA ===================== -->
+<section class="pad-sm zappa">
+  <div class="wrap">
+    <div class="panel panel--sand reveal">
+      <blockquote class="quote quote--sand" style="margin:0">
+        “My theory is this &mdash; I have a basic mechanical knowledge of the operation of the instrument, and I got an imagination. And when the time comes up in the song to play a solo, it's me against the laws of nature. I don't know what I'm going to play, I don't know what I'm going to do.”
+        <cite>Frank Zappa</cite>
+      </blockquote>
+      <p class="dim mt2 mb0" style="max-width:62ch">
+        Notice the order. Mechanical knowledge first, imagination second, and only then the leap. This page is the mechanical knowledge. The imagination is yours. The leap happens on Tuesday at 11:30.
+      </p>
+    </div>
+  </div>
+</section>
+
+<div class="ticker" aria-hidden="true">
+  <div class="ticker__track">
+    <span>Root notes on E and A</span><span>Pentatonic in every key</span><span>Five positions</span><span>Bending that sings</span><span>Phrasing</span><span>The on-the-fly kit</span>
+    <span>Root notes on E and A</span><span>Pentatonic in every key</span><span>Five positions</span><span>Bending that sings</span><span>Phrasing</span><span>The on-the-fly kit</span>
+  </div>
+</div>
+
+<!-- ===================== THE PLAN ===================== -->
+<section class="pad-sm" id="plan">
+  <div class="wrap">
+    <div class="reveal" style="max-width:62ch">
+      <p class="eyebrow">The whole plan</p>
+      <h2 class="display d2">Three moves.<br>That's the job.</h2>
+      <p class="dim mt1">A solo feels like magic from the outside. From the inside it is a short checklist you run before the first note, and then a conversation.</p>
+    </div>
+    <div class="plan mt2 reveal">
+      <div class="plan__step"><div class="plan__n">1</div><h3>Find the root</h3><p>Someone says “it's in G.” You need to put a finger on a G, right now, on the low E or A string. That is what the first section trains.</p></div>
+      <div class="plan__step"><div class="plan__n">2</div><h3>Drop the box</h3><p>Land the pentatonic shape on that root. Every note in the shape is safe. You cannot play a wrong one. Now the hard part is over.</p></div>
+      <div class="plan__step"><div class="plan__n">3</div><h3>Say something</h3><p>Bend, breathe, repeat yourself, leave space. Notes are cheap. Phrasing is what people remember, and it is the part nobody teaches.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="pad-sm" id="metronome">
+  <div class="wrap">
+    <div class="panel panel--outline" style="display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap">
+      <div style="flex:0 0 auto"><h2 class="display d3" style="margin:0">Metronome</h2><p class="dim" style="margin:.2rem 0 0;font-size:.86rem;max-width:22ch">Solo over the click. If you can phrase against a metronome, a band is easy.</p></div>
+      <div id="trgc-metronome" style="flex:1 1 420px"></div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- ===================== ROOTS ===================== -->
+<section class="pad glow-teal" id="roots">
+  <div class="wrap wrap--wide">
+    <div class="reveal" style="max-width:66ch">
+      <p class="eyebrow">Step one</p>
+      <h2 class="display d2">The notes on the<br>two fat strings.</h2>
+      <p class="lede mt2">
+        You do not need to know every note on the neck to solo. You need the notes on the low E and A strings, because that is where scale shapes and barre chords hang their root. Learn these two strings and the whole fretboard becomes “this shape, starting here.”
+      </p>
+    </div>
+
+    <div class="ctl reveal" role="group" aria-label="Pick a note to find">
+      <span class="ctl__lbl">Find a note</span>
+      <div class="ctl__group" id="roots-picker"></div>
+    </div>
+    <p class="dim reveal" id="roots-readout" style="margin:.2rem 0 .6rem;font-size:.95rem">Tap a note to light it up on both strings.</p>
+
+    <div class="fbwrap reveal" id="roots-neck"></div>
+    <div class="legend reveal">
+      <span><i style="background:var(--text-strong)"></i> natural note (no sharp or flat)</span>
+      <span><i style="background:var(--surface);border:2px solid var(--line-hover)"></i> sharp / flat (same note, two names)</span>
+      <span><i style="background:#98002e"></i> the note you picked</span>
+    </div>
+
+    <div class="grid mt3 reveal" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
+      <div class="panel panel--outline">
+        <h3 class="display d4" style="margin-bottom:.7rem">Memorize the landmarks, not the list</h3>
+        <p class="dim">On the <b class="sand">E string</b>: fret 3 is G, 5 is A, 7 is B, 8 is C, 10 is D, 12 is E again. On the <b class="sand">A string</b>: fret 2 is B, 3 is C, 5 is D, 7 is E, 8 is F, 10 is G, 12 is A.</p>
+        <p class="dim mb0">Those are all natural notes and they all sit on or next to a fret marker. Everything with a sharp or flat lives in between two of them. Learn the landmarks and you can work out the rest in a second.</p>
+      </div>
+      <div class="panel panel--outline">
+        <h3 class="display d4" style="margin-bottom:.7rem">Two shortcuts</h3>
+        <p class="dim"><b class="sand">Same fret, one string over, is five notes higher.</b> Fret 5 on E is A; fret 5 on A is D. So the A string is just the E string shifted five frets to the left. Learn one string and you own both.</p>
+        <p class="dim mb0"><b class="sand">Fret 12 restarts everything.</b> The octave. Whatever you know at fret 3, you also know at fret 15.</p>
+      </div>
+      <div class="panel panel--outline">
+        <h3 class="display d4" style="margin-bottom:.7rem">The drill</h3>
+        <p class="dim">Set the metronome to 60. On each click, name a random note out loud and put a finger on it on the E string. Then do the A string. Then alternate. Two minutes a day for two weeks and the hesitation is gone.</p>
+        <p class="dim mb0">Start with only naturals. Add sharps and flats when the naturals are automatic.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- ===================== PENTATONIC ===================== -->
+<section class="pad glow-crimson" id="pentatonic">
+  <div class="wrap wrap--wide">
+    <div class="reveal" style="max-width:66ch">
+      <p class="eyebrow">Step two</p>
+      <h2 class="display d2">The pentatonic scale,<br>everywhere on the neck.</h2>
+      <p class="lede mt2">
+        Five notes. That's it. Take a regular scale and remove the two notes most likely to clash with a chord, and what's left works over almost anything in rock, blues, country, pop, and a lot of jazz. It is the scale most of the solos you love are made of.
+      </p>
+      <p class="dim mt1">
+        Because it repeats up the neck, the same five notes make <b class="sand">five overlapping shapes</b>, one starting on each scale note. Learn them and you can solo anywhere on the fretboard without hunting. Pick your key below; every diagram on this page redraws.
+      </p>
+    </div>
+
+    <!-- controls -->
+    <div class="ctl reveal" role="group" aria-label="Choose a key">
+      <span class="ctl__lbl">Key</span>
+      <div class="ctl__group" id="pent-keys"></div>
+    </div>
+    <div class="ctl reveal" style="margin-top:.4rem">
+      <div class="ctl__group" id="pent-mode" role="group" aria-label="Major or minor">
+        <span class="ctl__lbl">Sound</span>
+        <button type="button" class="filter filter--note" data-mode="minor" aria-pressed="true">Minor</button>
+        <button type="button" class="filter filter--note" data-mode="major" aria-pressed="false">Major</button>
+      </div>
+      <div class="ctl__group" id="pent-labels" role="group" aria-label="Dot labels">
+        <span class="ctl__lbl">Dots show</span>
+        <button type="button" class="filter filter--note" data-labels="dot" aria-pressed="true">Roots</button>
+        <button type="button" class="filter filter--note" data-labels="name" aria-pressed="false">Note names</button>
+        <button type="button" class="filter filter--note" data-labels="int" aria-pressed="false">Intervals</button>
+      </div>
+      <label class="chk"><input type="checkbox" id="pent-blue"> Add the blue note</label>
+    </div>
+    <p class="dim reveal" id="pent-keyline" style="margin:.4rem 0 0;font-size:.95rem"></p>
+
+    <!-- full neck -->
+    <div class="ctl reveal" id="pent-positions" role="group" aria-label="Highlight a position" style="margin-top:1.4rem">
+      <span class="ctl__lbl">Highlight</span>
+      <div class="ctl__group">
+        <button type="button" class="filter filter--note filter--pos" data-pos="0" aria-pressed="true" style="--pc:#98002e">All five</button>
+        <button type="button" class="filter filter--note filter--pos" data-pos="1" aria-pressed="false" style="--pc:#00788a">Pos 1</button>
+        <button type="button" class="filter filter--note filter--pos" data-pos="2" aria-pressed="false" style="--pc:#0b4a91">Pos 2</button>
+        <button type="button" class="filter filter--note filter--pos" data-pos="3" aria-pressed="false" style="--pc:#7a5c14">Pos 3</button>
+        <button type="button" class="filter filter--note filter--pos" data-pos="4" aria-pressed="false" style="--pc:#6a3d9a">Pos 4</button>
+        <button type="button" class="filter filter--note filter--pos" data-pos="5" aria-pressed="false" style="--pc:#2e7d32">Pos 5</button>
+      </div>
+    </div>
+    <div class="fbwrap reveal" id="pent-full"></div>
+    <p class="dim reveal" id="pent-caption" style="font-size:.95rem;margin-top:.2rem"></p>
+    <div class="legend reveal">
+      <span><i style="background:#98002e"></i> root</span>
+      <span><i style="background:var(--text-strong)"></i> scale note</span>
+      <span><i style="background:var(--surface);border:2px solid var(--text-strong)"></i> blue note (when switched on)</span>
+      <span><i style="background:#00788a;opacity:.3"></i> position band</span>
+    </div>
+
+    <!-- five boxes -->
+    <div class="mt3 reveal" style="max-width:66ch">
+      <h3 class="display d3">The five boxes, one at a time.</h3>
+      <p class="dim mt1">Tap any box to highlight it on the big neck above. Small grey dots are scale notes that belong to the <em>next</em> box over; they show you how the shapes lock together. Read each diagram left to right, low E string at the bottom, exactly like looking down at your own guitar.</p>
+    </div>
+    <div class="posgrid reveal" id="pent-boxes"></div>
+
+    <!-- explanation -->
+    <div class="grid mt3 reveal" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr))">
+      <div class="panel panel--outline">
+        <h3 class="display d4" style="margin-bottom:.7rem">Start with Position 1. Stay there a while.</h3>
+        <p class="dim">Position 1 is “the box.” Its lowest note is the root on the low E string, which is why the last section mattered: find the root, put your index finger on it, and the box is under your hand. One finger per fret: index on the root fret, pinky (or ring) on the higher notes.</p>
+        <p class="dim mb0">Most famous rock and blues solos live almost entirely in Position 1 and the top half of Position 2. You could stop here and be fine for years. Plenty of professionals did.</p>
+      </div>
+      <div class="panel panel--outline">
+        <h3 class="display d4" style="margin-bottom:.7rem">The shapes connect. That's the whole trick.</h3>
+        <p class="dim">The top two notes of one box on any string are the bottom two notes of the next box. So Position 2 is not a new thing to memorize; it is Position 1 with every finger moved up to the next scale note. Learn them as neighbors, not as five separate diagrams.</p>
+        <p class="dim mb0">After Position 5, Position 1 comes back twelve frets up. The neck is a loop.</p>
+      </div>
+      <div class="panel panel--outline">
+        <h3 class="display d4" style="margin-bottom:.7rem">Major and minor are the same shapes</h3>
+        <p class="dim">Flip the Sound toggle and watch: the dots don't move, only the crimson root dots do. A major pentatonic is the minor pentatonic of the key three frets down. C major pentatonic is A minor pentatonic. Same notes, different home.</p>
+        <p class="dim mb0">Practical rule: if the song feels sad, moody, or bluesy, play the minor box on the root. If it feels bright and happy (country, a lot of pop), slide the same box three frets down and treat the new note as home.</p>
+      </div>
+      <div class="panel panel--outline">
+        <h3 class="display d4" style="margin-bottom:.7rem">The blue note</h3>
+        <p class="dim">Switch it on and one extra note appears between the 4 and the 5. It is dissonant on purpose. Don't stop on it; slide through it or bend into it. Used that way it is the single most “bluesy” sound on the instrument. Used as a landing note it is a mistake, and the audience will agree.</p>
+        <p class="dim mb0">Pentatonic plus blue note is what people mean by “the blues scale.”</p>
+      </div>
+      <div class="panel panel--outline">
+        <h3 class="display d4" style="margin-bottom:.7rem">How to practice this so it sticks</h3>
+        <p class="dim"><b class="sand">Week 1:</b> Position 1 in A minor, up and down, to the metronome. Then the same box in E, G, and D. Say the root note out loud as you land on it.</p>
+        <p class="dim"><b class="sand">Week 2:</b> Positions 1 and 2. Practice sliding between them on the G string.</p>
+        <p class="dim mb0"><b class="sand">Week 3 onward:</b> add one box per week. Then play the whole scale from the lowest note on the neck to the highest, changing position every string. Then do it in a key you hate.</p>
+      </div>
+      <div class="panel panel--outline">
+        <h3 class="display d4" style="margin-bottom:.7rem">Do not play the scale as a solo</h3>
+        <p class="dim">The scale is the alphabet. Running it up and down is reciting the alphabet. Once a box is under your fingers, stop playing it in order. Skip notes. Repeat one. Play three notes and stop. That is where the next two sections come in.</p>
+        <p class="dim mb0">Quick test: can you play the box starting from the <em>top</em>? From the middle? Backwards in threes? If not, you know the picture, not the notes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- ===================== BENDING ===================== -->
+<section class="pad" id="bending">
+  <div class="wrap wrap--wide">
+    <div class="reveal" style="max-width:66ch">
+      <p class="eyebrow">Step three, part one</p>
+      <h2 class="display d2">Bending. Make the<br>guitar sing.</h2>
+      <p class="lede mt2">
+        A piano can only play the notes it has. A voice slides between them, scoops into them, wavers on a long one, and falls off at the end of a line. Bending is how a guitar does all of that. It is the difference between playing notes and playing music.
+      </p>
+    </div>
+
+    <div class="grid mt3 reveal" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr));align-items:start">
+      <div class="prose">
+        <h3 class="display d3" style="margin-bottom:.8rem">How to actually do it</h3>
+        <p class="dim"><b class="sand">Use three fingers, not one.</b> Bend with your ring finger, and put your middle and index fingers on the same string behind it. They push together. One finger alone hurts and goes flat.</p>
+        <p class="dim"><b class="sand">Turn your wrist; don't push with your fingertips.</b> Anchor your thumb over the top of the neck and rotate your forearm like turning a doorknob. The fingers stay locked; the wrist does the work.</p>
+        <p class="dim"><b class="sand">Push up on the thin strings, pull down on the thick ones.</b> High e, B, and G bend upward, toward the ceiling. Low E, A, and D bend downward, toward the floor, so you don't run off the fretboard.</p>
+        <p class="dim"><b class="sand">Bend to a pitch, not a distance.</b> Before you bend fret 7, play fret 9 and listen. Now bend 7 until it matches. A bend that lands a little flat is the most common mistake on the instrument, and your ears will hear it before you do.</p>
+        <p class="dim mb0"><b class="sand">Mute the strings you aren't playing.</b> When you push the G string up, it slides under the B and high e. Rest the underside of your bending fingers against them so they don't ring.</p>
+      </div>
+      <div>
+        <h3 class="display d3" style="margin-bottom:.8rem">The bends that live in the box</h3>
+        <p class="dim" style="font-size:.95rem">Position 1 in A minor. Dashed circles are the target pitch; numbers match the list below. These four bends, plus the little quarter-tone curl, are most of what you hear on the radio.</p>
+        <div class="fbwrap fbwrap--sm" id="bend-neck"></div>
+        <ul class="dim" style="font-size:.92rem;margin-top:.6rem">
+          <li><b class="sand">1 &middot; G string, fret 7 up to 9 (whole step).</b> The most-played bend in rock. The 4 rising to the 5.</li>
+          <li><b class="sand">2 &middot; B string, fret 8 up to 10 (whole step).</b> The ♭7 rising to the root. This one cries.</li>
+          <li><b class="sand">3 &middot; High e, fret 8 up to 10 (whole step).</b> ♭3 up to 4, usually at the top of a phrase.</li>
+          <li><b class="sand">4 &middot; A string, fret 5 up a half step.</b> The 4 pushed up to the blue note. Pull down, not up, on this string. Short and mean.</li>
+          <li><b class="sand">5 &middot; The curl.</b> Nudge the ♭3 (G string, fret 5) barely sharp, less than a half step. Pure blues. B.B. King built a career on it.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt3 reveal" style="max-width:66ch">
+      <h3 class="display d3">The vocabulary: what a singer does, and the bend that copies it</h3>
+      <p class="dim mt1">Each card is pitch over time. The dashed line is the target note. Hum each shape before you play it; if you can sing it, you can bend it.</p>
+    </div>
+    <div class="curves reveal" id="bend-curves"></div>
+
+    <div class="panel panel--sand mt3 reveal">
+      <h3 class="display d4" style="margin-bottom:.7rem">The bending drill that fixes everything</h3>
+      <p class="dim">Set the tuner in front of you. Play fret 9 on the G string; that's E. Now bend fret 7 and hold it until the tuner reads E, no flatter. Then let it back down slowly and keep it in tune the whole way. Ten reps. Then the B string, fret 8 up to fret 10 (A). Then high e, fret 8 to fret 10 (D).</p>
+      <p class="dim mb0">Light strings make this easier. If you're on an acoustic with mediums, half-step bends and the curl are plenty. Nobody expects whole-step bends on a dreadnought.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- ===================== PHRASING ===================== -->
+<section class="pad glow-teal" id="phrasing">
+  <div class="wrap wrap--wide">
+    <div class="reveal" style="max-width:66ch">
+      <p class="eyebrow">Step three, part two</p>
+      <h2 class="display d2">Phrasing. Talk,<br>don't type.</h2>
+      <p class="lede mt2">
+        A bad solo is someone reading the dictionary very fast. A good solo is someone telling you a story at a bar. Same words. The difference is sentences, pauses, and repeating the good part.
+      </p>
+    </div>
+
+    <div class="fbwrap mt3 reveal" id="phrase-map"></div>
+
+    <div class="grid mt2 reveal" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr))">
+      <div class="panel panel--outline">
+        <h3 class="display d4" style="margin-bottom:.7rem">Sing what you play, while you play it</h3>
+        <p class="dim">Out loud, badly, it doesn't matter. Sing a short line, then play it. Then play and sing at the same time. Your voice cannot run scales at 200 beats per minute, so it will force you to phrase like a human being: short ideas, breaths, notes held long enough to mean something.</p>
+        <p class="dim mb0">If your fingers are playing something you couldn't sing, you're not improvising. You're running a pattern.</p>
+      </div>
+      <div class="panel panel--outline">
+        <h3 class="display d4" style="margin-bottom:.7rem">Leave space. More than feels comfortable.</h3>
+        <p class="dim">Play a phrase, then rest for as long as the phrase lasted. Rests are not empty; they're where the listener catches up and the band gets heard. Silence also makes the next note louder without touching the volume knob.</p>
+        <p class="dim mb0">When in doubt, play half as many notes and hold them twice as long.</p>
+      </div>
+      <div class="panel panel--outline">
+        <h3 class="display d4" style="margin-bottom:.7rem">Call and response</h3>
+        <p class="dim">Play a short idea (the call). Answer it with something similar but different (the response): same rhythm with a different ending, or the same notes an octave up. Two-bar call, two-bar answer, is the structure of the blues, of gospel, of most choruses you can hum.</p>
+        <p class="dim mb0">Look at the phrase map above: nothing in it is longer than two and a half bars.</p>
+      </div>
+      <div class="panel panel--outline">
+        <h3 class="display d4" style="margin-bottom:.7rem">Repeat yourself. On purpose.</h3>
+        <p class="dim">Beginners are terrified of playing the same lick twice. Audiences love it. Play an idea, play it again, then change the last note. Three times is a hook; that's why every riff you know does it.</p>
+        <p class="dim mb0">One good idea developed beats ten ideas abandoned.</p>
+      </div>
+      <div class="panel panel--outline">
+        <h3 class="display d4" style="margin-bottom:.7rem">Rhythm matters more than notes</h3>
+        <p class="dim">Try this: pick one note and solo with it for twelve bars using only rhythm, dynamics, and bends. It works. Now try twelve bars of every note in the scale with no rhythm. It doesn't. Where a note lands in the bar is more important than which note it is.</p>
+        <p class="dim mb0">Start phrases off the beat sometimes. Start one on beat 4 of the bar before. Predictable placement is the fastest way to sound like a scale exercise.</p>
+      </div>
+      <div class="panel panel--outline">
+        <h3 class="display d4" style="margin-bottom:.7rem">Have a shape</h3>
+        <p class="dim">Start low and simple. Build toward the middle. Peak near the end with your highest note and your biggest bend. Land somewhere that feels finished: the root, held, with vibrato.</p>
+        <p class="dim mb0">Don't blow the big note in bar two. You'll have nowhere to go for the next ten.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- ===================== THE KIT ===================== -->
+<section class="pad glow-crimson" id="kit">
+  <div class="wrap wrap--wide">
+    <div class="reveal" style="max-width:66ch">
+      <p class="eyebrow">Before the count-in</p>
+      <h2 class="display d2">What to know when<br>someone points at you.</h2>
+      <p class="lede mt2">Improvising isn't making everything up. It is knowing five things in advance so you can make up the sixth. Here's the checklist, roughly in the order you need it.</p>
+    </div>
+
+    <div class="kit mt3 reveal">
+      <div class="card card--flat">
+        <div class="card__ico card__ico--teal">1</div>
+        <h3>What key are we in?</h3>
+        <p>Ask. Nobody minds. If you can't ask, listen for the chord the song keeps coming home to, and find that note on the E string. Your box goes there.</p>
+      </div>
+      <div class="card card--flat">
+        <div class="card__ico card__ico--teal">2</div>
+        <h3>Minor box or major box?</h3>
+        <p>Test it: play the ♭3 of the minor box (second note on the low E string). If it sounds tough and right, stay minor. If it sounds sour, slide the box three frets down and play major. Blues lets you get away with either. Country doesn't.</p>
+      </div>
+      <div class="card card--flat">
+        <div class="card__ico card__ico--teal">3</div>
+        <h3>Where do the chords change?</h3>
+        <p>You don't need to know every chord. You need to know when the big change happens (bar 5 of a blues, the chorus of a pop song) and hit a note from the new chord right on it. Landing the root of the IV chord on beat one of bar 5 sounds like you know exactly what you're doing.</p>
+      </div>
+      <div class="card card--flat">
+        <div class="card__ico card__ico--teal">4</div>
+        <h3>How long do I have, and how does it end?</h3>
+        <p>One chorus? Two? Until the singer nods? Find out, then plan the last two bars first: end on the root, held, and stop playing so the band can come back in clean. A solo with a clear ending sounds better than a great solo that trails off.</p>
+      </div>
+      <div class="card card--flat">
+        <div class="card__ico card__ico--sand">5</div>
+        <h3>Three licks you can play in your sleep</h3>
+        <p>Nobody improvises from nothing. Have three short phrases in the box you can play cold: one that starts a solo, one that answers, one that ends. Steal them from records. On the night, you improvise the connections between them, and then one day you notice you didn't need them.</p>
+      </div>
+      <div class="card card--flat">
+        <div class="card__ico card__ico--sand">6</div>
+        <h3>The chord tones are the safe houses</h3>
+        <p>Inside the box, the root and the 5 always sound resolved. Land phrases there when you want to sound finished. The ♭3 and ♭7 sound bluesy and unfinished; use them mid-phrase. The 4 is a passing note; don't sit on it. Switch the dots to “Intervals” above and look at which ones you keep ending on.</p>
+      </div>
+      <div class="card card--flat">
+        <div class="card__ico card__ico--sand">7</div>
+        <h3>Listen more than you play</h3>
+        <p>Your ears should be on the drummer and the bass, not your fretting hand. If you lose the form, stop, listen for the turnaround, and come back in on the one. Coming back in strong after a rest looks intentional. Flailing doesn't.</p>
+      </div>
+      <div class="card card--flat">
+        <div class="card__ico card__ico--sand">8</div>
+        <h3>Wrong notes are half a step from right ones</h3>
+        <p>Every note on the guitar is one fret away from a note in the scale. Hit a clunker? Slide it a fret. Do it with confidence and it becomes a chromatic passing tone, which is a fancy way of saying jazz. Play it again on purpose and it was a choice.</p>
+      </div>
+    </div>
+
+    <div class="panel panel--sand mt3 reveal">
+      <h3 class="display d4" style="margin-bottom:.7rem">Your first solo, tonight</h3>
+      <p class="dim">Put the metronome at 80. Key of A minor, Position 1, frets 5 to 8. Rules: no more than four notes per phrase, a full bar of rest after each one, and every phrase ends on an A. Do twelve bars. Then do twelve more where each phrase has to include one bend.</p>
+      <p class="dim mb0">That's it. That's improvising. Everything else on this page is about doing it with more vocabulary. Bring it to a meeting and someone will play rhythm for you; that's what we're here for.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot__grid foot">
+      <div>
+        <a class="brand" href="index.html" style="margin-bottom:1rem">
+          <svg class="brand__mark" viewBox="0 0 40 40" aria-hidden="true">
+            <defs><linearGradient id="pk2" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#c8103f"/><stop offset="55%" stop-color="#98002e"/><stop offset="100%" stop-color="#00788a"/>
+            </linearGradient></defs>
+            <path d="M20 2.5c9.2 0 16.2 6 16.2 13.3 0 9.2-10.3 21.7-16.2 21.7S3.8 25 3.8 15.8C3.8 8.5 10.8 2.5 20 2.5z" fill="url(#pk2)"/>
+            <g stroke="#dac792" stroke-width="1.1" opacity=".85">
+              <line x1="13" y1="7" x2="13" y2="30"/><line x1="20" y1="5.5" x2="20" y2="33"/><line x1="27" y1="7" x2="27" y2="30"/>
+            </g>
+          </svg>
+          <span class="brand__txt"><span class="brand__name">Trinity River</span><span class="brand__sub">Guitar Club</span></span>
+        </a>
+        <p class="dim" style="max-width:38ch;font-size:.94rem">A student and faculty guitar club in Fort Worth, Texas. All skill levels. All genres. Bring your guitar, or borrow one of ours.</p>
+      </div>
+      <div>
+        <h4>Site</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="media.html">Media</a></li>
+          <li><a href="play-along.html">Play Along</a></li>
+          <li><a href="progressions.html">Song Starter</a></li>
+          <li><a href="improv.html">Improv a Solo</a></li>
+          <li><a href="tuner.html">Tuner</a></li>
+          <li><a href="calendar.html">Club Calendar</a></li>
+          <li><a href="trgc-constitution.pdf">Constitution</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li>Stew &mdash; <a href="mailto:jared.stewart@tccd.edu">jared.stewart@tccd.edu</a></li>
+          <li>Hal &mdash; <a href="mailto:harold.macias@tccd.edu">harold.macias@tccd.edu</a></li>
+          <li><span class="dim">Tuesdays 11:30 AM – 12:30 PM</span></li>
+          <li><span class="dim">Fridays 12:00 – 1:00 PM</span></li>
+          <li><span class="dim">Trinity River Campus · Fort Worth</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot__bottom">
+      <span>© <span data-year>2026</span> Trinity River Guitar Club</span>
+      <span>Built by students, for students. <span class="sand">Thank you, Dr. Sean Madison.</span></span>
+    </div>
+  </div>
+</footer>
+
+<script src="site.js" defer></script>
+<script src="metronome.js"></script>
+<script src="improv.js" defer></script>
+</body>
+</html>

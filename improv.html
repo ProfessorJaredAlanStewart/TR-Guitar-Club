@@ -102,6 +102,12 @@
 .kit .card h3{ font-size:1.12rem; }
 .kit .card p{ font-size:.95rem; }
 
+.tips{ display:grid; gap:1rem; grid-template-columns:1fr; }
+@media(min-width:760px){ .tips{ grid-template-columns:1fr 1fr; gap:1.1rem; } }
+@media(min-width:1100px){ .tips--3{ grid-template-columns:repeat(3,1fr); } }
+.tips .panel{ padding:clamp(1.3rem,2.6vw,1.9rem) clamp(1.3rem,2.6vw,2rem); }
+.tips .panel h3{ margin-bottom:.55rem !important; }
+.tips .panel p{ font-size:.98rem; line-height:1.6; }
 .zappa{ margin-top:-1px; }
 .zappa .quote{ font-size:clamp(1.15rem,1rem + .9vw,1.6rem); max-width:52ch; }
 </style>
@@ -230,7 +236,7 @@
       <span><i style="background:#98002e"></i> the note you picked</span>
     </div>
 
-    <div class="grid mt3 reveal" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
+    <div class="tips tips--3 mt3 reveal">
       <div class="panel panel--outline">
         <h3 class="display d4" style="margin-bottom:.7rem">Memorize the landmarks, not the list</h3>
         <p class="dim">On the <b class="sand">E string</b>: fret 3 is G, 5 is A, 7 is B, 8 is C, 10 is D, 12 is E again. On the <b class="sand">A string</b>: fret 2 is B, 3 is C, 5 is D, 7 is E, 8 is F, 10 is G, 12 is A.</p>
@@ -316,7 +322,7 @@
     <div class="posgrid reveal" id="pent-boxes"></div>
 
     <!-- explanation -->
-    <div class="grid mt3 reveal" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr))">
+    <div class="tips mt3 reveal">
       <div class="panel panel--outline">
         <h3 class="display d4" style="margin-bottom:.7rem">Start with Position 1. Stay there a while.</h3>
         <p class="dim">Position 1 is “the box.” Its lowest note is the root on the low E string, which is why the last section mattered: find the root, put your index finger on it, and the box is under your hand. One finger per fret: index on the root fret, pinky (or ring) on the higher notes.</p>
@@ -417,7 +423,7 @@
 
     <div class="fbwrap mt3 reveal" id="phrase-map"></div>
 
-    <div class="grid mt2 reveal" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr))">
+    <div class="tips mt2 reveal">
       <div class="panel panel--outline">
         <h3 class="display d4" style="margin-bottom:.7rem">Sing what you play, while you play it</h3>
         <p class="dim">Out loud, badly, it doesn't matter. Sing a short line, then play it. Then play and sing at the same time. Your voice cannot run scales at 200 beats per minute, so it will force you to phrase like a human being: short ideas, breaths, notes held long enough to mean something.</p>

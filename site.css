@@ -596,13 +596,17 @@ section{ position:relative; }
   position:fixed; inset:0; z-index:500; display:none;
   background:rgba(6,6,8,.96); backdrop-filter:blur(10px);
   padding:clamp(.6rem,3vw,2.2rem);
+  overflow:auto;
 }
 .lb.is-open{ display:grid; grid-template-rows:auto 1fr auto; }
 .lb__bar{ display:flex; align-items:center; justify-content:space-between; gap:1rem; padding-bottom:.7rem; }
 .lb__count{ font-family:var(--font-label); letter-spacing:.2em; color:var(--sand); font-size:1rem; }
-.lb__stage{ display:grid; place-items:center; min-height:0; position:relative; }
+/* The stage's own track must be a definite size, or the photo's max-height:100% resolves to
+   nothing and tall photos spill off the bottom of the screen with no way to scroll. */
+.lb__stage{ display:grid; place-items:center; min-height:0; position:relative;
+  grid-template-rows:minmax(0,1fr); grid-template-columns:minmax(0,1fr); }
 .lb__img{
-  max-width:100%; max-height:100%; width:auto; height:auto; object-fit:contain;
+  max-width:100%; max-height:100%; min-width:0; min-height:0; width:auto; height:auto; object-fit:contain;
   border-radius:10px; box-shadow:0 30px 80px -30px #000;
   animation:lbIn .3s var(--ease);
 }

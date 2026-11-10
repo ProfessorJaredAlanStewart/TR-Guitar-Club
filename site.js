@@ -551,6 +551,26 @@
 
   /* Expose the diagram renderer + chord library so the Song Starter
      can draw the same shapes students already see on Play Along. */
+  // Footer logo: open it big in a dialog. Without JS or <dialog>, the link opens the image itself.
+  (function logoZoom() {
+    var link = document.querySelector('[data-logo-zoom]');
+    if (!link || typeof HTMLDialogElement !== 'function') return;
+    var dlg = document.createElement('dialog');
+    dlg.className = 'logo-zoom';
+    dlg.setAttribute('aria-label', 'Trinity River Guitar Club logo');
+    dlg.innerHTML = '<button class="lb__btn logo-zoom__close" type="button" aria-label="Close">&times;</button>' +
+                    '<img alt="Trinity River Guitar Club logo">';
+    var big = dlg.querySelector('img');
+    document.body.appendChild(dlg);
+    link.addEventListener('click', function (e) {
+      e.preventDefault();
+      if (!big.src) big.src = link.getAttribute('href');   // fetch the big file only when asked
+      dlg.showModal();
+    });
+    dlg.addEventListener('click', function () { dlg.close(); });
+    dlg.addEventListener('close', function () { link.focus(); });
+  })();
+
   window.TRGC = window.TRGC || {};
   window.TRGC.chordSVG = chordSVG;
   window.TRGC.CHORDS = CHORDS;
